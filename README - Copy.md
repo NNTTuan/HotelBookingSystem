@@ -1,98 +1,51 @@
 hotel-booking-system/
-
-├── pom.xml                            # \[VỊ TRÍ CHUẨN] Nằm ở thư mục gốc dự án
-
-├── MERMAID.md
-
-├── README.md
-
+├── pom.xml                               # File cấu hình Maven & quản lý thư viện
+├── MERMAID.md                            # Sơ đồ thiết kế hệ thống (Class & Sequence Diagram)
+├── README.md                             # Tài liệu hướng dẫn dự án
 │
-
 └── src/
-
-&#x20;   └── main/
-
-&#x20;       ├── java/                      # Chứa toàn bộ Package \& Mã nguồn Java
-
-&#x20;       │   └── com/
-
-&#x20;       │       └── hotel/
-
-&#x20;       │           ├── model/
-
-&#x20;       │           │   ├── PhongKhachSan.java
-
-&#x20;       │           │   ├── PhongStandard.java
-
-&#x20;       │           │   ├── PhongVIP.java
-
-&#x20;       │           │   ├── PhongPenthouse.java
-
-&#x20;       │           │   ├── IDiscountable.java
-
-&#x20;       │           │   ├── IServiceChargable.java
-
-&#x20;       │           │   ├── KhachHang.java
-
-&#x20;       │           │   └── PhieuDatPhong.java
-
-&#x20;       │           │
-
-&#x20;       │           ├── view/
-
-&#x20;       │           │   ├── MainFrame.java
-
-&#x20;       │           │   ├── CheckInPanel.java
-
-&#x20;       │           │   ├── CheckOutPanel.java
-
-&#x20;       │           │   ├── QuanLyPhongPanel.java
-
-&#x20;       │           │   └── components/
-
-&#x20;       │           │       ├── CameraPreviewDialog.java
-
-&#x20;       │           │       └── ImageAvatarPanel.java
-
-&#x20;       │           │
-
-&#x20;       │           ├── service/
-
-&#x20;       │           │   ├── QuanLyKhachSan.java
-
-&#x20;       │           │   ├── CameraService.java
-
-&#x20;       │           │   ├── OcrService.java
-
-&#x20;       │           │   └── FaceDetectionService.java
-
-&#x20;       │           │
-
-&#x20;       │           ├── util/
-
-&#x20;       │           │   ├── ImageUtils.java
-
-&#x20;       │           │   └── SwingUtils.java
-
-&#x20;       │           │
-
-&#x20;       │           └── Main.java
-
-&#x20;       │
-
-&#x20;       └── resources/                 # Chứa dữ liệu AI, Icons, Ảnh chụp
-
-&#x20;           ├── haarcascades/
-
-&#x20;           │   └── haarcascade\_frontalface\_alt.xml
-
-&#x20;           ├── tessdata/
-
-&#x20;           │   ├── eng.traineddata
-
-&#x20;           │   └── vie.traineddata
-
-&#x20;           ├── icons/
-
-&#x20;           └── captures/
-
+└── main/
+├── java/                         # Mã nguồn Java chính
+│   └── com/
+│       └── hotel/
+│           ├── model/            # TẦNG THỰC THỂ (ENTITIES)
+│           │   ├── PhongKhachSan.java
+│           │   ├── PhongStandard.java
+│           │   ├── PhongVIP.java
+│           │   ├── PhongPenthouse.java
+│           │   ├── IDiscountable.java
+│           │   ├── IServiceChargable.java
+│           │   ├── KhachHang.java
+│           │   └── PhieuDatPhong.java
+│           │
+│           ├── view/             # TẦNG GIAO DIỆN (JAVA SWING UI)
+│           │   ├── MainFrame.java
+│           │   ├── CheckInPanel.java
+│           │   ├── CheckOutPanel.java
+│           │   ├── QuanLyPhongPanel.java
+│           │   └── components/
+│           │       ├── CameraPreviewDialog.java
+│           │       └── ImageAvatarPanel.java
+│           │
+│           ├── service/          # TẦNG XỬ LÝ NGHIỆP VỤ & AI/CAMERA
+│           │   ├── QuanLyKhachSan.java
+│           │   ├── CameraService.java
+│           │   ├── OcrService.java
+│           │   └── FaceDetectionService.java
+│           │
+│           ├── util/             # TẦNG TIỆN ÍCH (HELPERS)
+│           │   ├── ImageUtils.java
+│           │   └── SwingUtils.java
+│           │
+│           └── Main.java         # Khởi chạy ứng dụng (Main Entry Point)
+│
+└── resources/                    # TÀI NGUYÊN TĨNH & DỮ LIỆU AI
+├── data/
+│   └── phong.csv             # Tập tin dữ liệu 50 phòng mẫu
+├── haarcascades/
+│   └── haarcascade_frontalface_alt.xml
+├── tessdata/
+│   ├── eng.traineddata
+│   └── vie.traineddata
+├── icons/                    # Biểu tượng & Hình ảnh UI
+└── captures/                 # Ảnh chụp CCCD & Chân dung khách hàng
