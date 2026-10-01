@@ -155,7 +155,7 @@ public class CheckOutPanel extends JPanel {
         spnSoNgay.addChangeListener(e -> tinhTienToanBo());
 
         btnCheckOut.addActionListener(e -> xuLyCheckOut());
-        btnInHoaDon.addActionListener(e -> inHoaDon());
+        btnInHoaDon.addActionListener(e -> xuLyInHoaDon()); // Đã sửa listener chuẩn
 
         loadDanhSachPhongDangO();
     }
@@ -195,15 +195,12 @@ public class CheckOutPanel extends JPanel {
             return;
         }
 
-        // Lấy thông tin phòng
         PhongKhachSan phong = quanLyKhachSan.timPhong(soPhong);
         if (phong != null) {
             lblLoaiPhong.setText(phong.getLoaiPhong());
-            double donGia = phong.tinhTienThue(1);
-            lblDonGia.setText(currencyFormat.format(donGia));
+            lblDonGia.setText(currencyFormat.format(phong.getGiaCoBan()));
         }
 
-        // Lấy phiếu đặt phòng thật từ file phieudatphong.txt
         PhieuDatPhong phieu = quanLyKhachSan.timPhieuDangHoatDong(soPhong);
         if (phieu != null && phieu.getKhachHang() != null) {
             KhachHang khach = phieu.getKhachHang();
@@ -211,7 +208,6 @@ public class CheckOutPanel extends JPanel {
             lblCCCD.setText(khach.getSoCCCD());
             lblSdt.setText(khach.getSoDienThoai());
 
-            // Đọc ảnh webcam thực tế từ đường dẫn đã chụp
             String path = khach.getAnhKhuonMatPath();
             if (path != null && !path.isEmpty()) {
                 File imgFile = new File(path);
@@ -290,27 +286,70 @@ public class CheckOutPanel extends JPanel {
         }
     }
 
-    private void inHoaDon() {
+    // Hàm xử lý khi nhấn nút "In Hóa Đơn"
+    private void xuLyInHoaDon() {
         Integer soPhong = (Integer) cboSoPhong.getSelectedItem();
-        if (soPhong == null) return;
+        if (soPhong == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng cần in hóa đơn!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        String billText = "====================================\n" +
-                "       HÓA ĐƠN THANH TOÁN KHÁCH SẠN     \n" +
-                "====================================\n" +
-                "Phòng: P." + soPhong + "\n" +
-                "Khách hàng: " + lblTenKhach.getText() + "\n" +
-                "Số CCCD: " + lblCCCD.getText() + "\n" +
-                "Loại phòng: " + lblLoaiPhong.getText() + "\n" +
-                "Số ngày ở: " + spnSoNgay.getValue() + " ngày\n" +
-                "------------------------------------\n" +
-                "TỔNG CỘNG: " + lblTongTien.getText() + "\n" +
-                "====================================\n" +
-                " Cảm ơn quý khách và hẹn gặp lại! ";
+        PhongKhachSan phong = quanLyKhachSan.timPhong(soPhong);
+        PhieuDatPhong phieu = quanLyKhachSan.timPhieuDangHoatDong(soPhong);
 
-        JTextArea textArea = new JTextArea(billText);
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        if (phong == null || phieu == null || phieu.getKhachHang() == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu hóa đơn của phòng này!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        KhachHang khach = phieu.getKhachHang();
+        int soNgay = (int) spnSoNgay.getValue();
+
+        String chiTietHoaDon = taoChiTietHoaDon(phong, khach.getHoTen(), khach.getSoCCCD(), soNgay);
+
+        JTextArea textArea = new JTextArea(chiTietHoaDon);
+        textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13)); // Dùng Font Monospaced để căn lề số tiền thẳng hàng
         textArea.setEditable(false);
 
-        JOptionPane.showMessageDialog(this, new JScrollPane(textArea), "Chi Tiết Hóa Đơn - P." + soPhong, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, new JScrollPane(textArea), "Chi Tiết Hóa Đơn - Phòng " + soPhong, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public String taoChiTietHoaDon(PhongKhachSan phong, String tenKhach, String cccd, int soNgay) {
+        if (phong == null) return "";
+
+        double tienGoc = phong.tinhTienGoc(soNgay);
+        double phiDichVu = phong.tinhPhiDichVu(soNgay);
+        double giamGia = phong.tinhTienGiamGia(soNgay);
+        double tongTien = phong.tinhTienThue(soNgay);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("==================================================\n");
+        sb.append("                HÓA ĐƠN THANH TOÁN                \n");
+        sb.append("==================================================\n");
+        sb.append(String.format("Khách hàng   : %s\n", tenKhach));
+        sb.append(String.format("CCCD/Passport: %s\n", cccd));
+        sb.append(String.format("Phòng        : %d (Loại: %s - Tầng %d)\n", phong.getSoPhong(), phong.getLoaiPhong(), phong.getTang()));
+        sb.append(String.format("Số ngày ở    : %d ngày (Đơn giá: %,.0f VNĐ/ngày)\n", soNgay, phong.getGiaCoBan()));
+        sb.append("--------------------------------------------------\n");
+        sb.append(String.format("1. Tiền phòng gốc  : %,15.0f VNĐ\n", tienGoc));
+
+        if (phiDichVu > 0) {
+            sb.append(String.format("2. Phí dịch vụ     : %+,15.0f VNĐ\n", phiDichVu));
+        } else {
+            sb.append(String.format("2. Phí dịch vụ     : %15s\n", "0 VNĐ"));
+        }
+
+        if (giamGia > 0) {
+            sb.append(String.format("3. Ưu đãi giảm giá : -%,14.0f VNĐ\n", giamGia));
+        } else {
+            sb.append(String.format("3. Ưu đãi giảm giá : %15s\n", "0 VNĐ"));
+        }
+
+        sb.append("--------------------------------------------------\n");
+        sb.append(String.format("TỔNG CẦN THANH TOÁN: %,15.0f VNĐ\n", tongTien));
+        sb.append("==================================================\n");
+        sb.append("          Cảm ơn quý khách & Hẹn gặp lại!         \n");
+
+        return sb.toString();
     }
 }
