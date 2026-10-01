@@ -1,27 +1,40 @@
 package com.hotel.service;
 
+import com.hotel.util.ImageUtils;
+import org.opencv.core.Mat;
+import org.opencv.videoio.VideoCapture;
+
 import java.awt.image.BufferedImage;
 
 public class CameraService {
+    private VideoCapture capture;
     private boolean isRunning = false;
 
     public void startCamera() {
-        this.isRunning = true;
-        // TODO: Khởi tạo JavaCV FrameGrabber / OpenCV VideoCapture ở bước tích hợp AI
+        if (!isRunning) {
+            capture = new VideoCapture(0);
+            if (capture.isOpened()) {
+                isRunning = true;
+            }
+        }
     }
 
     public void stopCamera() {
-        this.isRunning = false;
-        // TODO: Giải phóng tài nguyên Camera ở bước tích hợp AI
+        if (isRunning && capture != null) {
+            capture.release();
+            isRunning = false;
+        }
     }
 
     public BufferedImage captureFrame() {
-        if (!isRunning) {
+        if (!isRunning || capture == null || !capture.isOpened()) {
             return null;
         }
-        BufferedImage image = null;
-        // TODO: Chụp và chuyển đổi khung hình từ Camera sang BufferedImage ở bước tích hợp AI
-        return image;
+        Mat frame = new Mat();
+        if (capture.read(frame) && !frame.empty()) {
+            return ImageUtils.matToBufferedImage(frame);
+        }
+        return null;
     }
 
     public boolean isRunning() {
