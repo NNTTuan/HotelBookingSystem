@@ -67,3 +67,65 @@ ThumucDuAn/                             <-- Thư mục gốc (Root Project)
 │   └── khachhang.txt                   # Danh sách khách hàng
 ├── README.md
 └── pom.xml
+
+📦HotelBookingSystemTest
+ ┣ 📂.idea
+ ┣ 📂.mvn
+ ┣ 📂.vscode
+ ┣ 📂data
+ ┃ ┣ 📂images
+ ┃ ┣ 📜khachhang.txt
+ ┃ ┣ 📜phieudatphong.txt
+ ┃ ┗ 📜phong.txt
+ ┣ 📂src
+ ┃ ┗ 📂main
+ ┃ ┃ ┣ 📂java
+ ┃ ┃ ┃ ┗ 📂com
+ ┃ ┃ ┃ ┃ ┗ 📂hotel
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜IDiscountable.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜IServiceChargable.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜KhachHang.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PhieuDatPhong.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PhongKhachSan.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PhongPenthouse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PhongStandard.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜PhongVIP.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CameraService.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜QuanLyKhachSan.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂util
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜ImageUtils.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜SwingUtils.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂view
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂components
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CameraPreviewDialog.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜ImageAvatarPanel.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CheckInPanel.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CheckOutPanel.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜MainFrame.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜QuanLyPhongPanel.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜Main.java
+ ┃ ┃ ┗ 📂resources
+ ┃ ┃ ┃ ┣ 📂captures
+ ┃ ┃ ┃ ┗ 📂haarcascades
+ ┃ ┃ ┃ ┃ ┗ 📜haarcascade_frontalface_alt.xml
+ ┣ 📂target
+ ┃ ┣ 📂classes
+ ┃ ┃ ┗ 📂com
+ ┃ ┃ ┃ ┗ 📂hotel
+ ┃ ┃ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┣ 📂util
+ ┃ ┃ ┃ ┃ ┗ 📂view
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂components
+ ┃ ┣ 📂generated-sources
+ ┃ ┃ ┗ 📂annotations
+ ┃ ┗ 📂test-classes
+ ┣ 📂tessdata
+ ┃ ┣ 📜eng.traineddata
+ ┃ ┗ 📜vie.traineddata
+ ┣ 📜.gitignore
+ ┣ 📜pom.xml
+ ┣ 📜README-copy.md
+ ┗ 📜README.md
