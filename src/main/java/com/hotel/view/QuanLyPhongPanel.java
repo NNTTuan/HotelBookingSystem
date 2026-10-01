@@ -1,98 +1,111 @@
 package com.hotel.view;
 
 import com.hotel.model.PhongKhachSan;
-import com.hotel.model.PhongVIP;
 import com.hotel.service.QuanLyKhachSan;
-import com.hotel.util.SwingUtils;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.List;
 
 public class QuanLyPhongPanel extends JPanel {
-    private QuanLyKhachSan qlkh;
-    private JTable tablePhong;
-    private DefaultTableModel tableModel;
+    private QuanLyKhachSan quanLyKhachSan;
+    private JPanel gridPanel;
 
-    public QuanLyPhongPanel(QuanLyKhachSan qlkh) {
-        this.qlkh = qlkh;
-        initUI();
-        capNhatDanhSachPhong();
+    public QuanLyPhongPanel(QuanLyKhachSan quanLyKhachSan) {
+        this.quanLyKhachSan = quanLyKhachSan;
+        setLayout(new BorderLayout(10, 10));
+        setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        // Thanh chú thích trạng thái
+        JPanel legendPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 5));
+        legendPanel.add(taoItemChuThich("Trống", new Color(220, 245, 225), new Color(46, 125, 50)));
+        legendPanel.add(taoItemChuThich("Đang Ở", new Color(255, 225, 225), new Color(198, 40, 40)));
+        legendPanel.add(taoItemChuThich("Chờ Dọn Dẹp", new Color(255, 243, 205), new Color(230, 81, 0)));
+        add(legendPanel, BorderLayout.NORTH);
+
+        // Khung lưới 10x10 hiển thị 100 phòng
+        gridPanel = new JPanel(new GridLayout(10, 10, 6, 6));
+        add(gridPanel, BorderLayout.CENTER);
+
+        capNhatSoDoPhong();
     }
 
-    /**
-     * Dựng giao diện bảng danh sách phòng
-     */
-    private void initUI() {
-        setLayout(new BorderLayout(15, 15));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    private JPanel taoItemChuThich(String text, Color bg, Color border) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        JLabel box = new JLabel("  ");
+        box.setOpaque(true);
+        box.setBackground(bg);
+        box.setBorder(BorderFactory.createLineBorder(border, 1));
+        box.setPreferredSize(new Dimension(18, 18));
 
-        // 1. Tiêu đề
-        JLabel lblTitle = new JLabel("DANH SÁCH PHÒNG KHÁCH SẠN", SwingConstants.CENTER);
-        lblTitle.setFont(SwingUtils.FONT_TITLE);
-        add(lblTitle, BorderLayout.NORTH);
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-        // 2. Bảng JTable hiển thị thông tin phòng
-        String[] columnNames = {"Mã Phòng", "Loại Phòng", "Giá Gốc (VNĐ/Ngày)", "Phí Dịch Vụ", "Giảm Giá"};
-        tableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Khóa không cho người dùng sửa trực tiếp trên bảng
-            }
-        };
-
-        tablePhong = new JTable(tableModel);
-        tablePhong.setRowHeight(28);
-        tablePhong.getTableHeader().setFont(SwingUtils.FONT_BOLD);
-
-        JScrollPane scrollPane = new JScrollPane(tablePhong);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Thông Tin Chi Tiết Các Phòng"));
-        add(scrollPane, BorderLayout.CENTER);
-
-        // 3. Thanh nút bấm điều khiển
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        JButton btnCapNhat = new JButton("Làm Mới Danh Sách");
-        btnCapNhat.addActionListener(e -> capNhatDanhSachPhong());
-
-        bottomPanel.add(btnCapNhat);
-        add(bottomPanel, BorderLayout.SOUTH);
-
-        // Đồng bộ Font chữ cho toàn bộ Panel
-        SwingUtils.setCustomFont(this);
+        panel.add(box);
+        panel.add(lbl);
+        return panel;
     }
 
-    /**
-     * Lấy danh sách phòng từ QuanLyKhachSan và đổ dữ liệu lên JTable
-     */
-    public void capNhatDanhSachPhong() {
-        // Xóa dữ liệu cũ trên bảng
-        tableModel.setRowCount(0);
+    public void capNhatSoDoPhong() {
+        gridPanel.removeAll();
+        List<PhongKhachSan> dsPhong = quanLyKhachSan.getDanhSachPhong();
 
-        if (qlkh == null || qlkh.getDsPhong() == null) return;
+        for (PhongKhachSan p : dsPhong) {
+            JButton btn = new JButton();
+            btn.setLayout(new BorderLayout());
+            btn.setFocusPainted(false);
+            btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Lặp qua danh sách phòng trong QuanLyKhachSan
-        for (PhongKhachSan p : qlkh.getDsPhong()) {
-            String loaiPhong = p.getClass().getSimpleName();
-            String giaGoc = String.format("%,.0f VNĐ", p.getGiaGoc());
+            JLabel lblSoPhong = new JLabel("P." + p.getSoPhong(), SwingConstants.CENTER);
+            lblSoPhong.setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-            String phiDichVu = "-";
-            String giamGia = "-";
+            JLabel lblLoai = new JLabel(p.getLoaiPhong(), SwingConstants.CENTER);
+            lblLoai.setFont(new Font("Segoe UI", Font.PLAIN, 10));
 
-            // Áp dụng Đa hình (Polymorphism): Kiểm tra nếu là Phòng VIP thì tính phí dịch vụ & giảm giá
-            if (p instanceof PhongVIP) {
-                PhongVIP vip = (PhongVIP) p;
-                phiDichVu = String.format("%,.0f VNĐ", vip.tinhPhiDichVu());
-                giamGia = String.format("%,.0f VNĐ", vip.tinhGiamGia());
+            btn.add(lblSoPhong, BorderLayout.CENTER);
+            btn.add(lblLoai, BorderLayout.SOUTH);
+
+            switch (p.getTrangThai()) {
+                case "TRONG":
+                    btn.setBackground(new Color(220, 245, 225));
+                    lblSoPhong.setForeground(new Color(46, 125, 50));
+                    lblLoai.setForeground(new Color(46, 125, 50));
+                    btn.setBorder(BorderFactory.createLineBorder(new Color(165, 214, 167), 1));
+                    break;
+                case "DANG_O":
+                    btn.setBackground(new Color(255, 225, 225));
+                    lblSoPhong.setForeground(new Color(198, 40, 40));
+                    lblLoai.setForeground(new Color(198, 40, 40));
+                    btn.setBorder(BorderFactory.createLineBorder(new Color(239, 154, 154), 1));
+                    break;
+                case "DANG_DON":
+                    btn.setBackground(new Color(255, 243, 205));
+                    lblSoPhong.setForeground(new Color(230, 81, 0));
+                    lblLoai.setForeground(new Color(230, 81, 0));
+                    btn.setBorder(BorderFactory.createLineBorder(new Color(255, 224, 130), 1));
+                    break;
             }
 
-            Object[] rowData = {
-                    p.getMaPhong(),
-                    loaiPhong,
-                    giaGoc,
-                    phiDichVu,
-                    giamGia
-            };
-            tableModel.addRow(rowData);
+            btn.addActionListener(e -> {
+                if ("DANG_DON".equals(p.getTrangThai())) {
+                    int confirm = JOptionPane.showConfirmDialog(
+                            this,
+                            "Xác nhận phòng " + p.getSoPhong() + " đã dọn dẹp xong?",
+                            "Xác nhận dọn phòng",
+                            JOptionPane.YES_NO_OPTION
+                    );
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        quanLyKhachSan.xacNhanDonXong(p.getSoPhong());
+                        capNhatSoDoPhong();
+                    }
+                }
+            });
+
+            gridPanel.add(btn);
         }
+
+        gridPanel.revalidate();
+        gridPanel.repaint();
     }
 }
