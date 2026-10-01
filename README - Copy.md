@@ -70,13 +70,11 @@ ThumucDuAn/                             <-- Thư mục gốc (Root Project)
 
 📦HotelBookingSystemTest
  ┣ 📂.idea
- ┣ 📂.mvn
- ┣ 📂.vscode
  ┣ 📂data
  ┃ ┣ 📂images
  ┃ ┣ 📜khachhang.txt
  ┃ ┣ 📜phieudatphong.txt
- ┃ ┗ 📜phong.txt
+ ┃ ┗ 📜phong.csv
  ┣ 📂src
  ┃ ┗ 📂main
  ┃ ┃ ┣ 📂java
