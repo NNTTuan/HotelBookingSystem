@@ -28,7 +28,7 @@
 
 ---
 
-## 📂 Cấu Trúc Thư Mục Dự Án (Dọn Dẹp & Cập Nhật)
+## 📂 Cấu Trúc Thư Mục Dự Án
 
 ```text
 📦 hotel-booking-system
