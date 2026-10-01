@@ -1,39 +1,30 @@
 package com.hotel.model;
 
-// Lớp trừu tượng PhongKhachSan theo sơ đồ UML
 public abstract class PhongKhachSan {
-    // Thuộc tính protected (#)
-    protected String maPhong;
-    protected double giaGoc;
+    private int soPhong;
+    private int tang;
+    private String loaiPhong;
+    private String trangThai; // TRONG, DANG_O, DANG_DON
 
-    // Thuộc tính static public (được gạch chân trong UML) (+)
-    public static double THUE_VAT = 0.1; // Ví dụ thuế VAT 10%
-
-    // Thuộc tính static private (được gạch chân trong UML) (-)
-    private static int tongSoPhong = 0;
-
-    // Constructor (Hàm khởi tạo)
-    public PhongKhachSan(String maPhong, double giaGoc) {
-        this.maPhong = maPhong;
-        this.giaGoc = giaGoc;
-        tongSoPhong++; // Tăng tổng số phòng mỗi khi tạo một phòng mới
+    public PhongKhachSan(int soPhong, int tang, String loaiPhong, String trangThai) {
+        this.soPhong = soPhong;
+        this.tang = tang;
+        this.loaiPhong = loaiPhong;
+        this.trangThai = trangThai;
     }
 
-    // Phương thức trừu tượng (chữ nghiêng trong UML) - Các lớp con sẽ tự cài đặt
-    public abstract double tinhTienThue(int soNgay);
+    // Phương thức trừu tượng tính tiền thuê phòng
+    public abstract double tinhTienThue(int soNgayThue);
 
-    // Phương thức static getter để lấy tổng số phòng
-    public static int getTongSoPhong() {
-        return tongSoPhong;
-    }
+    public int getSoPhong() { return soPhong; }
+    public void setSoPhong(int soPhong) { this.soPhong = soPhong; }
 
-    // Getter cho mã phòng
-    public String getMaPhong() {
-        return maPhong;
-    }
+    public int getTang() { return tang; }
+    public void setTang(int tang) { this.tang = tang; }
 
-    // Getter cho giá gốc
-    public double getGiaGoc() {
-        return giaGoc;
-    }
+    public String getLoaiPhong() { return loaiPhong; }
+    public void setLoaiPhong(String loaiPhong) { this.loaiPhong = loaiPhong; }
+
+    public String getTrangThai() { return trangThai; }
+    public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
 }

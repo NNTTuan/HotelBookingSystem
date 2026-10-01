@@ -1,42 +1,27 @@
 package com.hotel.model;
 
 public class KhachHang {
-    // Các thuộc tính private (-)
-    private String soCCCD;
     private String hoTen;
-    private String ngaySinh;
-    private String duongDanAnhMat;
+    private String soCCCD;
+    private String soDienThoai;
+    private String anhKhuonMatPath;
 
-    // Hàm khởi tạo (Constructor) nhận 3 tham số theo UML
-    public KhachHang(String soCCCD, String hoTen, String ngaySinh) {
-        this.soCCCD = soCCCD;
+    public KhachHang(String hoTen, String soCCCD, String soDienThoai, String anhKhuonMatPath) {
         this.hoTen = hoTen;
-        this.ngaySinh = ngaySinh;
-        this.duongDanAnhMat = ""; // Mặc định để rỗng nếu chưa cài đặt đường dẫn ảnh
+        this.soCCCD = soCCCD;
+        this.soDienThoai = soDienThoai;
+        this.anhKhuonMatPath = anhKhuonMatPath;
     }
 
-    // Phương thức gán đường dẫn ảnh mặt (+)
-    public void setDuongDanAnhMat(String path) {
-        this.duongDanAnhMat = path;
-    }
+    public String getHoTen() { return hoTen; }
+    public void setHoTen(String hoTen) { this.hoTen = hoTen; }
 
-    // Phương thức lấy số CCCD (+)
-    public String getSoCCCD() {
-        return soCCCD;
-    }
+    public String getSoCCCD() { return soCCCD; }
+    public void setSoCCCD(String soCCCD) { this.soCCCD = soCCCD; }
 
-    // Phương thức lấy họ tên (+)
-    public String getHoTen() {
-        return hoTen;
-    }
+    public String getSoDienThoai() { return soDienThoai; }
+    public void setSoDienThoai(String soDienThoai) { this.soDienThoai = soDienThoai; }
 
-    // Phương thức lấy ngày sinh (+)
-    public String getNgaySinh() {
-        return ngaySinh;
-    }
-
-    // Phương thức lấy đường dẫn ảnh mặt (+)
-    public String getDuongDanAnhMat() {
-        return duongDanAnhMat;
-    }
+    public String getAnhKhuonMatPath() { return anhKhuonMatPath; }
+    public void setAnhKhuonMatPath(String anhKhuonMatPath) { this.anhKhuonMatPath = anhKhuonMatPath; }
 }
