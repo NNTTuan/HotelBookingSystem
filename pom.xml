@@ -19,35 +19,44 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.4.1</version>
+            <version>3.5.1</version>
         </dependency>
 
-        <!-- 2. Điều khiển Webcam -->
+        <!-- 2. OpenCV OpenPNP -->
         <dependency>
-            <groupId>com.github.sarxos</groupId>
-            <artifactId>webcam-capture</artifactId>
-            <version>0.3.12</version>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.7.0-0</version>
         </dependency>
 
-        <!-- 3. Nhận diện khuôn mặt (JavaCV / OpenCV) -->
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv-platform</artifactId>
-            <version>1.5.9</version>
-        </dependency>
-
-        <!-- 4. Trích xuất chữ từ CCCD (Tess4J) -->
+        <!-- 3. Trích xuất chữ từ CCCD (Tess4J) -->
         <dependency>
             <groupId>net.sourceforge.tess4j</groupId>
             <artifactId>tess4j</artifactId>
             <version>5.10.0</version>
         </dependency>
 
-        <!-- 5. Ghi log hệ thống SLF4J -->
+        <!-- 4. Ghi log hệ thống SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture</artifactId>
+            <version>0.3.12</version>
         </dependency>
     </dependencies>
 
