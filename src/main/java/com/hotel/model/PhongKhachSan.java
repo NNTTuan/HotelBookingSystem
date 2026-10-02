@@ -41,7 +41,7 @@ public abstract class PhongKhachSan {
     // 2. Chi phí dịch vụ (nếu class triển khai IServiceChargable)
     public double tinhPhiDichVu(int soNgay) {
         if (this instanceof IServiceChargable) {
-            return ((IServiceChargable) this).tinhPhiDichVu();
+            return ((IServiceChargable) this).getPhiDichVu();
         }
         return 0.0;
     }

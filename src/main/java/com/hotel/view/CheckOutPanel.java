@@ -188,8 +188,9 @@ public class CheckOutPanel extends JPanel {
         PhongKhachSan phong = phieuHienTai.getPhong();
         int soNgay = (int) spnSoNgay.getValue();
 
-        double tongTien = phong.tinhTienThue(soNgay);
-        double thueVAT = tongTien - (tongTien / (1 + PhongKhachSan.THUE_VAT)); // Hoặc tính theo công thức giá trước thuế * 0.1
+        double tienTruocThue = phong.tinhTienTruocThue(soNgay);
+        double thueVAT = phong.tinhTienThueVAT(soNgay);
+        double tongTien = phong.tinhTienThue(soNgay); // Đã bao gồm VAT
 
         lblThueVatVal.setText(String.format("%,.0f VNĐ", thueVAT));
         lblTongTienVal.setText(String.format("%,.0f VNĐ", tongTien));
@@ -228,9 +229,8 @@ public class CheckOutPanel extends JPanel {
         double tienGoc = phong.tinhTienGoc(soNgay);
         double phiDichVu = phong.tinhPhiDichVu(soNgay);
         double giamGia = phong.tinhTienGiamGia(soNgay);
-        double tienTruocThue = tienGoc + phiDichVu - giamGia;
-        double thueVat = tienTruocThue * PhongKhachSan.THUE_VAT;
-        double tongCong = phong.tinhTienThue(soNgay);
+        double thueVat = phong.tinhTienThueVAT(soNgay);
+        double tongThanhToan = phong.tinhTienThue(soNgay);
 
         StringBuilder bill = new StringBuilder();
         bill.append("=========================================\n");
@@ -242,11 +242,15 @@ public class CheckOutPanel extends JPanel {
         bill.append("Số ngày lưu trú: ").append(soNgay).append("\n");
         bill.append("-----------------------------------------\n");
         bill.append("Tiền phòng gốc: ").append(String.format("%,.0f VNĐ", tienGoc)).append("\n");
-        bill.append("Phí dịch vụ:    +").append(String.format("%,.0f VNĐ", phiDichVu)).append("\n");
-        bill.append("Giảm giá ưu đãi: -").append(String.format("%,.0f VNĐ", giamGia)).append("\n");
+        if (phiDichVu > 0) {
+            bill.append("Phí dịch vụ:    +").append(String.format("%,.0f VNĐ", phiDichVu)).append("\n");
+        }
+        if (giamGia > 0) {
+            bill.append("Giảm giá ưu đãi: -").append(String.format("%,.0f VNĐ", giamGia)).append("\n");
+        }
         bill.append("Thuế VAT (10%): +").append(String.format("%,.0f VNĐ", thueVat)).append("\n");
         bill.append("-----------------------------------------\n");
-        bill.append("TỔNG CỘNG:      ").append(String.format("%,.0f VNĐ", tongCong)).append("\n");
+        bill.append("TỔNG CỘNG:      ").append(String.format("%,.0f VNĐ", tongThanhToan)).append("\n");
         bill.append("=========================================\n");
 
         JTextArea textArea = new JTextArea(bill.toString());
