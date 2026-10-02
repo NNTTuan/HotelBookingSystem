@@ -2,7 +2,7 @@ graph TD
     subgraph com.hotel [Root Package: com.hotel]
         direction TB
         Main[Main.java]
-        
+
         subgraph model [com.hotel.model]
             PKS[PhongKhachSan]
             STD[PhongStandard]
@@ -42,4 +42,4 @@ graph TD
     view --> util
     service --> model
     service --> util
-    model ..> util
+    model --> util

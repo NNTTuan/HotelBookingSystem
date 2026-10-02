@@ -1,42 +1,42 @@
 flowchart TD
-    subgraph ViewLayer [Tầng Giao Diện com.hotel.view]
-        MF[MainFrame]
-        QLP[QuanLyPhongPanel - Grid 10x10]
-        CIP[CheckInPanel]
-        COP[CheckOutPanel]
-        CAM_DLG[CameraPreviewDialog]
+    subgraph ViewLayer ["Tầng Giao Diện (com.hotel.view)"]
+        MF["MainFrame"]
+        QLP["QuanLyPhongPanel - Grid 10x10"]
+        CIP["CheckInPanel"]
+        COP["CheckOutPanel"]
+        CAM_DLG["CameraPreviewDialog"]
     end
 
-    subgraph ServiceLayer [Tầng Xử Lý Nghiệp Vụ com.hotel.service]
-        QLKS[QuanLyKhachSan]
-        CAMS[CameraService]
-        OCR[OcrService]
-        FD[FaceDetectionService]
+    subgraph ServiceLayer ["Tầng Xử Lý Nghiệp Vụ (com.hotel.service)"]
+        QLKS["QuanLyKhachSan"]
+        CAMS["CameraService"]
+        OCR["OcrService"]
+        FD["FaceDetectionService"]
     end
 
-    subgraph ModelLayer [Tầng Thực Thể Dữ Liệu com.hotel.model]
-        PKS[PhongKhachSan - Abstract Class]
-        STD[PhongStandard]
-        VIP[PhongVIP]
-        PNT[PhongPenthouse]
-        KH[KhachHang]
-        PDP[PhieuDatPhong]
+    subgraph ModelLayer ["Tầng Thực Thể Dữ Liệu (com.hotel.model)"]
+        PKS["PhongKhachSan - Abstract Class"]
+        STD["PhongStandard"]
+        VIP["PhongVIP"]
+        PNT["PhongPenthouse"]
+        KH["KhachHang"]
+        PDP["PhieuDatPhong"]
     end
 
-    subgraph StorageLayer [Tầng Lưu Trữ Java File I/O]
-        CSV_FILE[(data/phong.csv)]
-        CAP_FOLDER[(resources/captures/*.jpg)]
+    subgraph StorageLayer ["Tầng Lưu Trữ (Java File I/O)"]
+        CSV_FILE[("data/phong.csv")]
+        CAP_FOLDER[("resources/captures/*.jpg")]
     end
 
     MF --> QLP
     MF --> CIP
     MF --> COP
-    
+
     CIP --> CAM_DLG
     CIP --> CAMS
     CIP --> OCR
     CIP --> FD
-    
+
     QLP --> QLKS
     CIP --> QLKS
     COP --> QLKS
@@ -45,9 +45,9 @@ flowchart TD
     QLKS --> PDP
     PDP --> KH
 
-    PKS <|-- STD
-    PKS <|-- VIP
-    PKS <|-- PNT
+    PKS --- STD
+    PKS --- VIP
+    PKS --- PNT
 
     QLKS <--> CSV_FILE
     CAMS <--> CAP_FOLDER

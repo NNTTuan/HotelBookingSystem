@@ -1,16 +1,16 @@
 flowchart LR
-    subgraph Actor [Tác nhân]
+    subgraph Actor ["Tác nhân"]
         User((Lễ tân))
     end
 
-    subgraph System [Hệ Thống Quản Lý Khách Sạn Java Swing]
-        UC1[Xem sơ đồ ma trận 100 phòng Grid 10x10]
-        UC2[Thực hiện Check-in nhận phòng]
-        UC3[Chụp ảnh chân dung khách qua Webcam]
-        UC4[Thực hiện Check-out & Tính tiền]
-        UC5[Xem trước & In hóa đơn]
-        UC6[Xác nhận dọn dẹp phòng]
-        UC7[Đọc / Ghi dữ liệu tự động File CSV]
+    subgraph System ["Hệ Thống Quản Lý Khách Sạn Java Swing"]
+        UC1["Xem sơ đồ ma trận 100 phòng Grid 10x10"]
+        UC2["Thực hiện Check-in nhận phòng"]
+        UC3["Chụp ảnh chân dung khách qua Webcam"]
+        UC4["Thực hiện Check-out & Tính tiền"]
+        UC5["Xem trước & In hóa đơn"]
+        UC6["Xác nhận dọn dẹp phòng"]
+        UC7["Đọc / Ghi dữ liệu tự động File CSV"]
     end
 
     User --> UC1
@@ -18,8 +18,8 @@ flowchart LR
     User --> UC4
     User --> UC6
 
-    UC2 .-> UC3 : <<include>>
-    UC2 .-> UC7 : <<include>>
-    UC4 .-> UC5 : <<extend>>
-    UC4 .-> UC7 : <<include>>
-    UC6 .-> UC7 : <<include>>
+    UC2 -. "<<include>>" .-> UC3
+    UC2 -. "<<include>>" .-> UC7
+    UC4 -. "<<extend>>" .-> UC5
+    UC4 -. "<<include>>" .-> UC7
+    UC6 -. "<<include>>" .-> UC7

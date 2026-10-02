@@ -1,31 +1,31 @@
-componentDiagram
-    package "Java Swing GUI Frontend" {
-        [Main UI Framework] as GUI
-        [Grid 10x10 Panel] as Grid
-        [Webcam Dialog] as CamUI
-    }
+flowchart TD
+    subgraph Frontend ["Java Swing GUI Frontend"]
+        GUI["Main UI Framework"]
+        Grid["Grid 10x10 Panel"]
+        CamUI["Webcam Dialog"]
+    end
 
-    package "Business Engine (Core)" {
-        [Hotel Management Controller] as Controller
-        [IO CSV Manager] as IOManager
-    }
+    subgraph Core ["Business Engine (Core)"]
+        Controller["Hotel Management Controller"]
+        IOManager["IO CSV Manager"]
+    end
 
-    package "Image Processing System" {
-        [Webcam Service] as CamService
-        [Haarcascades Face Detector] as FaceDetector
-    }
+    subgraph ImageSys ["Image Processing System"]
+        CamService["Webcam Service"]
+        FaceDetector["Haarcascades Face Detector"]
+    end
 
-    database "Flat-File Storage" {
-        [data/phong.csv] as CSVFile
-        [resources/captures/*.jpg] as ImageFiles
-    }
+    subgraph Storage ["Flat-File Storage"]
+        CSVFile[("data/phong.csv")]
+        ImageFiles[("resources/captures/*.jpg")]
+    end
 
     GUI --> Controller
     Grid --> Controller
     CamUI --> CamService
-    
+
     Controller --> IOManager
     CamService --> FaceDetector
-    
-    IOManager --> CSVFile : Read / Write
-    CamService --> ImageFiles : Save Snapshot
+
+    IOManager -->|Read / Write| CSVFile
+    CamService -->|Save Snapshot| ImageFiles
