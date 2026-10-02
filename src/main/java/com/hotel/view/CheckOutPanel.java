@@ -6,12 +6,12 @@ import com.hotel.model.PhongKhachSan;
 import com.hotel.service.QuanLyKhachSan;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.File;
 
 public class CheckOutPanel extends JPanel {
-    private final QuanLyKhachSan quanLyKhachSan;
+    private QuanLyKhachSan quanLyKhachSan;
+    private Runnable onSuccessCallback;
     private PhieuDatPhong phieuHienTai;
 
     // UI Input Search
@@ -24,6 +24,7 @@ public class CheckOutPanel extends JPanel {
     private JLabel lblSdtVal;
     private JLabel lblLoaiPhongVal;
     private JLabel lblGiaCoBanVal;
+    private JLabel lblThueVatVal;
     private JLabel lblTongTienVal;
     private JLabel lblAnhKhach;
     private JSpinner spnSoNgay;
@@ -32,9 +33,26 @@ public class CheckOutPanel extends JPanel {
     private JButton btnXacNhanThanhToan;
     private JButton btnInHoaDon;
 
+    public CheckOutPanel() {
+        this(null, null);
+    }
+
     public CheckOutPanel(QuanLyKhachSan quanLyKhachSan) {
+        this(quanLyKhachSan, null);
+    }
+
+    public CheckOutPanel(QuanLyKhachSan quanLyKhachSan, Runnable onSuccessCallback) {
         this.quanLyKhachSan = quanLyKhachSan;
+        this.onSuccessCallback = onSuccessCallback;
         initUI();
+    }
+
+    public void setQuanLyKhachSan(QuanLyKhachSan quanLyKhachSan) {
+        this.quanLyKhachSan = quanLyKhachSan;
+    }
+
+    public void loadDanhSachPhongDangO() {
+        xoaTrangForm();
     }
 
     private void initUI() {
@@ -61,7 +79,7 @@ public class CheckOutPanel extends JPanel {
         JPanel pnlInfo = new JPanel(new GridBagLayout());
         pnlInfo.setBorder(BorderFactory.createTitledBorder("Thông tin phiếu lưu trú"));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(6, 8, 6, 8);
         gbc.anchor = GridBagConstraints.WEST;
 
         lblSoPhongVal = createBoldLabel("---");
@@ -69,6 +87,7 @@ public class CheckOutPanel extends JPanel {
         lblSdtVal = createBoldLabel("---");
         lblLoaiPhongVal = createBoldLabel("---");
         lblGiaCoBanVal = createBoldLabel("0 VNĐ");
+        lblThueVatVal = createBoldLabel("0 VNĐ (10%)");
 
         spnSoNgay = new JSpinner(new SpinnerNumberModel(1, 1, 30, 1));
         spnSoNgay.setPreferredSize(new Dimension(80, 25));
@@ -83,7 +102,8 @@ public class CheckOutPanel extends JPanel {
         addFormRow(pnlInfo, gbc, 3, "Loại phòng:", lblLoaiPhongVal);
         addFormRow(pnlInfo, gbc, 4, "Giá niêm yết:", lblGiaCoBanVal);
         addFormRow(pnlInfo, gbc, 5, "Số ngày ở:", spnSoNgay);
-        addFormRow(pnlInfo, gbc, 6, "Tổng tiền thanh toán:", lblTongTienVal);
+        addFormRow(pnlInfo, gbc, 6, "Thuế VAT (10%):", lblThueVatVal);
+        addFormRow(pnlInfo, gbc, 7, "Tổng tiền thanh toán:", lblTongTienVal);
 
         pnlCenter.add(pnlInfo);
 
@@ -120,6 +140,11 @@ public class CheckOutPanel extends JPanel {
     }
 
     private void xuLyTimKiem() {
+        if (quanLyKhachSan == null) {
+            JOptionPane.showMessageDialog(this, "Dữ liệu quản lý chưa được khởi tạo!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         String cccd = txtTimCCCD.getText().trim();
         if (cccd.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD cần tìm!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
@@ -133,17 +158,17 @@ public class CheckOutPanel extends JPanel {
             return;
         }
 
-        PhongKhachSan phong = quanLyKhachSan.timPhong(phieuHienTai.getSoPhong());
+        PhongKhachSan phong = phieuHienTai.getPhong();
         KhachHang khach = phieuHienTai.getKhachHang();
 
-        lblSoPhongVal.setText(String.valueOf(phong.getSoPhong()));
-        lblTenKhachVal.setText(khach.getHoTen());
-        lblSdtVal.setText(khach.getSoDienThoai());
-        lblLoaiPhongVal.setText(phong.getLoaiPhong());
-        lblGiaCoBanVal.setText(String.format("%,.0f VNĐ/ngày", phong.getGiaCoBan()));
+        lblSoPhongVal.setText(phong != null ? String.valueOf(phong.getSoPhong()) : "---");
+        lblTenKhachVal.setText(khach != null ? khach.getHoTen() : "---");
+        lblSdtVal.setText(khach != null ? khach.getSoDienThoai() : "---");
+        lblLoaiPhongVal.setText(phong != null ? phong.getLoaiPhong() : "---");
+        lblGiaCoBanVal.setText(phong != null ? String.format("%,.0f VNĐ/ngày", phong.getGiaCoBan()) : "0 VNĐ");
 
         // Tải ảnh chân dung khách
-        if (khach.getAnhKhuonMatPath() != null && new File(khach.getAnhKhuonMatPath()).exists()) {
+        if (khach != null && khach.getAnhKhuonMatPath() != null && new File(khach.getAnhKhuonMatPath()).exists()) {
             ImageIcon icon = new ImageIcon(khach.getAnhKhuonMatPath());
             Image img = icon.getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH);
             lblAnhKhach.setIcon(new ImageIcon(img));
@@ -159,26 +184,35 @@ public class CheckOutPanel extends JPanel {
     }
 
     private void capNhatTongTien() {
-        if (phieuHienTai == null) return;
-        PhongKhachSan phong = quanLyKhachSan.timPhong(phieuHienTai.getSoPhong());
+        if (phieuHienTai == null || phieuHienTai.getPhong() == null) return;
+        PhongKhachSan phong = phieuHienTai.getPhong();
         int soNgay = (int) spnSoNgay.getValue();
+
         double tongTien = phong.tinhTienThue(soNgay);
+        double thueVAT = tongTien - (tongTien / (1 + PhongKhachSan.THUE_VAT)); // Hoặc tính theo công thức giá trước thuế * 0.1
+
+        lblThueVatVal.setText(String.format("%,.0f VNĐ", thueVAT));
         lblTongTienVal.setText(String.format("%,.0f VNĐ", tongTien));
     }
 
     private void xuLyThanhToan() {
-        if (phieuHienTai == null) return;
+        if (phieuHienTai == null || phieuHienTai.getPhong() == null) return;
 
+        int soPhong = phieuHienTai.getPhong().getSoPhong();
         int opt = JOptionPane.showConfirmDialog(this,
-                "Xác nhận thanh toán cho phòng " + phieuHienTai.getSoPhong() + "?",
+                "Xác nhận thanh toán cho phòng " + soPhong + "?",
                 "Xác nhận", JOptionPane.YES_NO_OPTION);
 
         if (opt == JOptionPane.YES_OPTION) {
             int soNgay = (int) spnSoNgay.getValue();
-            boolean ok = quanLyKhachSan.checkOut(phieuHienTai.getSoPhong(), soNgay);
+            boolean ok = quanLyKhachSan.checkOut(soPhong, soNgay);
             if (ok) {
                 JOptionPane.showMessageDialog(this, "Check-out thành công! Phòng đã chuyển sang trạng thái chờ dọn.");
                 xoaTrangForm();
+
+                if (onSuccessCallback != null) {
+                    onSuccessCallback.run();
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Xử lý trả phòng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
@@ -186,24 +220,33 @@ public class CheckOutPanel extends JPanel {
     }
 
     private void xuLyInHoaDon() {
-        if (phieuHienTai == null) return;
-        PhongKhachSan phong = quanLyKhachSan.timPhong(phieuHienTai.getSoPhong());
+        if (phieuHienTai == null || phieuHienTai.getPhong() == null) return;
+        PhongKhachSan phong = phieuHienTai.getPhong();
+        KhachHang khach = phieuHienTai.getKhachHang();
         int soNgay = (int) spnSoNgay.getValue();
+
+        double tienGoc = phong.tinhTienGoc(soNgay);
+        double phiDichVu = phong.tinhPhiDichVu(soNgay);
+        double giamGia = phong.tinhTienGiamGia(soNgay);
+        double tienTruocThue = tienGoc + phiDichVu - giamGia;
+        double thueVat = tienTruocThue * PhongKhachSan.THUE_VAT;
+        double tongCong = phong.tinhTienThue(soNgay);
 
         StringBuilder bill = new StringBuilder();
         bill.append("=========================================\n");
         bill.append("            HÓA ĐƠN THANH TOÁN           \n");
         bill.append("=========================================\n");
         bill.append("Số phòng: ").append(phong.getSoPhong()).append("\n");
-        bill.append("Khách hàng: ").append(phieuHienTai.getKhachHang().getHoTen()).append("\n");
-        bill.append("Số CCCD: ").append(phieuHienTai.getKhachHang().getSoCCCD()).append("\n");
+        bill.append("Khách hàng: ").append(khach != null ? khach.getHoTen() : "").append("\n");
+        bill.append("Số CCCD: ").append(khach != null ? khach.getSoCCCD() : "").append("\n");
         bill.append("Số ngày lưu trú: ").append(soNgay).append("\n");
         bill.append("-----------------------------------------\n");
-        bill.append("Tiền phòng gốc: ").append(String.format("%,.0f VNĐ", phong.tinhTienGoc(soNgay))).append("\n");
-        bill.append("Phí dịch vụ:    +").append(String.format("%,.0f VNĐ", phong.tinhPhiDichVu(soNgay))).append("\n");
-        bill.append("Giảm giá ưu đãi: -").append(String.format("%,.0f VNĐ", phong.tinhTienGiamGia(soNgay))).append("\n");
+        bill.append("Tiền phòng gốc: ").append(String.format("%,.0f VNĐ", tienGoc)).append("\n");
+        bill.append("Phí dịch vụ:    +").append(String.format("%,.0f VNĐ", phiDichVu)).append("\n");
+        bill.append("Giảm giá ưu đãi: -").append(String.format("%,.0f VNĐ", giamGia)).append("\n");
+        bill.append("Thuế VAT (10%): +").append(String.format("%,.0f VNĐ", thueVat)).append("\n");
         bill.append("-----------------------------------------\n");
-        bill.append("TỔNG CỘNG:      ").append(String.format("%,.0f VNĐ", phong.tinhTienThue(soNgay))).append("\n");
+        bill.append("TỔNG CỘNG:      ").append(String.format("%,.0f VNĐ", tongCong)).append("\n");
         bill.append("=========================================\n");
 
         JTextArea textArea = new JTextArea(bill.toString());
@@ -215,17 +258,20 @@ public class CheckOutPanel extends JPanel {
 
     private void xoaTrangForm() {
         phieuHienTai = null;
-        txtTimCCCD.setText("");
-        lblSoPhongVal.setText("---");
-        lblTenKhachVal.setText("---");
-        lblSdtVal.setText("---");
-        lblLoaiPhongVal.setText("---");
-        lblGiaCoBanVal.setText("0 VNĐ");
-        lblTongTienVal.setText("0 VNĐ");
-        lblAnhKhach.setIcon(null);
-        lblAnhKhach.setText("Chưa có ảnh");
-        btnInHoaDon.setEnabled(false);
-        btnXacNhanThanhToan.setEnabled(false);
+        if (txtTimCCCD != null) txtTimCCCD.setText("");
+        if (lblSoPhongVal != null) lblSoPhongVal.setText("---");
+        if (lblTenKhachVal != null) lblTenKhachVal.setText("---");
+        if (lblSdtVal != null) lblSdtVal.setText("---");
+        if (lblLoaiPhongVal != null) lblLoaiPhongVal.setText("---");
+        if (lblGiaCoBanVal != null) lblGiaCoBanVal.setText("0 VNĐ");
+        if (lblThueVatVal != null) lblThueVatVal.setText("0 VNĐ (10%)");
+        if (lblTongTienVal != null) lblTongTienVal.setText("0 VNĐ");
+        if (lblAnhKhach != null) {
+            lblAnhKhach.setIcon(null);
+            lblAnhKhach.setText("Chưa có ảnh");
+        }
+        if (btnInHoaDon != null) btnInHoaDon.setEnabled(false);
+        if (btnXacNhanThanhToan != null) btnXacNhanThanhToan.setEnabled(false);
     }
 
     private JLabel createBoldLabel(String text) {

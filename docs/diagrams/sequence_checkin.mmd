@@ -15,7 +15,7 @@ sequenceDiagram
     
     Staff->>CamDlg: Click "Chụp ảnh"
     CamDlg->>CamSvc: captureImage()
-    CamSvc-->>CamDlg: Lưu file ảnh vào "resources/captures/khach_CCCD.jpg"
+    CamSvc-->>CamDlg: Lưu file ảnh vào "data/images/khach_CCCD.jpg"
     CamDlg-->>UI: Cập nhật đường dẫn ảnh & Đóng Dialog
     
     Staff->>UI: Click "XÁC NHẬN CHECK-IN"
