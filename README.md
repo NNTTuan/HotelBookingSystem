@@ -100,6 +100,9 @@ Hotel Booking System/
 │               ├── 🇬🇧 eng.traineddata                   # Model OCR Tiếng Anh
 │               └── 🇻🇳 vie.traineddata                   # Model OCR Tiếng Việt
 └── 📖 README.md
+```
+
+---
 
 ## 🛠️ Công Nghệ & Thư Viện Sử Dụng
 
