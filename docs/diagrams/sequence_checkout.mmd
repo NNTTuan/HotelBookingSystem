@@ -3,32 +3,34 @@ sequenceDiagram
     actor Staff as Lễ tân (User)
     participant UI as CheckOutPanel
     participant Service as QuanLyKhachSan
-    participant Model as PhongKhachSan (Standard/VIP/Penthouse)
-    participant File as phong.csv (Data File)
+    participant Model as PhongKhachSan
 
-    Staff->>UI: Chọn Số phòng & Thay đổi Số ngày ở
-    UI->>Service: timPhong(soPhong)
-    Service-->>UI: Trả về đối tượng PhongKhachSan
-    UI->>Service: timPhieuDangHoatDong(soPhong)
-    Service-->>UI: Trả về PhieuDatPhong (chứa KhachHang)
-    
-    UI->>Model: tinhTienThue(soNgay)
-    Note over Model: Tính tiền gốc + Phí dịch vụ - Ưu đãi giảm giá
-    Model-->>UI: Trả về Tổng tiền
-    UI->>Staff: Cập nhật giao diện tiền thanh toán & hiển thị Ảnh mặt
+    Staff->>UI: Nhập số CCCD vào Text Box & Bấm "Tìm khách"
+    UI->>Service: timPhieuDangHoatDongTheoCCCD(soCCCD)
 
-    alt Trường hợp 1: Nhấn "In Hóa Đơn"
-        Staff->>UI: Click nút "In Hóa Đơn"
-        UI->>Model: tinhTienGoc(), tinhPhiDichVu(), tinhTienGiamGia()
-        Model-->>UI: Dữ liệu chi tiết chi phí
-        UI->>UI: taoChiTietHoaDon()
-        UI->>Staff: Hiển thị Dialog Hóa đơn dạng văn bản (Font Monospaced)
-    else Trường hợp 2: Nhấn "XÁC NHẬN THANH TOÁN"
+    alt Trường hợp 1: Không tìm thấy khách hàng
+        Service-->>UI: Trả về null
+        UI->>Staff: Hiển thị thông báo "Không tìm thấy khách hàng lưu trú"
+    else Trường hợp 2: Tìm thấy khách hàng
+        Service-->>UI: Trả về PhieuDatPhong (chứa thông tin KhachHang & soPhong)
+        UI->>Service: timPhong(soPhong)
+        Service-->>UI: Trả về đối tượng PhongKhachSan
+
+        UI->>Model: tinhTienThue(soNgay)
+        Model-->>UI: Trả về Tổng tiền
+        UI->>Staff: Hiển thị thông tin khách, số phòng, ảnh mặt & tổng tiền
+
+        opt Lễ tân chọn "In Hóa Đơn"
+            Staff->>UI: Click nút "In Hóa Đơn"
+            UI->>Model: tinhTienGoc(), tinhPhiDichVu(), tinhTienGiamGia()
+            Model-->>UI: Dữ liệu chi tiết chi phí
+            UI->>Staff: Hiển thị Dialog Hóa đơn xem trước
+        end
+
         Staff->>UI: Click nút "XÁC NHẬN THANH TOÁN & TRẢ PHÒNG"
         UI->>Service: checkOut(soPhong, soNgay)
         Service->>Model: setTrangThai("DANG_DON")
-        Service->>File: saveDataToCSV()
-        File-->>Service: Lưu file thành công
+        Service->>Service: saveDataToCSV()
         Service-->>UI: Trả về kết quả (true)
-        UI->>Staff: Hiển thị thông báo thành công & Tải lại danh sách phòng
+        UI->>Staff: Báo thanh toán thành công & Làm sạch Form
     end

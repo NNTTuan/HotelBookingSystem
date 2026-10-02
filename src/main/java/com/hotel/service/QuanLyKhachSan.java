@@ -100,7 +100,7 @@ public class QuanLyKhachSan {
         }
     }
 
-    // 2. Quản lý File Phiếu Đặt Phòng (Dữ liệu thật)
+    // 2. Quản lý File Phiếu Đặt Phòng
     public List<PhieuDatPhong> docFilePhieu() {
         List<PhieuDatPhong> ds = new ArrayList<>();
         File file = new File(FILE_PHIEU);
@@ -137,12 +137,13 @@ public class QuanLyKhachSan {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PHIEU))) {
             for (PhieuDatPhong p : danhSachPhieu) {
                 KhachHang k = p.getKhachHang();
+                int soPhong = (p.getPhong() != null) ? p.getPhong().getSoPhong() : 0;
                 bw.write(p.getMaPhieu() + ";" +
-                        p.getPhong().getSoPhong() + ";" +
-                        k.getHoTen() + ";" +
-                        k.getSoCCCD() + ";" +
-                        k.getSoDienThoai() + ";" +
-                        k.getAnhKhuonMatPath() + ";" +
+                        soPhong + ";" +
+                        (k != null ? k.getHoTen() : "") + ";" +
+                        (k != null ? k.getSoCCCD() : "") + ";" +
+                        (k != null ? k.getSoDienThoai() : "") + ";" +
+                        (k != null ? k.getAnhKhuonMatPath() : "") + ";" +
                         p.getSoNgayThue() + ";" +
                         p.getTrangThai());
                 bw.newLine();
@@ -152,10 +153,28 @@ public class QuanLyKhachSan {
         }
     }
 
-    // Tìm phiếu đặt phòng ĐANG_O theo số phòng
+    // Tra cứu phiếu đặt phòng đang hoạt động theo số phòng
     public PhieuDatPhong timPhieuDangHoatDong(int soPhong) {
         for (PhieuDatPhong p : danhSachPhieu) {
-            if (p.getPhong() != null && p.getPhong().getSoPhong() == soPhong && "DANG_O".equals(p.getTrangThai())) {
+            if (p.getPhong() != null
+                    && p.getPhong().getSoPhong() == soPhong
+                    && ("DANG_O".equalsIgnoreCase(p.getTrangThai()) || "DANG_HOAT_DONG".equalsIgnoreCase(p.getTrangThai()))) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    // Tra cứu phiếu đặt phòng đang hoạt động theo số CCCD khách hàng (Dùng cho Check-out Panel)
+    public PhieuDatPhong timPhieuDangHoatDongTheoCCCD(String soCCCD) {
+        if (soCCCD == null || soCCCD.trim().isEmpty()) {
+            return null;
+        }
+        String cleanCCCD = soCCCD.trim();
+        for (PhieuDatPhong p : danhSachPhieu) {
+            if (("DANG_O".equalsIgnoreCase(p.getTrangThai()) || "DANG_HOAT_DONG".equalsIgnoreCase(p.getTrangThai()))
+                    && p.getKhachHang() != null
+                    && cleanCCCD.equalsIgnoreCase(p.getKhachHang().getSoCCCD().trim())) {
                 return p;
             }
         }
@@ -165,7 +184,7 @@ public class QuanLyKhachSan {
     // 3. Nghiệp vụ Check-In / Check-Out
     public boolean checkIn(int soPhong, KhachHang khach) {
         PhongKhachSan phong = timPhong(soPhong);
-        if (phong == null || !"TRONG".equals(phong.getTrangThai())) {
+        if (phong == null || !"TRONG".equalsIgnoreCase(phong.getTrangThai())) {
             return false;
         }
 
@@ -173,7 +192,7 @@ public class QuanLyKhachSan {
         phong.setTrangThai("DANG_O");
         luuFilePhong(danhSachPhong);
 
-        // Tạo phiếu đặt mới với thông tin thật
+        // Tạo phiếu đặt mới
         String maPhieu = "PDP" + System.currentTimeMillis();
         PhieuDatPhong phieuMoi = new PhieuDatPhong(maPhieu, phong, khach, 1, "DANG_O");
         danhSachPhieu.add(phieuMoi);
@@ -184,11 +203,11 @@ public class QuanLyKhachSan {
 
     public boolean checkOut(int soPhong, int soNgayThucTe) {
         PhongKhachSan phong = timPhong(soPhong);
-        if (phong == null || !"DANG_O".equals(phong.getTrangThai())) {
+        if (phong == null || !"DANG_O".equalsIgnoreCase(phong.getTrangThai())) {
             return false;
         }
 
-        // Đổi trạng thái phòng
+        // Đổi trạng thái phòng thành đang dọn
         phong.setTrangThai("DANG_DON");
         luuFilePhong(danhSachPhong);
 

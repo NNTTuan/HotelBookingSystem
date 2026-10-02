@@ -52,6 +52,7 @@ classDiagram
             -String trangThai
             +getKhachHang() KhachHang
             +getSoPhong() int
+            +getTrangThai() String
         }
     }
 
@@ -62,10 +63,9 @@ classDiagram
             +loadDataFromCSV() void
             +saveDataToCSV() void
             +timPhong(int soPhong) PhongKhachSan
-            +timPhieuDangHoatDong(int soPhong) PhieuDatPhong
+            +timPhieuDangHoatDongTheoCCCD(String soCCCD) PhieuDatPhong
             +checkIn(int soPhong, KhachHang khach) boolean
             +checkOut(int soPhong, int soNgay) boolean
-            +getDanhSachPhong() List~PhongKhachSan~
         }
         class CameraService {
             +startCamera() void
@@ -94,14 +94,15 @@ classDiagram
         }
         class CheckOutPanel {
             -QuanLyKhachSan quanLyKhachSan
-            -JComboBox cboSoPhong
+            -JTextField txtTimCCCD
+            -JButton btnTimKiem
             -JSpinner spnSoNgay
-            +loadDanhSachPhongDangO() void
-            +hienThiThongTinPhongDaChon() void
-            +tinhTienToanBo() void
-            +xuLyCheckOut() void
+            -PhieuDatPhong phieuHienTai
+            +xuLyTimKiem() void
+            +capNhatTongTien() void
+            +xuLyThanhToan() void
             +xuLyInHoaDon() void
-            +taoChiTietHoaDon(PhongKhachSan, String, String, int) String
+            +xoaTrangForm() void
         }
         class CameraPreviewDialog {
             -CameraService cameraService
