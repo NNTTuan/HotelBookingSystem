@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    actor Staff as Lễ tân (User)
+    participant UI as CheckOutPanel
+    participant Service as QuanLyKhachSan
+    participant Model as PhongKhachSan (Standard/VIP/Penthouse)
+    participant File as phong.csv (Data File)
+
+    Staff->>UI: Chọn Số phòng & Thay đổi Số ngày ở
+    UI->>Service: timPhong(soPhong)
+    Service-->>UI: Trả về đối tượng PhongKhachSan
+    UI->>Service: timPhieuDangHoatDong(soPhong)
+    Service-->>UI: Trả về PhieuDatPhong (chứa KhachHang)
+    
+    UI->>Model: tinhTienThue(soNgay)
+    Note over Model: Tính tiền gốc + Phí dịch vụ - Ưu đãi giảm giá
+    Model-->>UI: Trả về Tổng tiền
+    UI->>Staff: Cập nhật giao diện tiền thanh toán & hiển thị Ảnh mặt
+
+    alt Trường hợp 1: Nhấn "In Hóa Đơn"
+        Staff->>UI: Click nút "In Hóa Đơn"
+        UI->>Model: tinhTienGoc(), tinhPhiDichVu(), tinhTienGiamGia()
+        Model-->>UI: Dữ liệu chi tiết chi phí
+        UI->>UI: taoChiTietHoaDon()
+        UI->>Staff: Hiển thị Dialog Hóa đơn dạng văn bản (Font Monospaced)
+    else Trường hợp 2: Nhấn "XÁC NHẬN THANH TOÁN"
+        Staff->>UI: Click nút "XÁC NHẬN THANH TOÁN & TRẢ PHÒNG"
+        UI->>Service: checkOut(soPhong, soNgay)
+        Service->>Model: setTrangThai("DANG_DON")
+        Service->>File: saveDataToCSV()
+        File-->>Service: Lưu file thành công
+        Service-->>UI: Trả về kết quả (true)
+        UI->>Staff: Hiển thị thông báo thành công & Tải lại danh sách phòng
+    end

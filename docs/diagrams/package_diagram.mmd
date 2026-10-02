@@ -1,0 +1,45 @@
+graph TD
+    subgraph com.hotel [Root Package: com.hotel]
+        direction TB
+        Main[Main.java]
+        
+        subgraph model [com.hotel.model]
+            PKS[PhongKhachSan]
+            STD[PhongStandard]
+            VIP[PhongVIP]
+            PNT[PhongPenthouse]
+            KH[KhachHang]
+            PDP[PhieuDatPhong]
+            IDisc[IDiscountable]
+            IServ[IServiceChargable]
+        end
+
+        subgraph service [com.hotel.service]
+            QLKS[QuanLyKhachSan]
+            CamSvc[CameraService]
+            OcrSvc[OcrService]
+            FaceSvc[FaceDetectionService]
+        end
+
+        subgraph view [com.hotel.view]
+            MF[MainFrame]
+            QLP[QuanLyPhongPanel]
+            CIP[CheckInPanel]
+            COP[CheckOutPanel]
+            CamDlg[CameraPreviewDialog]
+            Avatar[ImageAvatarPanel]
+        end
+
+        subgraph util [com.hotel.util]
+            ImgUtil[ImageUtils]
+            SwingUtil[SwingUtils]
+        end
+    end
+
+    Main --> view
+    Main --> service
+    view --> service
+    view --> util
+    service --> model
+    service --> util
+    model ..> util

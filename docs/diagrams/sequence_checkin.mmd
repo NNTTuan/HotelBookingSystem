@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    actor Staff as Lễ tân (User)
+    participant UI as CheckInPanel
+    participant CamDlg as CameraPreviewDialog
+    participant CamSvc as CameraService
+    participant QLKS as QuanLyKhachSan
+    participant File as phong.csv
+
+    Staff->>UI: Chọn phòng trống & Nhập thông tin khách (Họ tên, CCCD, SĐT)
+    Staff->>UI: Click nút "Mở Camera"
+    UI->>CamDlg: Khởi tạo CameraPreviewDialog
+    CamDlg->>CamSvc: startCamera()
+    CamSvc-->>CamDlg: Trả về luồng Video preview
+    
+    Staff->>CamDlg: Click "Chụp ảnh"
+    CamDlg->>CamSvc: captureImage()
+    CamSvc-->>CamDlg: Lưu file ảnh vào "resources/captures/khach_CCCD.jpg"
+    CamDlg-->>UI: Cập nhật đường dẫn ảnh & Đóng Dialog
+    
+    Staff->>UI: Click "XÁC NHẬN CHECK-IN"
+    UI->>QLKS: checkIn(soPhong, khachHang)
+    QLKS->>QLKS: Đổi trạng thái phòng -> "DANG_O"
+    QLKS->>File: saveDataToCSV()
+    File-->>QLKS: Đồng bộ tập tin thành công
+    QLKS-->>UI: Kết quả Check-in (True)
+    UI->>Staff: Hiển thị thông báo thành công & Tải lại sơ đồ phòng

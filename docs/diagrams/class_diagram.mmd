@@ -1,0 +1,136 @@
+classDiagram
+    namespace Model {
+        class PhongKhachSan {
+            <<abstract>>
+            #int soPhong
+            #int tang
+            #String loaiPhong
+            #String trangThai
+            #double giaCoBan
+            +tinhTienGoc(int soNgay) double
+            +tinhPhiDichVu(int soNgay) double
+            +tinhTienGiamGia(int soNgay) double
+            +tinhTienThue(int soNgay)* double
+            +getSoPhong() int
+            +getTrangThai() String
+            +setTrangThai(String trangThai) void
+        }
+        class PhongStandard {
+            +tinhTienThue(int soNgay) double
+        }
+        class PhongVIP {
+            +tinhTienGiamGia(int soNgay) double
+            +tinhTienThue(int soNgay) double
+        }
+        class PhongPenthouse {
+            +tinhPhiDichVu(int soNgay) double
+            +tinhTienGiamGia(int soNgay) double
+            +tinhTienThue(int soNgay) double
+        }
+        class IDiscountable {
+            <<interface>>
+            +tinhTienGiamGia(int soNgay) double
+        }
+        class IServiceChargable {
+            <<interface>>
+            +tinhPhiDichVu(int soNgay) double
+        }
+        class KhachHang {
+            -String hoTen
+            -String soCCCD
+            -String soDienThoai
+            -String anhKhuonMatPath
+            +getHoTen() String
+            +getSoCCCD() String
+            +getSoDienThoai() String
+            +getAnhKhuonMatPath() String
+        }
+        class PhieuDatPhong {
+            -String maPhieu
+            -int soPhong
+            -KhachHang khachHang
+            -String trangThai
+            +getKhachHang() KhachHang
+            +getSoPhong() int
+        }
+    }
+
+    namespace Service {
+        class QuanLyKhachSan {
+            -List~PhongKhachSan~ dsPhong
+            -List~PhieuDatPhong~ dsPhieu
+            +loadDataFromCSV() void
+            +saveDataToCSV() void
+            +timPhong(int soPhong) PhongKhachSan
+            +timPhieuDangHoatDong(int soPhong) PhieuDatPhong
+            +checkIn(int soPhong, KhachHang khach) boolean
+            +checkOut(int soPhong, int soNgay) boolean
+            +getDanhSachPhong() List~PhongKhachSan~
+        }
+        class CameraService {
+            +startCamera() void
+            +captureImage() String
+            +stopCamera() void
+        }
+        class FaceDetectionService {
+            +detectFace(String imagePath) boolean
+        }
+        class OcrService {
+            +extractTextFromID(String imagePath) String
+        }
+    }
+
+    namespace View {
+        class MainFrame {
+            -QuanLyKhachSan quanLyKhachSan
+        }
+        class QuanLyPhongPanel {
+            -QuanLyKhachSan quanLyKhachSan
+            +refreshGrid10x10() void
+        }
+        class CheckInPanel {
+            -QuanLyKhachSan quanLyKhachSan
+            -CameraService cameraService
+        }
+        class CheckOutPanel {
+            -QuanLyKhachSan quanLyKhachSan
+            -JComboBox cboSoPhong
+            -JSpinner spnSoNgay
+            +loadDanhSachPhongDangO() void
+            +hienThiThongTinPhongDaChon() void
+            +tinhTienToanBo() void
+            +xuLyCheckOut() void
+            +xuLyInHoaDon() void
+            +taoChiTietHoaDon(PhongKhachSan, String, String, int) String
+        }
+        class CameraPreviewDialog {
+            -CameraService cameraService
+        }
+        class ImageAvatarPanel
+    }
+
+    namespace Util {
+        class ImageUtils
+        class SwingUtils
+    }
+
+    PhongKhachSan <|-- PhongStandard
+    PhongKhachSan <|-- PhongVIP
+    PhongKhachSan <|-- PhongPenthouse
+    IDiscountable <|.. PhongVIP
+    IDiscountable <|.. PhongPenthouse
+    IServiceChargable <|.. PhongPenthouse
+
+    PhieuDatPhong "1" --> "1" KhachHang : Thuộc về
+    QuanLyKhachSan "1" *-- "*" PhongKhachSan : Quản lý
+    QuanLyKhachSan "1" *-- "*" PhieuDatPhong : Quản lý
+
+    MainFrame --> QuanLyKhachSan
+    QuanLyPhongPanel --> QuanLyKhachSan
+    CheckInPanel --> QuanLyKhachSan
+    CheckInPanel --> CameraService
+    CheckInPanel ..> CameraPreviewDialog
+    CheckInPanel ..> OcrService
+    CheckInPanel ..> FaceDetectionService
+    CheckOutPanel --> QuanLyKhachSan
+    CheckOutPanel ..> PhongKhachSan

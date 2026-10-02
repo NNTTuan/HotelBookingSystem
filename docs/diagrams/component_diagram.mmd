@@ -1,0 +1,31 @@
+componentDiagram
+    package "Java Swing GUI Frontend" {
+        [Main UI Framework] as GUI
+        [Grid 10x10 Panel] as Grid
+        [Webcam Dialog] as CamUI
+    }
+
+    package "Business Engine (Core)" {
+        [Hotel Management Controller] as Controller
+        [IO CSV Manager] as IOManager
+    }
+
+    package "Image Processing System" {
+        [Webcam Service] as CamService
+        [Haarcascades Face Detector] as FaceDetector
+    }
+
+    database "Flat-File Storage" {
+        [data/phong.csv] as CSVFile
+        [resources/captures/*.jpg] as ImageFiles
+    }
+
+    GUI --> Controller
+    Grid --> Controller
+    CamUI --> CamService
+    
+    Controller --> IOManager
+    CamService --> FaceDetector
+    
+    IOManager --> CSVFile : Read / Write
+    CamService --> ImageFiles : Save Snapshot
