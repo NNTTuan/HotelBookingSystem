@@ -57,10 +57,10 @@ Hotel Booking System/
 │   └── 📐 diagrams/                    # Hệ thống sơ đồ thiết kế (Mermaid Format)
 │       ├── 🔄 activity_checkin.mmd     # Sơ đồ hoạt động Check-in
 │       ├── 🏗️ architecture.mmd         # Kiến trúc hệ thống
-│       ├── 🧩 class_diagram.mmd         # Sơ đồ lớp (Class Diagram)
-│       ├── 📦 component_diagram.mmd     # Sơ đồ thành phần
+│       ├── 🧩 class_diagram.mmd        # Sơ đồ lớp (Class Diagram)
+│       ├── 📦 component_diagram.mmd    # Sơ đồ thành phần
 │       ├── 🗄️ erd_data_model.mmd       # Mô hình dữ liệu ERD
-│       ├── 🗂️ package_diagram.mmd     # Sơ đồ đóng gói Package
+│       ├── 🗂️ package_diagram.mmd      # Sơ đồ đóng gói Package
 │       ├── 🔄 room_state.mmd           # Sơ đồ chuyển đổi trạng thái phòng
 │       ├── ⏱️ sequence_checkin.mmd     # Sơ đồ tuần tự Check-in
 │       ├── ⏱️ sequence_checkout.mmd    # Sơ đồ tuần tự Check-out
