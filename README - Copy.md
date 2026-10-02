@@ -28,102 +28,77 @@
 
 ---
 
-## 📂 Cấu Trúc Thư Mục Dự Án (Dọn Dẹp & Cập Nhật)
+---
+
+## ✨ Tính Năng Nổi Bật
+
+- 🛏️ **Quản lý sơ đồ phòng trực quan**: Hiển thị danh sách 100 phòng (Standard, VIP, Penthouse), cập nhật trạng thái thời gian thực (*Trống / Đang ở*).
+- 📸 **Quy trình Check-in thông minh**:
+    - 👤 Nhập & quản lý thông tin khách hàng (Họ tên, CCCD/CMND, Số điện thoại).
+    - 🎥 Tích hợp **Camera preview** live & tự động **Nhận diện khuôn mặt** bằng thuật toán OpenCV Haar Cascade.
+    - 📄 Trích xuất dữ liệu tự động từ ảnh CCCD/CMND qua **Tess4J OCR** (hỗ trợ Tiếng Việt & Tiếng Anh).
+- 💳 **Quy trình Check-out & Thanh toán tự động**:
+    - 📅 Tự động tính tiền lưu trú chính xác theo số ngày ở.
+    - 🛎️ Áp dụng linh hoạt Phí dịch vụ (`IServiceChargable`) và Giảm giá (`IDiscountable`) theo từng hạng phòng.
+    - 🧾 Tự động hạch toán Thuế VAT **10%**.
+    - 🪟 Hiển thị Cửa sổ Hóa đơn chi tiết (`Chi Tiết Hóa Đơn`) và hỗ trợ **In hóa đơn**.
+- 💾 **Lưu trữ dữ liệu an toàn**: Quản lý dữ liệu bền vững qua các tập tin văn bản (`phong.txt`, `phieudatphong.txt`) và kho ảnh chân dung khách hàng.
+
+---
+
+## 📂 Cấu Trúc Dự Án (Project Structure)
 
 ```text
-ThumucDuAn/                             <-- Thư mục gốc (Root Project)
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/
-│       │       └── hotel/
-│       │           ├── model/          # Mô hình dữ liệu
-│       │           │   ├── IDiscountable.java
-│       │           │   ├── IServiceChargable.java
-│       │           │   ├── KhachHang.java
-│       │           │   ├── PhongKhachSan.java
-│       │           │   ├── PhongStandard.java
-│       │           │   ├── PhongVIP.java
-│       │           │   └── PhongPenthouse.java
-│       │           ├── service/        # Dịch vụ nghiệp vụ chính
-│       │           │   ├── CameraService.java
-│       │           │   └── QuanLyKhachSan.java (Xử lý 100 phòng, Check-In/Out & Lưu File)
-│       │           ├── util/           # Tiện ích bổ trợ UI/Ảnh
-│       │           │   ├── ImageUtils.java
-│       │           │   └── SwingUtils.java
-│       │           ├── view/           # Màn hình giao diện Swing GUI
-│       │           │   ├── components/
-│       │           │   │   ├── CameraPreviewDialog.java
-│       │           │   │   └── ImageAvatarPanel.java
-│       │           │   ├── CheckInPanel.java
-│       │           │   ├── CheckOutPanel.java
-│       │           │   ├── QuanLyPhongPanel.java
-│       │           │   └── MainFrame.java
-│       │           └── Main.java       # Khởi chạy ứng dụng
-│       └── resources/
-│           └── captures/               # Lưu ảnh chân dung chụp từ Webcam
-├── data/                               # Nằm CÙNG CẤP với src/ (Tự động tạo ra)
-│   ├── phong.txt                       # Trạng thái 100 phòng
-│   └── khachhang.txt                   # Danh sách khách hàng
-├── README.md
-└── pom.xml
-
-📦HotelBookingSystemTest
- ┣ 📂.idea
- ┣ 📂data
- ┃ ┣ 📂images
- ┃ ┣ 📜khachhang.txt
- ┃ ┣ 📜phieudatphong.txt
- ┃ ┗ 📜phong.csv
- ┣ 📂src
- ┃ ┗ 📂main
- ┃ ┃ ┣ 📂java
- ┃ ┃ ┃ ┗ 📂com
- ┃ ┃ ┃ ┃ ┗ 📂hotel
- ┃ ┃ ┃ ┃ ┃ ┣ 📂model
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜IDiscountable.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜IServiceChargable.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜KhachHang.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PhieuDatPhong.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PhongKhachSan.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PhongPenthouse.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PhongStandard.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜PhongVIP.java
- ┃ ┃ ┃ ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CameraService.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜QuanLyKhachSan.java
- ┃ ┃ ┃ ┃ ┃ ┣ 📂util
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜ImageUtils.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜SwingUtils.java
- ┃ ┃ ┃ ┃ ┃ ┣ 📂view
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂components
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CameraPreviewDialog.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜ImageAvatarPanel.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CheckInPanel.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CheckOutPanel.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜MainFrame.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜QuanLyPhongPanel.java
- ┃ ┃ ┃ ┃ ┃ ┗ 📜Main.java
- ┃ ┃ ┗ 📂resources
- ┃ ┃ ┃ ┣ 📂captures
- ┃ ┃ ┃ ┗ 📂haarcascades
- ┃ ┃ ┃ ┃ ┗ 📜haarcascade_frontalface_alt.xml
- ┣ 📂target
- ┃ ┣ 📂classes
- ┃ ┃ ┗ 📂com
- ┃ ┃ ┃ ┗ 📂hotel
- ┃ ┃ ┃ ┃ ┣ 📂model
- ┃ ┃ ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┃ ┣ 📂util
- ┃ ┃ ┃ ┃ ┗ 📂view
- ┃ ┃ ┃ ┃ ┃ ┗ 📂components
- ┃ ┣ 📂generated-sources
- ┃ ┃ ┗ 📂annotations
- ┃ ┗ 📂test-classes
- ┣ 📂tessdata
- ┃ ┣ 📜eng.traineddata
- ┃ ┗ 📜vie.traineddata
- ┣ 📜.gitignore
- ┣ 📜pom.xml
- ┣ 📜README-copy.md
- ┗ 📜README.md
+Hotel Booking System/
+├── ⚙️️ .idea/                           # Cấu hình dự án IntelliJ IDEA
+├── 📊 data/                            # File dữ liệu & kho lưu trữ hình ảnh
+│   ├── 🖼️ images/                      # Thư mục lưu ảnh chân dung khách check-in
+│   ├── 📝 phieudatphong.txt            # Cơ sở dữ liệu danh sách phiếu đặt phòng
+│   └── 🏨 phong.txt                    # Cơ sở dữ liệu danh sách phòng
+├── 📚 docs/                            # Tài liệu phân tích & kiến trúc hệ thống
+│   └── 📐 diagrams/                    # Hệ thống sơ đồ thiết kế (Mermaid Format)
+│       ├── 🔄 activity_checkin.mmd     # Sơ đồ hoạt động Check-in
+│       ├── 🏗️ architecture.mmd         # Kiến trúc hệ thống
+│       ├── 🧩 class_diagram.mmd         # Sơ đồ lớp (Class Diagram)
+│       ├── 📦 component_diagram.mmd     # Sơ đồ thành phần
+│       ├── 🗄️ erd_data_model.mmd       # Mô hình dữ liệu ERD
+│       ├── 🗂️ package_diagram.mmd     # Sơ đồ đóng gói Package
+│       ├── 🔄 room_state.mmd           # Sơ đồ chuyển đổi trạng thái phòng
+│       ├── ⏱️ sequence_checkin.mmd     # Sơ đồ tuần tự Check-in
+│       ├── ⏱️ sequence_checkout.mmd    # Sơ đồ tuần tự Check-out
+│       └── 🎯 usecase_diagram.mmd      # Sơ đồ Use Case
+├── 💻 src/
+│   └── ☕ main/
+│       ├── ☕ java/
+│       │   └── 📦 com/hotel/
+│       │       ├── 🏛️ model/           # Layer Lớp đối tượng & Interface OOP
+│       │       │   ├── 🏷️ IDiscountable.java
+│       │       │   ├── 🛎️ IServiceChargable.java
+│       │       │   ├── 👤 KhachHang.java
+│       │       │   ├── 🧾 PhieuDatPhong.java
+│       │       │   ├── 🛏️ PhongKhachSan.java
+│       │       │   ├── 🌟 PhongPenthouse.java
+│       │       │   ├── 🏠 PhongStandard.java
+│       │       │   └── 💎 PhongVIP.java
+│       │       ├── ⚙️ service/         # Layer Xử lý nghiệp vụ & Tích hợp AI
+│       │       │   ├── 📸 CameraService.java
+│       │       │   └── 🏨 QuanLyKhachSan.java
+│       │       ├── 🛠️ util/            # Utility classes (Xử lý ảnh, GUI layout)
+│       │       │   ├── 🖼️ ImageUtils.java
+│       │       │   └── 🎨 SwingUtils.java
+│       │       ├── 🎨 view/            # Layer Giao diện người dùng (Java Swing)
+│       │       │   ├── 🧩 components/
+│       │       │   │   ├── 📷 CameraPreviewDialog.java
+│       │       │   │   └── 🖼️ ImageAvatarPanel.java
+│       │       │   ├── 📥 CheckInPanel.java
+│       │       │   ├── 📤 CheckOutPanel.java
+│       │       │   ├── 🖥️ MainFrame.java
+│       │       │   └── 🗺️ QuanLyPhongPanel.java
+│       │       └── 🚀 Main.java        # Điểm khởi chạy ứng dụng (Main Entry Point)
+│       └── 📦 resources/               # Tài nguyên AI & Model dữ liệu
+│           ├── 👁️ haarcascades/
+│           │   └── 🎯 haarcascade_frontalface_alt.xml  # Haar Cascade Face Detection Model
+│           └── 🔤 tessdata/
+│               ├── 🇬🇧 eng.traineddata                   # Model OCR Tiếng Anh
+│               └── 🇻🇳 vie.traineddata                   # Model OCR Tiếng Việt
+└── 📖 README.md
