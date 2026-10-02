@@ -28,8 +28,6 @@
 
 ---
 
----
-
 ## ✨ Tính Năng Nổi Bật
 
 - 🛏️ **Quản lý sơ đồ phòng trực quan**: Hiển thị danh sách 100 phòng (Standard, VIP, Penthouse), cập nhật trạng thái thời gian thực (*Trống / Đang ở*).
