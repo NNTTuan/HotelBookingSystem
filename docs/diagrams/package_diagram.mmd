@@ -16,9 +16,6 @@ graph TD
 
         subgraph service [com.hotel.service]
             QLKS[QuanLyKhachSan]
-            CamSvc[CameraService]
-            OcrSvc[OcrService]
-            FaceSvc[FaceDetectionService]
         end
 
         subgraph view [com.hotel.view]
@@ -27,19 +24,10 @@ graph TD
             CIP[CheckInPanel]
             COP[CheckOutPanel]
             CamDlg[CameraPreviewDialog]
-            Avatar[ImageAvatarPanel]
-        end
-
-        subgraph util [com.hotel.util]
-            ImgUtil[ImageUtils]
-            SwingUtil[SwingUtils]
         end
     end
 
     Main --> view
     Main --> service
     view --> service
-    view --> util
     service --> model
-    service --> util
-    model --> util

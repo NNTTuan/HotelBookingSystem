@@ -1,31 +1,23 @@
 flowchart TD
     subgraph Frontend ["Java Swing GUI Frontend"]
-        GUI["Main UI Framework"]
-        Grid["Grid 10x10 Panel"]
-        CamUI["Webcam Dialog"]
+        GUI["Main UI Framework (MainFrame)"]
+        Grid["Grid 10x10 Panel (QuanLyPhongPanel)"]
+        CamUI["Webcam Dialog (CameraPreviewDialog)"]
     end
 
     subgraph Core ["Business Engine (Core)"]
-        Controller["Hotel Management Controller"]
-        IOManager["IO CSV Manager"]
-    end
-
-    subgraph ImageSys ["Image Processing System"]
-        CamService["Webcam Service"]
-        FaceDetector["Haarcascades Face Detector"]
+        Controller["Hotel Manager Service (QuanLyKhachSan)"]
     end
 
     subgraph Storage ["Flat-File Storage"]
-        CSVFile[("data/phong.csv")]
-        ImageFiles[("resources/captures/*.jpg")]
+        PhongFile[("data/phong.txt")]
+        PhieuFile[("data/phieudatphong.txt")]
+        ImageFiles[("data/images/*.jpg")]
     end
 
     GUI --> Controller
     Grid --> Controller
-    CamUI --> CamService
+    CamUI --> ImageFiles
 
-    Controller --> IOManager
-    CamService --> FaceDetector
-
-    IOManager -->|Read / Write| CSVFile
-    CamService -->|Save Snapshot| ImageFiles
+    Controller -->|Read / Write| PhongFile
+    Controller -->|Read / Write| PhieuFile

@@ -10,7 +10,9 @@ classDiagram
             +tinhTienGoc(int soNgay) double
             +tinhPhiDichVu(int soNgay) double
             +tinhTienGiamGia(int soNgay) double
-            +tinhTienThue(int soNgay)* double
+            +tinhTienTruocThue(int soNgay) double
+            +tinhTienThueVAT(int soNgay) double
+            +tinhTienThue(int soNgay) double
             +getSoPhong() int
             +getTrangThai() String
             +setTrangThai(String trangThai) void
@@ -19,21 +21,26 @@ classDiagram
             +tinhTienThue(int soNgay) double
         }
         class PhongVIP {
-            +tinhTienGiamGia(int soNgay) double
+            +getPhiDichVu() double
+            +getTiLeGiamGia() double
+            +tinhTienGiamGia(double tongTienGoc) double
             +tinhTienThue(int soNgay) double
         }
         class PhongPenthouse {
-            +tinhPhiDichVu(int soNgay) double
-            +tinhTienGiamGia(int soNgay) double
+            +getPhiDichVu() double
+            +getTiLeGiamGia() double
+            +tinhTienGiamGia(double tongTienGoc) double
             +tinhTienThue(int soNgay) double
         }
         class IDiscountable {
             <<interface>>
-            +tinhTienGiamGia(int soNgay) double
+            +getTiLeGiamGia() double
+            +tinhTienGiamGia(double tongTienGoc) double
         }
         class IServiceChargable {
             <<interface>>
-            +tinhPhiDichVu(int soNgay) double
+            +getPhiDichVu() double
+            +tinhPhiDichVu() double
         }
         class KhachHang {
             -String hoTen
@@ -47,36 +54,29 @@ classDiagram
         }
         class PhieuDatPhong {
             -String maPhieu
-            -int soPhong
+            -PhongKhachSan phong
             -KhachHang khachHang
+            -int soNgayThue
             -String trangThai
             +getKhachHang() KhachHang
-            +getSoPhong() int
+            +getPhong() PhongKhachSan
             +getTrangThai() String
         }
     }
 
     namespace Service {
         class QuanLyKhachSan {
-            -List~PhongKhachSan~ dsPhong
-            -List~PhieuDatPhong~ dsPhieu
-            +loadDataFromCSV() void
-            +saveDataToCSV() void
+            -List~PhongKhachSan~ danhSachPhong
+            -List~PhieuDatPhong~ danhSachPhieu
+            +docFilePhong() List~PhongKhachSan~
+            +luuFilePhong(List~PhongKhachSan~ ds) void
+            +docFilePhieu() List~PhieuDatPhong~
+            +luuFilePhieu() void
             +timPhong(int soPhong) PhongKhachSan
             +timPhieuDangHoatDongTheoCCCD(String soCCCD) PhieuDatPhong
             +checkIn(int soPhong, KhachHang khach) boolean
-            +checkOut(int soPhong, int soNgay) boolean
-        }
-        class CameraService {
-            +startCamera() void
-            +captureImage() String
-            +stopCamera() void
-        }
-        class FaceDetectionService {
-            +detectFace(String imagePath) boolean
-        }
-        class OcrService {
-            +extractTextFromID(String imagePath) String
+            +checkOut(int soPhong, int soNgayThucTe) boolean
+            +xacNhanDonXong(int soPhong) boolean
         }
     }
 
@@ -86,33 +86,24 @@ classDiagram
         }
         class QuanLyPhongPanel {
             -QuanLyKhachSan quanLyKhachSan
-            +refreshGrid10x10() void
+            +capNhatSoDoPhong() void
         }
         class CheckInPanel {
             -QuanLyKhachSan quanLyKhachSan
-            -CameraService cameraService
+            +xuLyCheckIn() void
         }
         class CheckOutPanel {
             -QuanLyKhachSan quanLyKhachSan
-            -JTextField txtTimCCCD
-            -JButton btnTimKiem
-            -JSpinner spnSoNgay
             -PhieuDatPhong phieuHienTai
             +xuLyTimKiem() void
             +capNhatTongTien() void
             +xuLyThanhToan() void
             +xuLyInHoaDon() void
-            +xoaTrangForm() void
         }
         class CameraPreviewDialog {
-            -CameraService cameraService
+            -Webcam webcam
+            +xuLyChupAnh() void
         }
-        class ImageAvatarPanel
-    }
-
-    namespace Util {
-        class ImageUtils
-        class SwingUtils
     }
 
     PhongKhachSan <|-- PhongStandard
@@ -120,18 +111,16 @@ classDiagram
     PhongKhachSan <|-- PhongPenthouse
     IDiscountable <|.. PhongVIP
     IDiscountable <|.. PhongPenthouse
+    IServiceChargable <|.. PhongVIP
     IServiceChargable <|.. PhongPenthouse
 
-    PhieuDatPhong "1" --> "1" KhachHang : Thuộc về
-    QuanLyKhachSan "1" *-- "*" PhongKhachSan : Quản lý
-    QuanLyKhachSan "1" *-- "*" PhieuDatPhong : Quản lý
+    PhieuDatPhong "1" --> "1" KhachHang
+    PhieuDatPhong "1" --> "1" PhongKhachSan
+    QuanLyKhachSan "1" *-- "*" PhongKhachSan
+    QuanLyKhachSan "1" *-- "*" PhieuDatPhong
 
     MainFrame --> QuanLyKhachSan
     QuanLyPhongPanel --> QuanLyKhachSan
     CheckInPanel --> QuanLyKhachSan
-    CheckInPanel --> CameraService
     CheckInPanel ..> CameraPreviewDialog
-    CheckInPanel ..> OcrService
-    CheckInPanel ..> FaceDetectionService
     CheckOutPanel --> QuanLyKhachSan
-    CheckOutPanel ..> PhongKhachSan

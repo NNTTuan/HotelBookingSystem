@@ -1,20 +1,20 @@
 stateDiagram-v2
     [*] --> TRONG : Khởi tạo ma trận 100 phòng (Tầng 1-10)
-    
+
     TRONG --> DANG_O : Check-in (Nhập thông tin khách + Chụp ảnh Webcam)
     DANG_O --> DANG_DON : Check-out (Thanh toán & Tính tiền)
     DANG_DON --> TRONG : Xác nhận dọn dẹp hoàn tất
-    
+
     note right of TRONG
         Hiển thị màu XANH LÁ
         Sẵn sàng đón khách
     end note
-    
+
     note right of DANG_O
         Hiển thị màu ĐỎ
         Có khách lưu trú
     end note
-    
+
     note right of DANG_DON
         Hiển thị màu VÀNG
         Chờ nhân viên vệ sinh

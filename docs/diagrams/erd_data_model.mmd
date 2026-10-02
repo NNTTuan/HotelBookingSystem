@@ -1,26 +1,20 @@
 erDiagram
-    PHONG_CSV {
-        int so_phong PK "Từ 101 đến 1010"
-        int tang "Tầng 1 - 10"
-        string loai_phong "STANDARD | VIP | PENTHOUSE"
+    FILE_PHONG_TXT {
+        int so_phong PK "Khóa chính (vd: 101 -> 1010)"
+        int tang "Tầng từ 1 - 10"
+        string loai_phong "Standard | VIP | Penthouse"
         string trang_thai "TRONG | DANG_O | DANG_DON"
-        double gia_co_ban "Giá niêm yết theo tầng"
     }
 
-    PHIEU_DAT_PHONG_CSV {
-        string ma_phieu PK "Mã định danh phiếu"
-        int so_phong FK "Khóa ngoại tham chiếu phòng"
-        string cccd_khach FK "Khóa ngoại tham chiếu khách hàng"
-        string ngay_check_in "Thời gian nhận phòng"
-        string trang_thai_phieu "DANG_HOAT_DONG | DA_THANH_TOAN"
+    FILE_PHIEU_DAT_PHONG_TXT {
+        string ma_phieu PK "Mã phiếu sinh tự động (PDP...)"
+        int so_phong FK "Số phòng thuê"
+        string ho_ten "Họ tên khách hàng"
+        string so_cccd FK "Số CCCD/Passport"
+        string sdt "Số điện thoại"
+        string anh_path "Đường dẫn file ảnh chân dung"
+        int so_ngay_thue "Số ngày lưu trú"
+        string trang_thai_phieu "DANG_O | DA_TRA"
     }
 
-    KHACH_HANG_CSV {
-        string so_cccd PK "Số CCCD / Passport"
-        string ho_ten "Họ và tên đầy đủ"
-        string so_dien_thoai "Số điện thoại liên lạc"
-        string path_anh_chan_dung "Đường dẫn file ảnh trong captures/"
-    }
-
-    PHONG_CSV ||--o| PHIEU_DAT_PHONG_CSV : "chứa"
-    KHACH_HANG_CSV ||--o{ PHIEU_DAT_PHONG_CSV : "sở hữu"
+    FILE_PHONG_TXT ||--o| FILE_PHIEU_DAT_PHONG_TXT : "liên kết"

@@ -5,32 +5,29 @@ sequenceDiagram
     participant Service as QuanLyKhachSan
     participant Model as PhongKhachSan
 
-    Staff->>UI: Nhập số CCCD vào Text Box & Bấm "Tìm khách"
+    Staff->>UI: Nhập số CCCD khách & Click "Tìm khách"
     UI->>Service: timPhieuDangHoatDongTheoCCCD(soCCCD)
 
-    alt Trường hợp 1: Không tìm thấy khách hàng
+    alt Trường hợp 1: Không tìm thấy
         Service-->>UI: Trả về null
-        UI->>Staff: Hiển thị thông báo "Không tìm thấy khách hàng lưu trú"
-    else Trường hợp 2: Tìm thấy khách hàng
-        Service-->>UI: Trả về PhieuDatPhong (chứa thông tin KhachHang & soPhong)
-        UI->>Service: timPhong(soPhong)
-        Service-->>UI: Trả về đối tượng PhongKhachSan
+        UI->>Staff: Báo lỗi "Không tìm thấy khách hàng đang ở"
+    else Trường hợp 2: Tìm thấy phiếu
+        Service-->>UI: Trả về đối tượng PhieuDatPhong
+        UI->>Model: tinhTienThueVAT(soNgay) & tinhTienThue(soNgay)
+        Model-->>UI: Trả về tiền thuế VAT & Tổng thanh toán
+        UI->>Staff: Hiển thị thông tin khách, ảnh chân dung & tổng tiền
 
-        UI->>Model: tinhTienThue(soNgay)
-        Model-->>UI: Trả về Tổng tiền
-        UI->>Staff: Hiển thị thông tin khách, số phòng, ảnh mặt & tổng tiền
-
-        opt Lễ tân chọn "In Hóa Đơn"
-            Staff->>UI: Click nút "In Hóa Đơn"
-            UI->>Model: tinhTienGoc(), tinhPhiDichVu(), tinhTienGiamGia()
-            Model-->>UI: Dữ liệu chi tiết chi phí
-            UI->>Staff: Hiển thị Dialog Hóa đơn xem trước
+        opt Lễ tân bấm "In Hóa Đơn"
+            Staff->>UI: Click "In Hóa Đơn"
+            UI->>Model: tinhTienGoc(), tinhPhiDichVu(), tinhTienGiamGia(), tinhTienThueVAT()
+            Model-->>UI: Trả về chi tiết các khoản chi phí
+            UI->>Staff: Hiển thị Dialog xem trước Hóa đơn thanh toán
         end
 
-        Staff->>UI: Click nút "XÁC NHẬN THANH TOÁN & TRẢ PHÒNG"
-        UI->>Service: checkOut(soPhong, soNgay)
+        Staff->>UI: Click "XÁC NHẬN THANH TOÁN & TRẢ PHÒNG"
+        UI->>Service: checkOut(soPhong, soNgayThucTe)
         Service->>Model: setTrangThai("DANG_DON")
-        Service->>Service: saveDataToCSV()
+        Service->>Service: luuFilePhong() & luuFilePhieu()
         Service-->>UI: Trả về kết quả (true)
-        UI->>Staff: Báo thanh toán thành công & Làm sạch Form
+        UI->>Staff: Thông báo thanh toán thành công & xóa trắng form
     end

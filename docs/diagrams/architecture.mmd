@@ -9,9 +9,6 @@ flowchart TD
 
     subgraph ServiceLayer ["Tầng Xử Lý Nghiệp Vụ (com.hotel.service)"]
         QLKS["QuanLyKhachSan"]
-        CAMS["CameraService"]
-        OCR["OcrService"]
-        FD["FaceDetectionService"]
     end
 
     subgraph ModelLayer ["Tầng Thực Thể Dữ Liệu (com.hotel.model)"]
@@ -24,8 +21,9 @@ flowchart TD
     end
 
     subgraph StorageLayer ["Tầng Lưu Trữ (Java File I/O)"]
-        CSV_FILE[("data/phong.csv")]
-        CAP_FOLDER[("resources/captures/*.jpg")]
+        TXT_PHONG[("data/phong.txt")]
+        TXT_PHIEU[("data/phieudatphong.txt")]
+        IMG_FOLDER[("data/images/*.jpg")]
     end
 
     MF --> QLP
@@ -33,9 +31,6 @@ flowchart TD
     MF --> COP
 
     CIP --> CAM_DLG
-    CIP --> CAMS
-    CIP --> OCR
-    CIP --> FD
 
     QLP --> QLKS
     CIP --> QLKS
@@ -49,5 +44,6 @@ flowchart TD
     PKS --- VIP
     PKS --- PNT
 
-    QLKS <--> CSV_FILE
-    CAMS <--> CAP_FOLDER
+    QLKS <--> TXT_PHONG
+    QLKS <--> TXT_PHIEU
+    CAM_DLG --> IMG_FOLDER

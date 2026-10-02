@@ -1,27 +1,22 @@
 flowchart TD
-    Start([Bắt đầu Check-in]) --> SelectRoom[Chọn phòng trên Grid 10x10]
+    Start([Bắt đầu Check-in]) --> SelectRoom[Chọn phòng trên Grid 10x10 hoặc danh sách]
     SelectRoom --> CheckStatus{Trạng thái phòng?}
-    
-    CheckStatus -- Đã có khách / Chờ dọn --> Error1[Hiển thị thông báo lỗi] --> End([Kết thúc])
-    
+
+    CheckStatus -- Đang ở / Chờ dọn --> Error1[Hiển thị thông báo lỗi/Cảnh báo] --> End([Kết thúc])
+
     CheckStatus -- Trống --> InputInfo[Nhập Họ tên, CCCD, SĐT]
-    InputInfo --> OpenCam[Bấm mở Camera Preview]
-    
-    OpenCam --> CamFeed[Hiển thị Video Stream thời gian thực]
-    CamFeed --> Capture[Bấm Chụp ảnh]
-    
-    Capture --> SaveImg[Lưu ảnh vào resources/captures/]
-    SaveImg --> FaceDetect{Kiểm tra Face Detection?}
-    
-    FaceDetect -- Không tìm thấy mặt --> Warn[Cảnh báo ảnh không rõ mặt] --> ConfirmSave{Vẫn tiếp tục?}
-    ConfirmSave -- Không --> Capture
-    ConfirmSave -- Có --> CreateObj
-    FaceDetect -- Hợp lệ --> CreateObj[Khởi tạo đối tượng KhachHang & PhieuDatPhong]
-    
+    InputInfo --> OpenCam[Bấm mở Webcam & Chụp Mặt]
+
+    OpenCam --> CamFeed[Hiển thị CameraPreviewDialog live stream]
+    CamFeed --> Capture[Bấm nút Chụp Ảnh]
+
+    Capture --> SaveImg[Lưu ảnh vào data/images/khach_TIMESTAMP.jpg]
+    SaveImg --> CreateObj[Khởi tạo đối tượng KhachHang & PhieuDatPhong]
+
     CreateObj --> UpdateRoom[Cập nhật phòng -> DANG_O]
-    UpdateRoom --> WriteCSV[Đọc/Ghi cập nhật file data/phong.csv]
-    
-    WriteCSV --> SaveSuccess{Lưu file OK?}
-    SaveSuccess -- Thất bại --> Rollback[Hủy thao tác & Báo lỗi I/O] --> End
+    UpdateRoom --> WriteTXT[Ghi dữ liệu vào data/phong.txt & data/phieudatphong.txt]
+
+    WriteTXT --> SaveSuccess{Lưu file OK?}
+    SaveSuccess -- Thất bại --> Rollback[Báo lỗi I/O] --> End
     SaveSuccess -- Thành công --> RefreshUI[Cập nhật lại giao diện - Đổi ô sang màu Đỏ]
     RefreshUI --> Complete([Hoàn tất Check-in])
