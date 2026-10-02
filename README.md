@@ -22,7 +22,7 @@
     * **Check-Out:** Trả phòng, chuyển trạng thái về "Chờ dọn dẹp".
     * **Xác nhận dọn dẹp:** Đưa phòng về lại trạng thái "Trống" sẵn sàng nhận khách tiếp theo.
 * **Tích Hợp Webcam Chụp Ảnh:**
-    * Điều khiển Camera qua `CameraService` và `CameraPreviewDialog` để xem trước và chụp lưu ảnh khách hàng vào thư mục `src/main/resources/captures/`.
+    * Điều khiển Camera qua `CameraService` và `CameraPreviewDialog` để xem trước và chụp lưu ảnh khách hàng vào thư mục `data/images/`.
 * **Lưu Trữ Dữ Liệu Thuần Java File (Java I/O):**
     * Không dùng Database/SQL. Tất cả trạng thái 100 phòng và hồ sơ khách hàng được đọc/ghi tự động qua các file flat-text trong thư mục `data/`.
 
