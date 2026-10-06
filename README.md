@@ -1,4 +1,4 @@
-# Hệ Thống Quản Lý Khách Sạn (Java Swing App)
+# Hệ Thống Quản Lý Đặt phòng Khách Sạn - Hotel Booking System (Java Swing App)
 
 Ứng dụng quản lý khách sạn thuần Java (Java Swing Desktop GUI) hỗ trợ quản lý sơ đồ 100 phòng, quy trình Check-in / Check-out, chụp ảnh diện mạo khách hàng qua Webcam và tự động đồng bộ dữ liệu vào các file text (`.txt`) ở thư mục gốc mà không cần sử dụng CSDL SQL.
 
