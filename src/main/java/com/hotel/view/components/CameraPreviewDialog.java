@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -86,11 +87,14 @@ public class CameraPreviewDialog extends JDialog {
                         dir.mkdirs();
                     }
 
+                    // Tự động tăng độ sáng (+25) và độ tương phản (1.15x) cho ảnh chụp
+                    BufferedImage enhancedImage = xuLyTangDoSang(image, 1.15f, 25.0f);
+
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                     String fileName = "khach_" + timeStamp + ".jpg";
                     File outputFile = new File(dir, fileName);
 
-                    ImageIO.write(image, "JPG", outputFile);
+                    ImageIO.write(enhancedImage, "JPG", outputFile);
                     capturedImagePath = outputFile.getAbsolutePath();
 
                     JOptionPane.showMessageDialog(this, "Đã chụp và lưu ảnh thành công!\n" + fileName, "Thành công", JOptionPane.INFORMATION_MESSAGE);
@@ -101,6 +105,26 @@ public class CameraPreviewDialog extends JDialog {
                 }
             }
         }
+    }
+
+    /**
+     * Hàm điều chỉnh độ sáng và độ tương phản của ảnh
+     * @param original Ảnh gốc chụp từ Webcam
+     * @param scaleFactor Hệ số tương phản (1.0f là giữ nguyên, >1.0f là tăng tương phản)
+     * @param offset Mức tăng độ sáng (+0 đến +50)
+     */
+    private BufferedImage xuLyTangDoSang(BufferedImage original, float scaleFactor, float offset) {
+        BufferedImage result = new BufferedImage(
+                original.getWidth(),
+                original.getHeight(),
+                BufferedImage.TYPE_INT_RGB
+        );
+        Graphics2D g2d = result.createGraphics();
+        g2d.drawImage(original, 0, 0, null);
+        g2d.dispose();
+
+        RescaleOp rescaleOp = new RescaleOp(scaleFactor, offset, null);
+        return rescaleOp.filter(result, null);
     }
 
     private void dongWebcam() {

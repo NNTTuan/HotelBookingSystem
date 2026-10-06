@@ -85,7 +85,7 @@ Hotel Booking System/
 
 - ☕ **Ngôn ngữ chính**: Java (JDK 17+)
 - 🎨 **Giao diện (GUI)**: Java Swing, FlatLaf Look & Feel
-- 🤖 **Xử lý hình ảnh & Trí tuệ nhân tạo (AI)**:
+- 🤖 **Xử lý hình ảnh / Webcam**:
     - 📷 **Webcam Integration**: Sarxos Webcam Capture API
     - 📄 **Lưu trữ**: Java File I/O (BufferedReader / BufferedWriter)
 - 📊 **Tài liệu & Thiết kế**: Mermaid Diagrams (`.mmd`)
