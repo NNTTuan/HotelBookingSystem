@@ -1,5 +1,5 @@
 flowchart TD
-    Start([Bắt đầu Check-in]) --> SelectRoom[Chọn phòng trên Grid 10x10 hoặc danh sách]
+    Start([Bắt đầu Check-in]) --> SelectRoom[Chọn phòng trên Grid 5 x 4 hoặc danh sách]
     SelectRoom --> CheckStatus{Trạng thái phòng?}
 
     CheckStatus -- Đang ở / Chờ dọn --> Error1[Hiển thị thông báo lỗi/Cảnh báo] --> End([Kết thúc])

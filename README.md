@@ -6,13 +6,13 @@
 
 ## 🌟 Tính Năng Chính
 
-- **Quản Lý 100 Phòng Khách Sạn (10 Tầng x 10 Phòng):**
-    - Tự động khởi tạo và quản lý 100 phòng (từ phòng `101` đến `1010`).
+- **Quản Lý 100 Phòng Khách Sạn (5 Tầng x 4 Phòng):**
+    - Tự động khởi tạo và quản lý 20 phòng (từ phòng `101` đến `504`).
     - Phân tầng theo class đối tượng:
-        - **Tầng 1 – 4:** Phòng Standard (`PhongStandard`)
-        - **Tầng 5 – 8:** Phòng VIP (`PhongVIP`)
-        - **Tầng 9 – 10:** Phòng Penthouse (`PhongPenthouse`)
-- **Sơ Đồ Lưới Trực Quan (Grid 10x10):**
+        - **Tầng 1 – 2:** Phòng Standard (`PhongStandard`)
+        - **Tầng 3 – 4:** Phòng VIP (`PhongVIP`)
+        - **Tầng 5:** Phòng Penthouse (`PhongPenthouse`)
+- **Sơ Đồ Lưới Trực Quan (Grid 5 x 4):**
     - Hiển thị trạng thái phòng theo màu sắc thời gian thực:
         - 🟢 **Xanh lá:** Phòng Trống (`TRONG`)
         - 🔴 **Đỏ:** Đang có khách (`DANG_O`)
@@ -30,7 +30,7 @@
 
 ## ✨ Tính Năng Nổi Bật
 
-- 🛏️ **Quản lý sơ đồ phòng trực quan**: Hiển thị danh sách 100 phòng (Standard, VIP, Penthouse), cập nhật trạng thái thời gian thực (_Trống / Đang ở / Chờ dọn_).
+- 🛏️ **Quản lý sơ đồ phòng trực quan**: Hiển thị danh sách 20 phòng (Standard, VIP, Penthouse), cập nhật trạng thái thời gian thực (_Trống / Đang ở / Chờ dọn_).
 - 📸 **Quy trình Check-in tiện lợi**:
     - 👤 Nhập thông tin khách hàng (Họ tên, CCCD/CMND, Số điện thoại).
     - 🎥 Tích hợp **Camera preview** live & chụp ảnh trực tiếp qua Webcam.
