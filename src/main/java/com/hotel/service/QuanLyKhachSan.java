@@ -31,7 +31,7 @@ public class QuanLyKhachSan {
     }
 
     // 1. Quản lý File Phòng
-    private List<PhongKhachSan> khoiTao100Phong() {
+    private List<PhongKhachSan> khoiTao20Phong() {
         List<PhongKhachSan> ds = new ArrayList<>();
         for (int tang = 1; tang <= 5; tang++) {
             for (int p = 1; p <= 4; p++) {
@@ -51,7 +51,7 @@ public class QuanLyKhachSan {
     public List<PhongKhachSan> docFilePhong() {
         File file = new File(FILE_PHONG);
         if (!file.exists() || file.length() == 0) {
-            List<PhongKhachSan> dsMoi = khoiTao100Phong();
+            List<PhongKhachSan> dsMoi = khoiTao20Phong();
             luuFilePhong(dsMoi);
             return dsMoi;
         }
@@ -82,7 +82,7 @@ public class QuanLyKhachSan {
         }
 
         if (ds.isEmpty()) {
-            ds = khoiTao100Phong();
+            ds = khoiTao20Phong();
             luuFilePhong(ds);
         }
 
