@@ -25,7 +25,7 @@ public class QuanLyPhongPanel extends JPanel {
         add(legendPanel, BorderLayout.NORTH);
 
         // Khung lưới 10x10 hiển thị 100 phòng
-        gridPanel = new JPanel(new GridLayout(10, 10, 6, 6));
+        gridPanel = new JPanel(new GridLayout(5, 4, 6, 6));
         add(gridPanel, BorderLayout.CENTER);
 
         capNhatSoDoPhong();
@@ -58,10 +58,10 @@ public class QuanLyPhongPanel extends JPanel {
             btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
             JLabel lblSoPhong = new JLabel("P." + p.getSoPhong(), SwingConstants.CENTER);
-            lblSoPhong.setFont(new Font("Segoe UI", Font.BOLD, 12));
+            lblSoPhong.setFont(new Font("Segoe UI", Font.BOLD, 15));
 
             JLabel lblLoai = new JLabel(p.getLoaiPhong(), SwingConstants.CENTER);
-            lblLoai.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+            lblLoai.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
             btn.add(lblSoPhong, BorderLayout.CENTER);
             btn.add(lblLoai, BorderLayout.SOUTH);
@@ -71,19 +71,19 @@ public class QuanLyPhongPanel extends JPanel {
                     btn.setBackground(new Color(220, 245, 225));
                     lblSoPhong.setForeground(new Color(46, 125, 50));
                     lblLoai.setForeground(new Color(46, 125, 50));
-                    btn.setBorder(BorderFactory.createLineBorder(new Color(165, 214, 167), 1));
+                    btn.setBorder(BorderFactory.createLineBorder(new Color(165, 214, 167), 3));
                     break;
                 case "DANG_O":
                     btn.setBackground(new Color(255, 225, 225));
                     lblSoPhong.setForeground(new Color(198, 40, 40));
                     lblLoai.setForeground(new Color(198, 40, 40));
-                    btn.setBorder(BorderFactory.createLineBorder(new Color(239, 154, 154), 1));
+                    btn.setBorder(BorderFactory.createLineBorder(new Color(239, 154, 154), 3));
                     break;
                 case "DANG_DON":
                     btn.setBackground(new Color(255, 243, 205));
                     lblSoPhong.setForeground(new Color(230, 81, 0));
                     lblLoai.setForeground(new Color(230, 81, 0));
-                    btn.setBorder(BorderFactory.createLineBorder(new Color(255, 224, 130), 1));
+                    btn.setBorder(BorderFactory.createLineBorder(new Color(255, 224, 130), 3));
                     break;
             }
 

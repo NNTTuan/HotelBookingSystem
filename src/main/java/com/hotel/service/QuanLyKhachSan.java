@@ -33,12 +33,12 @@ public class QuanLyKhachSan {
     // 1. Quản lý File Phòng
     private List<PhongKhachSan> khoiTao100Phong() {
         List<PhongKhachSan> ds = new ArrayList<>();
-        for (int tang = 1; tang <= 10; tang++) {
-            for (int p = 1; p <= 10; p++) {
+        for (int tang = 1; tang <= 5; tang++) {
+            for (int p = 1; p <= 4; p++) {
                 int soPhong = tang * 100 + p;
-                if (tang <= 4) {
+                if (tang <= 2) {
                     ds.add(new PhongStandard(soPhong, tang, "TRONG"));
-                } else if (tang <= 8) {
+                } else if (tang <= 4) {
                     ds.add(new PhongVIP(soPhong, tang, "TRONG"));
                 } else {
                     ds.add(new PhongPenthouse(soPhong, tang, "TRONG"));
