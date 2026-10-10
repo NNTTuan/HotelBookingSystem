@@ -16,9 +16,6 @@ public class ConsoleView {
         this.sc = new Scanner(System.in);
     }
 
-    /**
-     * Khởi chạy vòng lặp Menu Console chính
-     */
     public void start() {
         int option;
         do {
@@ -34,7 +31,7 @@ public class ConsoleView {
             System.out.print("Nhập lựa chọn của bạn (0-4): ");
 
             option = sc.hasNextInt() ? sc.nextInt() : -1;
-            sc.nextLine(); // Đọc bỏ ký tự xuống dòng thừa
+            sc.nextLine();
 
             switch (option) {
                 case 1:
@@ -58,9 +55,6 @@ public class ConsoleView {
         } while (option != 0);
     }
 
-    /**
-     * Chức năng 1: Hiển thị danh sách 20 phòng từ file phong.txt
-     */
     private void hienThiDanhSachPhong() {
         System.out.println("\n--- DANH SÁCH 20 PHÒNG KHÁCH SẠN ---");
         System.out.printf("%-10s | %-8s | %-15s | %-15s\n", "Số Phòng", "Tầng", "Loại Phòng", "Trạng Thái");
@@ -73,12 +67,9 @@ public class ConsoleView {
         System.out.println("------------------------------------------------------------");
     }
 
-    /**
-     * Chức năng 2: Check-in nhận phòng
-     */
     private void thucHienCheckIn() {
         System.out.println("\n--- THỰC HIỆN CHECK-IN NHẬN PHÒNG ---");
-        System.out.print("Nhập số phòng muốn thuê (vd: 101, 201, 301...): ");
+        System.out.print("Nhập số phòng muốn thuê (vd: 101, 102, 201...): ");
 
         if (!sc.hasNextInt()) {
             System.out.println("[LỖI] Số phòng phải là một số nguyên!");
@@ -105,20 +96,21 @@ public class ConsoleView {
         System.out.print("Nhập số điện thoại: ");
         String sdt = sc.nextLine();
 
-        // Vì bản Console không dùng Webcam, ta truyền chuỗi trống hoặc "none" vào đường dẫn ảnh
+        // Nhập số ngày thuê
+        System.out.print("Nhập số ngày thuê dự kiến: ");
+        int soNgayThue = sc.hasNextInt() ? sc.nextInt() : 1;
+        sc.nextLine();
+
         KhachHang khach = new KhachHang(hoTen, cccd, sdt, "none");
 
-        boolean thanhCong = qlks.checkIn(soPhong, khach);
+        boolean thanhCong = qlks.checkIn(soPhong, khach, soNgayThue);
         if (thanhCong) {
-            System.out.println("[THÀNH CÔNG] Check-in thành công cho phòng " + soPhong + "!");
+            System.out.println("[THÀNH CÔNG] Check-in thành công phòng " + soPhong + " với thời gian " + soNgayThue + " ngày!");
         } else {
-            System.out.println("[THẤT BẠI] Không thể thực hiện check-in. Vui lòng kiểm tra lại dữ liệu!");
+            System.out.println("[THẤT BẠI] Không thể thực hiện check-in. Vui lòng kiểm tra lại!");
         }
     }
 
-    /**
-     * Chức năng 3: Check-out và hạch toán tài chính đa hình
-     */
     private void thucHienCheckOut() {
         System.out.println("\n--- THỰC HIỆN CHECK-OUT & TÍNH TIỀN HÓA ĐƠN ---");
         System.out.print("Nhập số CCCD của khách hàng đang ở: ");
@@ -140,9 +132,7 @@ public class ConsoleView {
         int soNgayThucTe = sc.hasNextInt() ? sc.nextInt() : phieu.getSoNgayThue();
         sc.nextLine();
 
-        // Gọi hàm tính tổng tiền từ lớp PhieuDatPhong / PhongKhachSan (hỗ trợ đa hình OOP)
         if (phieu.getPhong() != null) {
-            // Cập nhật tạm số ngày để tính chính xác
             phieu.setSoNgayThue(soNgayThucTe);
             double tongTien = phieu.tinhTongTienPhieu();
 
@@ -165,9 +155,6 @@ public class ConsoleView {
         }
     }
 
-    /**
-     * Chức năng 4: Xác nhận dọn dẹp phòng xong (DANG_DON -> TRONG)
-     */
     private void xacNhanDonDep() {
         System.out.println("\n--- XÁC NHẬN DỌN DẸP PHÒNG ---");
         System.out.print("Nhập số phòng cần xác nhận đã dọn xong: ");

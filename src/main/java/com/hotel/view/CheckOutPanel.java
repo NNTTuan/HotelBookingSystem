@@ -147,7 +147,7 @@ public class CheckOutPanel extends JPanel {
 
         String cccd = txtTimCCCD.getText().trim();
         if (cccd.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD cần tìm!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vول lòng nhập số CCCD cần tìm!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -166,6 +166,11 @@ public class CheckOutPanel extends JPanel {
         lblSdtVal.setText(khach != null ? khach.getSoDienThoai() : "---");
         lblLoaiPhongVal.setText(phong != null ? phong.getLoaiPhong() : "---");
         lblGiaCoBanVal.setText(phong != null ? String.format("%,.0f VNĐ/ngày", phong.getGiaCoBan()) : "0 VNĐ");
+
+        // === BỔ SUNG DÒNG NÀY ĐỂ ĐỒNG BỘ SỐ NGÀY THUÊ TỪ PHIẾU ===
+        if (phieuHienTai.getSoNgayThue() > 0) {
+            spnSoNgay.setValue(phieuHienTai.getSoNgayThue());
+        }
 
         // Tải ảnh chân dung khách
         if (khach != null && khach.getAnhKhuonMatPath() != null && new File(khach.getAnhKhuonMatPath()).exists()) {

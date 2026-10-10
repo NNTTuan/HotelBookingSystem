@@ -45,7 +45,7 @@ public class MainFrame extends JFrame {
         checkInPanel = new CheckInPanel(quanLyKhachSan, refreshAll);
         checkOutPanel = new CheckOutPanel(quanLyKhachSan, refreshAll);
 
-        tabbedPane.addTab("Sơ Đồ Phòng (100 Phòng)", phongPanel);
+        tabbedPane.addTab("Sơ Đồ Phòng (20 Phòng)", phongPanel);
         tabbedPane.addTab("Nhận Phòng (Check-In)", checkInPanel);
         tabbedPane.addTab("Trả Phòng (Check-Out)", checkOutPanel);
 

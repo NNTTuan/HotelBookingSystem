@@ -11,9 +11,9 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         do {
-            System.out.println("==========================================");
-            System.out.println("           CHỌN LOẠI ỨNG DỤNG KHÁCH SẠN    ");
-            System.out.println("==========================================");
+            System.out.println("==================================================");
+            System.out.println("           CHỌN LOẠI ỨNG DỤNG KHÁCH SẠN           ");
+            System.out.println("==================================================");
             System.out.println("1. Desktop Application (Java Swing GUI)");
             System.out.println("2. Console Application (Dòng lệnh)");
             System.out.print("Chọn kiểu app bạn muốn hiển thị (1 hoặc 2): ");
