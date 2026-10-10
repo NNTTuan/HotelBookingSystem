@@ -140,6 +140,6 @@ Toàn bộ tài liệu thiết kế hệ thống nằm trong thư mục `docs/di
 
 ## 👤 Tác Giả & Bản Quyền
 
-- 🧑‍💻 **Tác giả**: Nguyễn Ngọc Trọng Tuân
+- 🧑‍💻 **Tác giả**: 
 - 🏫 **Đơn vị**: Đại học Kinh tế \- Tài chính TP.HCM (UEF)
 - 📌 **Mục đích**: Đồ án môn học / Dự án Lập trình hướng đối tượng Java.
