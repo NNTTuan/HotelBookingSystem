@@ -1,30 +1,28 @@
-# Hệ Thống Quản Lý Đặt phòng Khách Sạn - Hotel Booking System (Java Swing App)
+# Hệ Thống Quản Lý Khách Sạn (Java Swing App & Console)
 
-Ứng dụng quản lý khách sạn thuần Java (Java Swing Desktop GUI) hỗ trợ quản lý sơ đồ 100 phòng, quy trình Check-in / Check-out, chụp ảnh diện mạo khách hàng qua Webcam và tự động đồng bộ dữ liệu vào các file text (`.txt`) ở thư mục gốc mà không cần sử dụng CSDL SQL.
+Ứng dụng quản lý khách sạn hỗ trợ song song 2 chế độ (Console CLI và Java Swing Desktop GUI). Hệ thống quản lý sơ đồ 20 phòng, quy trình Check-in/Check-out linh hoạt với thời gian lưu trú (`soNgayThue`), chụp ảnh diện mạo khách hàng qua Webcam thực tế và tự động đồng bộ dữ liệu vào các file text (`phong.txt`, `phieudatphong.txt`) mà không cần CSDL SQL.
 
 ---
 
 ## 🌟 Tính Năng Chính
 
-- **Quản Lý 100 Phòng Khách Sạn (5 Tầng x 4 Phòng):**
-    - Tự động khởi tạo và quản lý 20 phòng (từ phòng `101` đến `504`).
-    - Phân tầng theo class đối tượng:
-        - **Tầng 1 – 2:** Phòng Standard (`PhongStandard`)
-        - **Tầng 3 – 4:** Phòng VIP (`PhongVIP`)
-        - **Tầng 5:** Phòng Penthouse (`PhongPenthouse`)
-- **Sơ Đồ Lưới Trực Quan (Grid 5 x 4):**
-    - Hiển thị trạng thái phòng theo màu sắc thời gian thực:
-        - 🟢 **Xanh lá:** Phòng Trống (`TRONG`)
-        - 🔴 **Đỏ:** Đang có khách (`DANG_O`)
-        - 🟡 **Vàng:** Chờ dọn dẹp (`DANG_DON`)
-- **Quy Trình Check-In & Check-Out:**
-    - **Check-In:** Nhân viên nhập tay thông tin khách (Họ tên, CCCD/Hộ chiếu, SĐT) + Bật Webcam chụp ảnh chân dung.
-    - **Check-Out:** Trả phòng, chuyển trạng thái về "Chờ dọn dẹp".
-    - **Xác nhận dọn dẹp:** Đưa phòng về lại trạng thái "Trống" sẵn sàng nhận khách tiếp theo.
-- **Tích Hợp Webcam Chụp Ảnh:**
-    - Điều khiển Camera qua `CameraService` và `CameraPreviewDialog` để xem trước và chụp lưu ảnh khách hàng vào thư mục `data/images/`.
-- **Lưu Trữ Dữ Liệu Thuần Java File (Java I/O):**
-    - Không dùng Database/SQL. Tất cả trạng thái 100 phòng và hồ sơ khách hàng được đọc/ghi tự động qua các file flat-text trong thư mục `data/`.
+* **Quản Lý 20 Phòng Khách Sạn (5 Tầng x 4 Phòng):**
+    * Tự động khởi tạo và phân tầng theo đối tượng:
+        * **Tầng 1 – 2:** Phòng Standard (`PhongStandard`)
+        * **Tầng 3 – 4:** Phòng VIP (`PhongVIP`)
+        * **Tầng 5:** Phòng Penthouse (`PhongPenthouse`)
+* **Sơ Đồ Trực Quan & Đa Giao Diện (Dual-Mode):**
+    * Hỗ trợ Console CLI và Java Swing GUI đồng bộ dữ liệu chặt chẽ.
+    * Hiển thị trạng thái phòng theo thời gian thực:
+        * 🟢 **Xanh lá:** Phòng Trống (`TRONG`)
+        * 🔴 **Đỏ:** Đang có khách (`DANG_O`)
+        * 🟡 **Vàng:** Chờ dọn dẹp (`DANG_DON`)
+* **Quy Trình Check-In & Check-Out Nâng Cao:**
+    * **Check-In:** Nhân viên nhập thông tin khách (Họ tên, CCCD, SĐT), **số ngày thuê dự kiến**, và mở **Webcam thực tế** chụp ảnh chân dung lưu vào hệ thống.
+    * **Check-Out:** Tra cứu nhanh qua số CCCD, tự động lấy số ngày lưu trú từ phiếu đặt phòng, tính toán tổng tiền (gồm VAT & ưu đãi) và chuyển trạng thái phòng sang "Chờ dọn dẹp".
+    * **Xác nhận dọn dẹp:** Đưa phòng về lại trạng thái "Trống" sẵn sàng phục vụ.
+* **Lưu Trữ Dữ Liệu Flat-File (Java I/O):**
+    * Không dùng Database/SQL. Toàn bộ thông tin được lưu trữ tự động trong thư mục `data/` qua các tệp văn bản.
 
 ---
 
@@ -46,37 +44,47 @@
 ## 📂 Cấu Trúc Dự Án (Project Structure)
 
 ```text
-Hotel Booking System/
-├── 📊 data/                            # File dữ liệu & kho lưu trữ hình ảnh
-│   ├── 🖼️ images/                      # Thư mục lưu ảnh chân dung khách check-in
-│   ├── 📝 phieudatphong.txt            # Dữ liệu danh sách phiếu đặt phòng
-│   └── 🏨 phong.txt                    # Dữ liệu danh sách 100 phòng
-├── 📚 docs/                            # Tài liệu phân tích & kiến trúc hệ thống
-│   └── 📐 diagrams/                    # Hệ thống sơ đồ thiết kế (Mermaid Format)
-├── 💻 src/
-│   └── ☕ main/
-│       └── ☕ java/
-│           └── 📦 com/hotel/
-│               ├── 🏛️ model/           # Layer Lớp đối tượng & Interface OOP
-│               │   ├── 🏷️ IDiscountable.java
-│               │   ├── 🛎️ IServiceChargable.java
-│               │   ├── 👤 KhachHang.java
-│               │   ├── 🧾 PhieuDatPhong.java
-│               │   ├── 🛏️ PhongKhachSan.java
-│               │   ├── 🌟 PhongPenthouse.java
-│               │   ├── 🏠 PhongStandard.java
-│               │   └── 💎 PhongVIP.java
-│               ├── ⚙️ service/         # Layer Xử lý nghiệp vụ
-│               │   └── 🏨 QuanLyKhachSan.java
-│               ├── 🎨 view/            # Layer Giao diện người dùng (Java Swing)
-│               │   ├── 🧩 components/
-│               │   │   └── 📷 CameraPreviewDialog.java
-│               │   ├── 📥 CheckInPanel.java
-│               │   ├── 📤 CheckOutPanel.java
-│               │   ├── 🖥️ MainFrame.java
-│               │   └── 🗺️ QuanLyPhongPanel.java
-│               └── 🚀 Main.java        # Điểm khởi chạy ứng dụng (Main Entry)
-└── 📖 README.md
+HotelBookingSystem/
+│
+├── 📁 data/                        # Thư mục chứa Flat-File lưu trữ dữ liệu hệ thống
+│   ├── 📄 phong.txt                # Lưu danh sách 20 phòng & trạng thái thời gian thực
+│   ├── 📄 phieudatphong.txt        # Lưu thông tin phiếu đặt/lưu trú & số ngày thuê
+│   └── 📷 images/                  # Thư mục lưu ảnh chân dung khách chụp từ Webcam
+│
+├── 📁 docs/                        # Tài liệu thiết kế & Sơ đồ hệ thống (.mmd)
+│   ├── 📊 architecture.mmd         # Sơ đồ kiến trúc tổng quan hệ thống
+│   ├── 🔄 sequence_checkin.mmd     # Sơ đồ tuần tự quy trình Check-in
+│   ├── 💵 sequence_checkout.mmd    # Sơ đồ tuần tự quy trình Check-out & thanh toán
+│   ├── 🎯 activity_checkin.mmd     # Sơ đồ hoạt động Check-in chi tiết
+│   └── 🔀 room_state.mmd           # Sơ đồ trạng thái vòng đời của phòng
+│
+├── 📁 src/
+│   └── 📁 main/
+│       └── 📁 java/
+│           └── 📁 com/
+│               └── 📁 hotel/
+│                   ├── ☕ Main.java              # Điểm khởi chạy ứng dụng (Entry Point)
+│                   │
+│                   ├── 📁 model/                 # Tầng đối tượng thực thể (OOP Entity)
+│                   │   ├── ☕ PhongKhachSan.java # Lớp trừu tượng (Abstract Class)
+│                   │   ├── ☕ PhongStandard.java # Đối tượng phòng Standard
+│                   │   ├── ☕ PhongVIP.java        # Đối tượng phòng VIP
+│                   │   ├── ☕ PhongPenthouse.java  # Đối tượng phòng Penthouse
+│                   │   ├── ☕ KhachHang.java       # Đối tượng khách hàng
+│                   │   └── ☕ PhieuDatPhong.java   # Đối tượng phiếu lưu trú & tính tiền
+│                   │
+│                   ├── 📁 service/               # Tầng nghiệp vụ & Quản lý File I/O
+│                   │   └── ☕ QuanLyKhachSan.java# Xử lý logic nghiệp vụ toàn hệ thống
+│                   │
+│                   └── 📁 view/                  # Tầng giao diện (Console CLI & Java Swing GUI)
+│                       ├── 💻 ConsoleView.java   # Giao diện dòng lệnh (CLI Mode)
+│                       ├── 🖼️ MainFrame.java     # Cửa sổ chính quản lý Tab hiện đại
+│                       ├── 🗂️ QuanLyPhongPanel.java # Sơ đồ ma trận 20 phòng trực quan
+│                       ├── 📝 CheckInPanel.java  # Màn hình Check-in (Nhập thông tin, số ngày & Webcam)
+│                       └── 💰 CheckOutPanel.java # Màn hình Check-out, tra cứu CCCD & in hóa đơn
+│
+├── ⚙️ pom.xml                      # Quản lý cấu hình Maven dependencies (Webcam Capture, etc.)
+└── 📖 README.md                    # Tài liệu hướng dẫn sử dụng dự án chi tiết
 ```
 
 ---
