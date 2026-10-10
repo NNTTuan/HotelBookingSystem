@@ -60,7 +60,9 @@ classDiagram
             -String trangThai
             +getKhachHang() KhachHang
             +getPhong() PhongKhachSan
+            +getSoNgayThue() int
             +getTrangThai() String
+            +setSoNgayThue(int soNgayThue) void
         }
     }
 
@@ -74,7 +76,7 @@ classDiagram
             +luuFilePhieu() void
             +timPhong(int soPhong) PhongKhachSan
             +timPhieuDangHoatDongTheoCCCD(String soCCCD) PhieuDatPhong
-            +checkIn(int soPhong, KhachHang khach) boolean
+            +checkIn(int soPhong, KhachHang khach, int soNgay) boolean
             +checkOut(int soPhong, int soNgayThucTe) boolean
             +xacNhanDonXong(int soPhong) boolean
         }

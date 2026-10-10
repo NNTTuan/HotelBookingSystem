@@ -1,24 +1,18 @@
 sequenceDiagram
     autonumber
-    actor Staff as Lễ tân (User)
-    participant UI as CheckInPanel
-    participant CamDlg as CameraPreviewDialog
-    participant QLKS as QuanLyKhachSan
-    participant File as File Storage (.txt)
+    actor User as Nhân viên lễ tân
+    participant UI as CheckInPanel (GUI) / ConsoleView
+    participant QLKS as QuanLyKhachSan (Service)
+    participant Cam as Webcam / CameraService
+    participant File as File I/O (phong.txt / phieudatphong.txt)
 
-    Staff->>UI: Chọn phòng trống & Nhập thông tin khách (Họ tên, CCCD, SĐT)
-    Staff->>UI: Click "Mở Webcam & Chụp Mặt"
-    UI->>CamDlg: new CameraPreviewDialog(parent, true)
-    CamDlg->>CamDlg: Mở luồng Webcam (Sarxos API)
-
-    Staff->>CamDlg: Click "📷 Chụp Ảnh"
-    CamDlg->>CamDlg: Lưu file ảnh vào "data/images/khach_TIMESTAMP.jpg"
-    CamDlg-->>UI: Trả về path ảnh & Đóng Dialog
-
-    Staff->>UI: Click "XÁC NHẬN CHECK-IN"
-    UI->>QLKS: checkIn(soPhong, khachHang)
-    QLKS->>QLKS: Cập nhật phòng -> "DANG_O" & Tạo PhieuDatPhong
-    QLKS->>File: luuFilePhong() & luuFilePhieu()
-    File-->>QLKS: Đồng bộ tập tin văn bản thành công
-    QLKS-->>UI: Trả về kết quả Check-in (true)
-    UI->>Staff: Báo thành công & Tải lại sơ đồ 100 phòng
+    User->>UI: Nhập thông tin (CCCD, Họ tên, SĐT, Số ngày thuê)
+    User->>UI: Bấm "Mở Webcam & Chụp Mặt"
+    UI->>Cam: Kích hoạt Camera stream & chụp khung hình
+    Cam-->>UI: Trả về đường dẫn file ảnh (khach_<CCCD>.jpg)
+    User->>UI: Bấm "Xác Nhận Check-In"
+    UI->>QLKS: checkIn(soPhong, khachHang, soNgayThue)
+    QLKS->>File: Cập nhật trạng thái phòng thành DANG_O
+    QLKS->>File: Tạo và lưu PhieuDatPhong mới vào phieudatphong.txt
+    QLKS-->>UI: Trả về kết quả thành công
+    UI-->>User: Hiển thị thông báo Check-in thành công

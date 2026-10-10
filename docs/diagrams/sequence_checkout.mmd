@@ -1,33 +1,20 @@
 sequenceDiagram
     autonumber
-    actor Staff as Lễ tân (User)
-    participant UI as CheckOutPanel
-    participant Service as QuanLyKhachSan
-    participant Model as PhongKhachSan
+    actor User as Nhân viên lễ tân
+    participant UI as CheckOutPanel (GUI) / ConsoleView
+    participant QLKS as QuanLyKhachSan (Service)
+    participant PDP as PhieuDatPhong / Phong
+    participant File as File I/O
 
-    Staff->>UI: Nhập số CCCD khách & Click "Tìm khách"
-    UI->>Service: timPhieuDangHoatDongTheoCCCD(soCCCD)
-
-    alt Trường hợp 1: Không tìm thấy
-        Service-->>UI: Trả về null
-        UI->>Staff: Báo lỗi "Không tìm thấy khách hàng đang ở"
-    else Trường hợp 2: Tìm thấy phiếu
-        Service-->>UI: Trả về đối tượng PhieuDatPhong
-        UI->>Model: tinhTienThueVAT(soNgay) & tinhTienThue(soNgay)
-        Model-->>UI: Trả về tiền thuế VAT & Tổng thanh toán
-        UI->>Staff: Hiển thị thông tin khách, ảnh chân dung & tổng tiền
-
-        opt Lễ tân bấm "In Hóa Đơn"
-            Staff->>UI: Click "In Hóa Đơn"
-            UI->>Model: tinhTienGoc(), tinhPhiDichVu(), tinhTienGiamGia(), tinhTienThueVAT()
-            Model-->>UI: Trả về chi tiết các khoản chi phí
-            UI->>Staff: Hiển thị Dialog xem trước Hóa đơn thanh toán
-        end
-
-        Staff->>UI: Click "XÁC NHẬN THANH TOÁN & TRẢ PHÒNG"
-        UI->>Service: checkOut(soPhong, soNgayThucTe)
-        Service->>Model: setTrangThai("DANG_DON")
-        Service->>Service: luuFilePhong() & luuFilePhieu()
-        Service-->>UI: Trả về kết quả (true)
-        UI->>Staff: Thông báo thanh toán thành công & xóa trắng form
-    end
+    User->>UI: Nhập số CCCD tra cứu khách đang ở
+    UI->>QLKS: timPhieuDangHoatDongTheoCCCD(cccd)
+    QLKS-->>UI: Trả về PhieuDatPhong (bao gồm soNgayThue ban đầu)
+    UI->>UI: Hiển thị thông tin phòng, khách, ảnh và điền số ngày ở
+    User->>UI: Xác nhận hoặc điều chỉnh số ngày thực tế & Bấm Thanh Toán
+    UI->>PDP: tinhTienThue(soNgayThucTe)
+    PDP-->>UI: Trả về tổng tiền hóa đơn (gồm VAT)
+    UI->>QLKS: checkOut(soPhong, soNgayThucTe)
+    QLKS->>File: Cập nhật phòng thành DANG_DON
+    QLKS->>File: Cập nhật phiếu đặt phòng (DA_TRA)
+    QLKS-->>UI: Thanh toán thành công
+    UI-->>User: Hiển thị thông báo & In hóa đơn

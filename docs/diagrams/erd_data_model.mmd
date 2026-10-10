@@ -1,20 +1,25 @@
 erDiagram
-    FILE_PHONG_TXT {
-        int so_phong PK "Khóa chính (vd: 101 -> 504)"
-        int tang "Tầng từ 1 - 5"
-        string loai_phong "Standard | VIP | Penthouse"
-        string trang_thai "TRONG | DANG_O | DANG_DON"
+    PHONG {
+        int so_phong PK
+        string loai_phong
+        float gia_co_ban
+        string trang_thai
     }
 
-    FILE_PHIEU_DAT_PHONG_TXT {
-        string ma_phieu PK "Mã phiếu sinh tự động (PDP...)"
-        int so_phong FK "Số phòng thuê"
-        string ho_ten "Họ tên khách hàng"
-        string so_cccd FK "Số CCCD/Passport"
-        string sdt "Số điện thoại"
-        string anh_path "Đường dẫn file ảnh chân dung"
-        int so_ngay_thue "Số ngày lưu trú"
-        string trang_thai_phieu "DANG_O | DA_TRA"
+    KHACH_HANG {
+        string so_cccd PK
+        string ho_ten
+        string so_dien_thoai
+        string anh_khuon_mat_path
     }
 
-    FILE_PHONG_TXT ||--o| FILE_PHIEU_DAT_PHONG_TXT : "liên kết"
+    PHIEU_DAT_PHONG {
+        string ma_phieu PK
+        int so_phong FK
+        string so_cccd FK
+        int so_ngay_thue
+        string trang_thai
+    }
+
+    PHONG ||--o{ PHIEU_DAT_PHONG : "được đặt trong"
+    KHACH_HANG ||--o{ PHIEU_DAT_PHONG : "sở hữu"

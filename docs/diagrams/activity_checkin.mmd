@@ -1,22 +1,19 @@
 flowchart TD
-    Start([Bắt đầu Check-in]) --> SelectRoom[Chọn phòng trên Grid 5 x 4 hoặc danh sách]
-    SelectRoom --> CheckStatus{Trạng thái phòng?}
+    Start([Bắt đầu Check-in]) --> Step1[Nhân viên chọn phòng trống trên giao diện]
+    Step1 --> Step2[Nhập thông tin cá nhân: Họ tên, CCCD, SĐT]
+    Step2 --> Step3[Nhập số ngày thuê dự kiến]
+    Step3 --> Step4[Bấm nút Mở Webcam chụp ảnh chân dung]
 
-    CheckStatus -- Đang ở / Chờ dọn --> Error1[Hiển thị thông báo lỗi/Cảnh báo] --> End([Kết thúc])
+    Step4 --> CheckCam{Chụp ảnh thành công?}
+    CheckCam -- Có --> Step5[Lưu đường dẫn ảnh vào đối tượng KhachHang]
+    CheckCam -- Không --> Step6[Dùng ảnh mặc định / Báo lỗi camera]
 
-    CheckStatus -- Trống --> InputInfo[Nhập Họ tên, CCCD, SĐT]
-    InputInfo --> OpenCam[Bấm mở Webcam & Chụp Mặt]
+    Step5 --> Step7[Bấm Xác Nhận Check-In]
+    Step6 --> Step7
 
-    OpenCam --> CamFeed[Hiển thị CameraPreviewDialog live stream]
-    CamFeed --> Capture[Bấm nút Chụp Ảnh]
+    Step7 --> CheckValid{Phòng hợp lệ & đang TRONG?}
+    CheckValid -- Đúng --> Step8[Cập nhật trạng thái phòng thành DANG_O]
+    Step8 --> Step9[Tạo phiếu đặt phòng kèm số ngày thuê & lưu file]
+    Step9 --> Success([Check-in thành công])
 
-    Capture --> SaveImg[Lưu ảnh vào data/images/khach_TIMESTAMP.jpg]
-    SaveImg --> CreateObj[Khởi tạo đối tượng KhachHang & PhieuDatPhong]
-
-    CreateObj --> UpdateRoom[Cập nhật phòng -> DANG_O]
-    UpdateRoom --> WriteTXT[Ghi dữ liệu vào data/phong.txt & data/phieudatphong.txt]
-
-    WriteTXT --> SaveSuccess{Lưu file OK?}
-    SaveSuccess -- Thất bại --> Rollback[Báo lỗi I/O] --> End
-    SaveSuccess -- Thành công --> RefreshUI[Cập nhật lại giao diện - Đổi ô sang màu Đỏ]
-    RefreshUI --> Complete([Hoàn tất Check-in])
+    CheckValid -- Sai --> Error([Báo lỗi phòng không khả dụng])

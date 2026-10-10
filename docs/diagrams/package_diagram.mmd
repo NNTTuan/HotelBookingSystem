@@ -1,33 +1,37 @@
 graph TD
-    subgraph com.hotel [Root Package: com.hotel]
-        direction TB
-        Main[Main.java]
-
-        subgraph model [com.hotel.model]
-            PKS[PhongKhachSan]
-            STD[PhongStandard]
-            VIP[PhongVIP]
-            PNT[PhongPenthouse]
-            KH[KhachHang]
-            PDP[PhieuDatPhong]
-            IDisc[IDiscountable]
-            IServ[IServiceChargable]
-        end
-
-        subgraph service [com.hotel.service]
-            QLKS[QuanLyKhachSan]
-        end
-
-        subgraph view [com.hotel.view]
-            MF[MainFrame]
-            QLP[QuanLyPhongPanel]
-            CIP[CheckInPanel]
-            COP[CheckOutPanel]
-            CamDlg[CameraPreviewDialog]
-        end
+    subgraph com.hotel ["com.hotel (Root)"]
+        Main["Main.java"]
     end
 
-    Main --> view
-    Main --> service
-    view --> service
-    service --> model
+    subgraph com.hotel.model ["com.hotel.model"]
+        Phong["PhongKhachSan (Abstract)<br/>PhongStandard, PhongVIP, PhongPenthouse"]
+        Khach["KhachHang"]
+        Phieu["PhieuDatPhong"]
+    end
+
+    subgraph com.hotel.service ["com.hotel.service"]
+        Service["QuanLyKhachSan"]
+    end
+
+    subgraph com.hotel.view ["com.hotel.view"]
+        Console["ConsoleView"]
+        MainFrm["MainFrame"]
+        PnlPhong["QuanLyPhongPanel"]
+        PnlCheckIn["CheckInPanel (Webcam & Số ngày)"]
+        PnlCheckOut["CheckOutPanel"]
+    end
+
+    Main --> Service
+    Main --> Console
+    Main --> MainFrm
+    MainFrm --> PnlPhong
+    MainFrm --> PnlCheckIn
+    MainFrm --> PnlCheckOut
+
+    PnlCheckIn --> Service
+    PnlCheckOut --> Service
+    Console --> Service
+
+    Service --> Phong
+    Service --> Khach
+    Service --> Phieu

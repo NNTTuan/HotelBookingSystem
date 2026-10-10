@@ -1,49 +1,30 @@
-flowchart TD
-    subgraph ViewLayer ["Tầng Giao Diện (com.hotel.view)"]
-        MF["MainFrame"]
-        QLP["QuanLyPhongPanel - Grid 5 x 4"]
-        CIP["CheckInPanel"]
-        COP["CheckOutPanel"]
-        CAM_DLG["CameraPreviewDialog"]
+graph TD
+    subgraph Client ["Tầng Giao Diện (Presentation Layer)"]
+        CLI["💻 ConsoleView (CLI Mode)"]
+        GUI["🖥️ Java Swing GUI (MainFrame, CheckInPanel, CheckOutPanel)"]
     end
 
-    subgraph ServiceLayer ["Tầng Xử Lý Nghiệp Vụ (com.hotel.service)"]
-        QLKS["QuanLyKhachSan"]
+    subgraph Service ["Tầng Nghiệp Vụ (Business Logic Layer)"]
+        QLKS["☕ QuanLyKhachSan.java<br/>(Quản lý danh sách phòng, phiếu, tính tiền)"]
     end
 
-    subgraph ModelLayer ["Tầng Thực Thể Dữ Liệu (com.hotel.model)"]
-        PKS["PhongKhachSan - Abstract Class"]
-        STD["PhongStandard"]
-        VIP["PhongVIP"]
-        PNT["PhongPenthouse"]
-        KH["KhachHang"]
-        PDP["PhieuDatPhong"]
+    subgraph Model ["Tầng Thực Thể (Data Model Layer)"]
+        PH["☕ PhongKhachSan (Abstract)<br/>- PhongStandard<br/>- PhongVIP<br/>- PhongPenthouse"]
+        KH["☕ KhachHang<br/>(Họ tên, CCCD, SĐT, Ảnh)"]
+        PDP["☕ PhieuDatPhong<br/>(Mã phiếu, Số ngày thuê, Trạng thái)"]
     end
 
-    subgraph StorageLayer ["Tầng Lưu Trữ (Java File I/O)"]
-        TXT_PHONG[("data/phong.txt")]
-        TXT_PHIEU[("data/phieudatphong.txt")]
-        IMG_FOLDER[("data/images/*.jpg")]
-    end
+subgraph Storage ["Tầng Lưu Trữ (Data Access / Flat-File)"]
+F1[(📄 phong.txt)]
+F2[(📄 phieudatphong.txt)]
+F3[(📷 data/images/)]
+end
 
-    MF --> QLP
-    MF --> CIP
-    MF --> COP
-
-    CIP --> CAM_DLG
-
-    QLP --> QLKS
-    CIP --> QLKS
-    COP --> QLKS
-
-    QLKS --> PKS
-    QLKS --> PDP
-    PDP --> KH
-
-    PKS --- STD
-    PKS --- VIP
-    PKS --- PNT
-
-    QLKS <--> TXT_PHONG
-    QLKS <--> TXT_PHIEU
-    CAM_DLG --> IMG_FOLDER
+CLI --> QLKS
+GUI --> QLKS
+QLKS --> PH
+QLKS --> KH
+QLKS --> PDP
+QLKS --> F1
+QLKS --> F2
+KH --> F3
