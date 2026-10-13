@@ -68,32 +68,37 @@ HotelBookingSystem/
 │       └── 📁 java/
 │           └── 📁 com/
 │               └── 📁 hotel/
-│                   ├── ☕ Main.java                # Điểm khởi chạy ứng dụng (Entry Point)
+│                   ├── 🚀 Main.java                # Điểm khởi chạy ứng dụng (Entry Point)
 │                   │
 │                   ├── 📁 model/                   # Tầng đối tượng thực thể (OOP Entity)
-│                   │   ├── 🔌 IDiscountable.java       # Interface tính năng giảm giá
-│                   │   ├── 🔌 IServiceChargable.java   # Interface tính phí dịch vụ
-│                   │   ├── ☕ KhachHang.java           # Đối tượng khách hàng
-│                   │   ├── ☕ PhieuDatPhong.java       # Đối tượng phiếu lưu trú & tính tiền
-│                   │   ├── ☕ PhongKhachSan.java       # Lớp trừu tượng (Abstract Class)
-│                   │   ├── ☕ PhongPenthouse.java      # Đối tượng phòng Penthouse
-│                   │   ├── ☕ PhongStandard.java       # Đối tượng phòng Standard
-│                   │   └── ☕ PhongVIP.java            # Đối tượng phòng VIP
+│                   │   ├── 📋 IDiscountable.java       # Interface định nghĩa quy tắc giảm giá
+│                   │   ├── 📋 IServiceChargable.java   # Interface định nghĩa quy tắc tính phí dịch vụ
+│                   │   ├── 👤 KhachHang.java           # Lớp thực thể thông tin khách hàng
+│                   │   ├── 🎫 PhieuDatPhong.java       # Lớp thực thể phiếu lưu trú & tính tiền
+│                   │   ├── 🏛️ PhongKhachSan.java       # Lớp cơ sở trừu tượng đại diện phòng
+│                   │   ├── 🏢 PhongPenthouse.java      # Lớp cụ thể dòng phòng Penthouse cao cấp
+│                   │   ├── 🛏️ PhongStandard.java       # Lớp cụ thể dòng phòng tiêu chuẩn
+│                   │   └── 👑 PhongVIP.java            # Lớp cụ thể dòng phòng VIP
 │                   │
 │                   ├── 📁 service/                 # Tầng nghiệp vụ & Quản lý File I/O
-│                   │   └── ☕ QuanLyKhachSan.java      # Xử lý logic nghiệp vụ toàn hệ thống
+│                   │   └── ⚙️ QuanLyKhachSan.java      # Điều phối logic nghiệp vụ & đọc/ghi tệp phẳng
 │                   │
 │                   └── 📁 view/                    # Tầng giao diện (Console CLI & Java Swing GUI)
-│                       ├── 💻 ConsoleView.java         # Giao diện dòng lệnh (CLI Mode)
-│                       ├── 🖼️ MainFrame.java           # Cửa sổ chính quản lý Tab hiện đại
-│                       ├── 🔲 QuanLyPhongPanel.java    # Sơ đồ ma trận 20 phòng trực quan
-│                       ├── 📝 CheckInPanel.java        # Màn hình Check-in (Nhập thông tin, số ngày & Webcam)
-│                       ├── 💰 CheckOutPanel.java       # Màn hình Check-out, tra cứu CCCD & in hóa đơn
-│                       └── 📁 components/
-│                           └── 📷 CameraPreviewDialog.java # Hộp thoại tích hợp Webcam chụp ảnh
+│                       ├── 📁 components/
+│                       │   └── 📷 CameraPreviewDialog.java # Hộp thoại tích hợp Webcam chụp ảnh khuôn mặt
+│                       ├── 📁 console/             # Tầng điều khiển giao diện dòng lệnh
+│                       │   ├── 📥 CheckInConsoleHandler.java  # Xử lý logic nghiệp vụ Check-in qua dòng lệnh
+│                       │   ├── 📤 CheckOutConsoleHandler.java # Xử lý logic nghiệp vụ Check-out & hóa đơn qua dòng lệnh
+│                       │   └── 🧹 PhongConsoleHandler.java    # Xử lý hiển thị danh sách & xác nhận dọn phòng qua dòng lệnh
+│                       ├── 📁 gui/                 # Tầng giao diện đồ họa Java Swing
+│                       │   ├── 📝 CheckInPanel.java        # Giao diện màn hình Check-in & điều khiển Webcam
+│                       │   └── 💳 CheckOutPanel.java       # Giao diện màn hình thanh toán & in hóa đơn
+│                       ├── 💻 ConsoleView.java         # Điều hướng menu tương tác dòng lệnh chính
+│                       ├── 🪟 MainFrame.java           # Khung cửa sổ chính quản lý Tab giao diện Swing
+│                       └── 🔲 QuanLyPhongPanel.java    # Sơ đồ lưới ma trận 20 phòng trực quan thời gian thực
 │
-├── ☕ pom.xml                              # Quản lý cấu hình Maven dependencies (Webcam Capture, etc.)
-└── 📖 README.md                            # Tài liệu hướng dẫn sử dụng dự án chi tiết
+├── ⚙️ pom.xml                              # Quản lý cấu hình Maven dependencies (Webcam Capture API, v.v.)
+└── 📖 README.md                            # Tài liệu hướng dẫn sử dụng và giới thiệu dự án chi tiết
 ```
 
 ---
