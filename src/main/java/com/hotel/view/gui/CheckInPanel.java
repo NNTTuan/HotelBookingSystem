@@ -1,4 +1,4 @@
-package com.hotel.view;
+package com.hotel.view.gui;
 
 import com.hotel.model.KhachHang;
 import com.hotel.model.PhongKhachSan;

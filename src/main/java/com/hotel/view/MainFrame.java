@@ -1,6 +1,7 @@
 package com.hotel.view;
 
 import com.hotel.service.QuanLyKhachSan;
+import com.hotel.view.gui.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
