@@ -45,46 +45,55 @@
 
 ```text
 HotelBookingSystem/
+├── 📁 data/                                # Thư mục chứa Flat-File lưu trữ dữ liệu hệ thống
+│   ├── 📄 phong.txt                        # Lưu danh sách 20 phòng & trạng thái thời gian thực
+│   ├── 📄 phieudatphong.txt                # Lưu thông tin phiếu đặt/lưu trú & số ngày thuê
+│   └── 📁 images/                          # Thư mục lưu ảnh chân dung khách chụp từ Webcam
 │
-├── 📁 data/                        # Thư mục chứa Flat-File lưu trữ dữ liệu hệ thống
-│   ├── 📄 phong.txt                # Lưu danh sách 20 phòng & trạng thái thời gian thực
-│   ├── 📄 phieudatphong.txt        # Lưu thông tin phiếu đặt/lưu trú & số ngày thuê
-│   └── 📷 images/                  # Thư mục lưu ảnh chân dung khách chụp từ Webcam
-│
-├── 📁 docs/                        # Tài liệu thiết kế & Sơ đồ hệ thống (.mmd)
-│   ├── 📊 architecture.mmd         # Sơ đồ kiến trúc tổng quan hệ thống
-│   ├── 🔄 sequence_checkin.mmd     # Sơ đồ tuần tự quy trình Check-in
-│   ├── 💵 sequence_checkout.mmd    # Sơ đồ tuần tự quy trình Check-out & thanh toán
-│   ├── 🎯 activity_checkin.mmd     # Sơ đồ hoạt động Check-in chi tiết
-│   └── 🔀 room_state.mmd           # Sơ đồ trạng thái vòng đời của phòng
+├── 📁 docs/                                # Tài liệu thiết kế & Sơ đồ hệ thống (.mmd)
+│   └── 📁 diagrams/
+│       ├── 📊 activity_checkin.mmd         # Sơ đồ hoạt động Check-in chi tiết
+│       ├── 📊 architecture.mmd             # Sơ đồ kiến trúc tổng quan hệ thống
+│       ├── 📊 class_diagram.mmd            # Sơ đồ lớp (Class diagram)
+│       ├── 📊 component_diagram.mmd        # Sơ đồ thành phần hệ thống
+│       ├── 📊 erd_data_model.mmd           # Sơ đồ thực thể liên kết (ERD)
+│       ├── 📊 package_diagram.mmd          # Sơ đồ gói hệ thống
+│       ├── 📊 room_state.mmd               # Sơ đồ trạng thái vòng đời của phòng
+│       ├── 📊 sequence_checkin.mmd         # Sơ đồ tuần tự quy trình Check-in
+│       ├── 📊 sequence_checkout.mmd        # Sơ đồ tuần tự quy trình Check-out & thanh toán
+│       └── 📊 usecase_diagram.mmd          # Sơ đồ Use Case tổng quan
 │
 ├── 📁 src/
 │   └── 📁 main/
 │       └── 📁 java/
 │           └── 📁 com/
 │               └── 📁 hotel/
-│                   ├── ☕ Main.java              # Điểm khởi chạy ứng dụng (Entry Point)
+│                   ├── ☕ Main.java                # Điểm khởi chạy ứng dụng (Entry Point)
 │                   │
-│                   ├── 📁 model/                 # Tầng đối tượng thực thể (OOP Entity)
-│                   │   ├── ☕ PhongKhachSan.java # Lớp trừu tượng (Abstract Class)
-│                   │   ├── ☕ PhongStandard.java # Đối tượng phòng Standard
-│                   │   ├── ☕ PhongVIP.java        # Đối tượng phòng VIP
-│                   │   ├── ☕ PhongPenthouse.java  # Đối tượng phòng Penthouse
-│                   │   ├── ☕ KhachHang.java       # Đối tượng khách hàng
-│                   │   └── ☕ PhieuDatPhong.java   # Đối tượng phiếu lưu trú & tính tiền
+│                   ├── 📁 model/                   # Tầng đối tượng thực thể (OOP Entity)
+│                   │   ├── 🔌 IDiscountable.java       # Interface tính năng giảm giá
+│                   │   ├── 🔌 IServiceChargable.java   # Interface tính phí dịch vụ
+│                   │   ├── ☕ KhachHang.java           # Đối tượng khách hàng
+│                   │   ├── ☕ PhieuDatPhong.java       # Đối tượng phiếu lưu trú & tính tiền
+│                   │   ├── ☕ PhongKhachSan.java       # Lớp trừu tượng (Abstract Class)
+│                   │   ├── ☕ PhongPenthouse.java      # Đối tượng phòng Penthouse
+│                   │   ├── ☕ PhongStandard.java       # Đối tượng phòng Standard
+│                   │   └── ☕ PhongVIP.java            # Đối tượng phòng VIP
 │                   │
-│                   ├── 📁 service/               # Tầng nghiệp vụ & Quản lý File I/O
-│                   │   └── ☕ QuanLyKhachSan.java# Xử lý logic nghiệp vụ toàn hệ thống
+│                   ├── 📁 service/                 # Tầng nghiệp vụ & Quản lý File I/O
+│                   │   └── ☕ QuanLyKhachSan.java      # Xử lý logic nghiệp vụ toàn hệ thống
 │                   │
-│                   └── 📁 view/                  # Tầng giao diện (Console CLI & Java Swing GUI)
-│                       ├── 💻 ConsoleView.java   # Giao diện dòng lệnh (CLI Mode)
-│                       ├── 🖼️ MainFrame.java     # Cửa sổ chính quản lý Tab hiện đại
-│                       ├── 🗂️ QuanLyPhongPanel.java # Sơ đồ ma trận 20 phòng trực quan
-│                       ├── 📝 CheckInPanel.java  # Màn hình Check-in (Nhập thông tin, số ngày & Webcam)
-│                       └── 💰 CheckOutPanel.java # Màn hình Check-out, tra cứu CCCD & in hóa đơn
+│                   └── 📁 view/                    # Tầng giao diện (Console CLI & Java Swing GUI)
+│                       ├── 💻 ConsoleView.java         # Giao diện dòng lệnh (CLI Mode)
+│                       ├── 🖼️ MainFrame.java           # Cửa sổ chính quản lý Tab hiện đại
+│                       ├── 🔲 QuanLyPhongPanel.java    # Sơ đồ ma trận 20 phòng trực quan
+│                       ├── 📝 CheckInPanel.java        # Màn hình Check-in (Nhập thông tin, số ngày & Webcam)
+│                       ├── 💰 CheckOutPanel.java       # Màn hình Check-out, tra cứu CCCD & in hóa đơn
+│                       └── 📁 components/
+│                           └── 📷 CameraPreviewDialog.java # Hộp thoại tích hợp Webcam chụp ảnh
 │
-├── ⚙️ pom.xml                      # Quản lý cấu hình Maven dependencies (Webcam Capture, etc.)
-└── 📖 README.md                    # Tài liệu hướng dẫn sử dụng dự án chi tiết
+├── ☕ pom.xml                              # Quản lý cấu hình Maven dependencies (Webcam Capture, etc.)
+└── 📖 README.md                            # Tài liệu hướng dẫn sử dụng dự án chi tiết
 ```
 
 ---
