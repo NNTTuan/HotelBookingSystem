@@ -11,7 +11,6 @@ public class ConsoleView {
     private final QuanLyKhachSan qlks;
     private final Scanner sc;
 
-    // Các handler riêng biệt cho từng chức năng
     private final PhongConsoleHandler phongHandler;
     private final CheckInConsoleHandler checkInHandler;
     private final CheckOutConsoleHandler checkOutHandler;
@@ -34,12 +33,28 @@ public class ConsoleView {
             sc.nextLine();
 
             switch (option) {
-                case 1 -> phongHandler.hienThiDanhSachPhong();
-                case 2 -> checkInHandler.thucHienCheckIn();
-                case 3 -> checkOutHandler.thucHienCheckOut();
-                case 4 -> phongHandler.xacNhanDonDep();
-                case 0 -> System.out.println("\nCảm ơn bạn đã sử dụng phần mềm Quản lý Khách sạn!");
-                default -> System.out.println("\n[LỖI] Lựa chọn không hợp lệ! Vui lòng chọn số từ 0 đến 4.");
+                case 1: {
+                    phongHandler.hienThiDanhSachPhong();
+                    break;
+                }
+                case 2: {
+                    checkInHandler.thucHienCheckIn();
+                    break;
+                }
+                case 3:
+                    checkOutHandler.thucHienCheckOut();
+                    break;
+                case 4: {
+                    phongHandler.xacNhanDonDep();
+                    break;
+                }
+                case 0: {
+                    System.out.println("\nCảm ơn bạn đã sử dụng phần mềm Quản lý Khách sạn!");
+                    break;
+                }
+                default: {
+                    System.out.println("\n[LỖI] Lựa chọn không hợp lệ! Vui lòng chọn số từ 0 đến 4.");
+                }
             }
         } while (option != 0);
     }

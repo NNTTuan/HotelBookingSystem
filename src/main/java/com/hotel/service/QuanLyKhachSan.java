@@ -30,7 +30,6 @@ public class QuanLyKhachSan {
         return danhSachPhieu;
     }
 
-    // 1. Quản lý File Phòng
     private List<PhongKhachSan> khoiTao20Phong() {
         List<PhongKhachSan> ds = new ArrayList<>();
         for (int tang = 1; tang <= 5; tang++) {
@@ -100,7 +99,6 @@ public class QuanLyKhachSan {
         }
     }
 
-    // 2. Quản lý File Phiếu Đặt Phòng
     public List<PhieuDatPhong> docFilePhieu() {
         List<PhieuDatPhong> ds = new ArrayList<>();
         File file = new File(FILE_PHIEU);
@@ -178,7 +176,6 @@ public class QuanLyKhachSan {
         return null;
     }
 
-    // 3. Nghiệp vụ Check-In (Đã bổ sung tham số soNgayThue)
     public boolean checkIn(int soPhong, KhachHang khach, int soNgayThue) {
         PhongKhachSan phong = timPhong(soPhong);
         if (phong == null || !"TRONG".equalsIgnoreCase(phong.getTrangThai())) {

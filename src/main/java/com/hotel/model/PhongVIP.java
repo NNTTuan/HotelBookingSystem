@@ -11,7 +11,6 @@ public class PhongVIP extends PhongKhachSan implements IDiscountable, IServiceCh
         super(soPhong, tang, "VIP", trangThai, giaCoBan);
     }
 
-    // --- Triển khai IServiceChargable ---
     @Override
     public double getPhiDichVu() {
         return 200000.0; // Phí dịch vụ VIP
@@ -22,7 +21,6 @@ public class PhongVIP extends PhongKhachSan implements IDiscountable, IServiceCh
         return getPhiDichVu();
     }
 
-    // --- Triển khai IDiscountable ---
     @Override
     public double getTiLeGiamGia() {
         return 0.05; // Giảm giá 5% (0.05)
@@ -33,7 +31,6 @@ public class PhongVIP extends PhongKhachSan implements IDiscountable, IServiceCh
         return tongTienGoc * getTiLeGiamGia();
     }
 
-    // --- Tính tổng tiền thuê bao gồm VAT ---
     @Override
     public double tinhTienThue(int soNgay) {
         return tinhTienTruocThue(soNgay) * (1 + THUE_VAT);

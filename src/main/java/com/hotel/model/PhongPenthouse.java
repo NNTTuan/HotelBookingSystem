@@ -11,10 +11,9 @@ public class PhongPenthouse extends PhongKhachSan implements IServiceChargable, 
         super(soPhong, tang, "Penthouse", trangThai, giaCoBan);
     }
 
-    // --- Triển khai IServiceChargable ---
     @Override
     public double getPhiDichVu() {
-        return 500000.0; // Phí dịch vụ Penthouse
+        return 500000.0;
     }
 
     @Override
@@ -22,7 +21,6 @@ public class PhongPenthouse extends PhongKhachSan implements IServiceChargable, 
         return getPhiDichVu();
     }
 
-    // --- Triển khai IDiscountable ---
     @Override
     public double getTiLeGiamGia() {
         return 0.10; // Giảm giá 10% (0.10)
@@ -33,7 +31,6 @@ public class PhongPenthouse extends PhongKhachSan implements IServiceChargable, 
         return tongTienGoc * getTiLeGiamGia();
     }
 
-    // --- Tính tổng tiền thuê bao gồm VAT ---
     @Override
     public double tinhTienThue(int soNgay) {
         return tinhTienTruocThue(soNgay) * (1 + THUE_VAT);
