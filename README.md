@@ -63,39 +63,35 @@ HotelBookingSystem/
 │       ├── 📊 sequence_checkout.mmd        # Sơ đồ tuần tự quy trình Check-out & thanh toán
 │       └── 📊 usecase_diagram.mmd          # Sơ đồ Use Case tổng quan
 │
-├── 📁 src/
-│   └── 📁 main/
-│       └── 📁 java/
-│           └── 📁 com/
-│               └── 📁 hotel/
-│                   ├── 🚀 Main.java                # Điểm khởi chạy ứng dụng (Entry Point)
-│                   │
-│                   ├── 📁 model/                   # Tầng đối tượng thực thể (OOP Entity)
-│                   │   ├── 📋 IDiscountable.java       # Interface định nghĩa quy tắc giảm giá
-│                   │   ├── 📋 IServiceChargable.java   # Interface định nghĩa quy tắc tính phí dịch vụ
-│                   │   ├── 👤 KhachHang.java           # Lớp thực thể thông tin khách hàng
-│                   │   ├── 🎫 PhieuDatPhong.java       # Lớp thực thể phiếu lưu trú & tính tiền
-│                   │   ├── 🏛️ PhongKhachSan.java       # Lớp cơ sở trừu tượng đại diện phòng
-│                   │   ├── 🏢 PhongPenthouse.java      # Lớp cụ thể dòng phòng Penthouse cao cấp
-│                   │   ├── 🛏️ PhongStandard.java       # Lớp cụ thể dòng phòng tiêu chuẩn
-│                   │   └── 👑 PhongVIP.java            # Lớp cụ thể dòng phòng VIP
-│                   │
-│                   ├── 📁 service/                 # Tầng nghiệp vụ & Quản lý File I/O
-│                   │   └── ⚙️ QuanLyKhachSan.java      # Điều phối logic nghiệp vụ & đọc/ghi tệp phẳng
-│                   │
-│                   └── 📁 view/                    # Tầng giao diện (Console CLI & Java Swing GUI)
-│                       ├── 📁 components/
-│                       │   └── 📷 CameraPreviewDialog.java # Hộp thoại tích hợp Webcam chụp ảnh khuôn mặt
-│                       ├── 📁 console/             # Tầng điều khiển giao diện dòng lệnh
-│                       │   ├── 📥 CheckInConsoleHandler.java  # Xử lý logic nghiệp vụ Check-in qua dòng lệnh
-│                       │   ├── 📤 CheckOutConsoleHandler.java # Xử lý logic nghiệp vụ Check-out & hóa đơn qua dòng lệnh
-│                       │   └── 🧹 PhongConsoleHandler.java    # Xử lý hiển thị danh sách & xác nhận dọn phòng qua dòng lệnh
-│                       ├── 📁 gui/                 # Tầng giao diện đồ họa Java Swing
-│                       │   ├── 📝 CheckInPanel.java        # Giao diện màn hình Check-in & điều khiển Webcam
-│                       │   └── 💳 CheckOutPanel.java       # Giao diện màn hình thanh toán & in hóa đơn
-│                       ├── 💻 ConsoleView.java         # Điều hướng menu tương tác dòng lệnh chính
-│                       ├── 🪟 MainFrame.java           # Khung cửa sổ chính quản lý Tab giao diện Swing
-│                       └── 🔲 QuanLyPhongPanel.java    # Sơ đồ lưới ma trận 20 phòng trực quan thời gian thực
+├── 📁 src/ main/ java/ com/ hotel/
+│      ├── 🚀 Main.java                # Điểm khởi chạy ứng dụng (Entry Point)
+│      │
+│      ├── 📁 model/                   # Tầng đối tượng thực thể (OOP Entity)
+│      │   ├── 📋 IDiscountable.java       # Interface định nghĩa quy tắc giảm giá
+│      │   ├── 📋 IServiceChargable.java   # Interface định nghĩa quy tắc tính phí dịch vụ
+│      │   ├── 👤 KhachHang.java           # Lớp thực thể thông tin khách hàng
+│      │   ├── 🎫 PhieuDatPhong.java       # Lớp thực thể phiếu lưu trú & tính tiền
+│      │   ├── 🏛️ PhongKhachSan.java       # Lớp cơ sở trừu tượng đại diện phòng
+│      │   ├── 🏢 PhongPenthouse.java      # Lớp cụ thể dòng phòng Penthouse cao cấp
+│      │   ├── 🛏️ PhongStandard.java       # Lớp cụ thể dòng phòng tiêu chuẩn
+│      │   └── 👑 PhongVIP.java            # Lớp cụ thể dòng phòng VIP
+│      │
+│      ├── 📁 service/                 # Tầng nghiệp vụ & Quản lý File I/O
+│      │   └── ⚙️ QuanLyKhachSan.java      # Điều phối logic nghiệp vụ & đọc/ghi tệp phẳng
+│      │
+│      └── 📁 view/                    # Tầng giao diện (Console CLI & Java Swing GUI)
+│          ├── 📁 components/
+│          │   └── 📷 CameraPreviewDialog.java # Hộp thoại tích hợp Webcam chụp ảnh khuôn mặt
+│          ├── 📁 console/             # Tầng điều khiển giao diện dòng lệnh
+│          │   ├── 📥 CheckInConsoleHandler.java  # Xử lý logic nghiệp vụ Check-in qua dòng lệnh
+│          │   ├── 📤 CheckOutConsoleHandler.java # Xử lý logic nghiệp vụ Check-out & hóa đơn qua dòng lệnh
+│          │   └── 🧹 PhongConsoleHandler.java    # Xử lý hiển thị danh sách & xác nhận dọn phòng qua dòng lệnh
+│          ├── 📁 gui/                 # Tầng giao diện đồ họa Java Swing
+│          │   ├── 📝 CheckInPanel.java        # Giao diện màn hình Check-in & điều khiển Webcam
+│          │   └── 💳 CheckOutPanel.java       # Giao diện màn hình thanh toán & in hóa đơn
+│          ├── 💻 ConsoleView.java         # Điều hướng menu tương tác dòng lệnh chính
+│          ├── 🪟 MainFrame.java           # Khung cửa sổ chính quản lý Tab giao diện Swing
+│          └── 🔲 QuanLyPhongPanel.java    # Sơ đồ lưới ma trận 20 phòng trực quan thời gian thực
 │
 ├── ⚙️ pom.xml                              # Quản lý cấu hình Maven dependencies (Webcam Capture API, v.v.)
 └── 📖 README.md                            # Tài liệu hướng dẫn sử dụng và giới thiệu dự án chi tiết
