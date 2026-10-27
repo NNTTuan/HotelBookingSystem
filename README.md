@@ -44,58 +44,95 @@
 ## 📂 Cấu Trúc Dự Án (Project Structure)
 
 ```text
-HotelBookingSystem/
-├── 📁 data/                                # Thư mục chứa Flat-File lưu trữ dữ liệu hệ thống
-│   ├── 📄 phong.txt                        # Lưu danh sách 20 phòng & trạng thái thời gian thực
-│   ├── 📄 phieudatphong.txt                # Lưu thông tin phiếu đặt/lưu trú & số ngày thuê
-│   └── 📁 images/                          # Thư mục lưu ảnh chân dung khách chụp từ Webcam
+# 🏨 Hotel Booking System
+
+## 📂 Cấu trúc thư mục dự án
+
+```text
+🏨 HotelBookingSystem/
 │
-├── 📁 docs/                                # Tài liệu thiết kế & Sơ đồ hệ thống (.mmd)
-│   └── 📁 diagrams/
-│       ├── 📊 activity_checkin.mmd         # Sơ đồ hoạt động Check-in chi tiết
-│       ├── 📊 architecture.mmd             # Sơ đồ kiến trúc tổng quan hệ thống
-│       ├── 📊 class_diagram.mmd            # Sơ đồ lớp (Class diagram)
-│       ├── 📊 component_diagram.mmd        # Sơ đồ thành phần hệ thống
-│       ├── 📊 erd_data_model.mmd           # Sơ đồ thực thể liên kết (ERD)
-│       ├── 📊 package_diagram.mmd          # Sơ đồ gói hệ thống
-│       ├── 📊 room_state.mmd               # Sơ đồ trạng thái vòng đời của phòng
-│       ├── 📊 sequence_checkin.mmd         # Sơ đồ tuần tự quy trình Check-in
-│       ├── 📊 sequence_checkout.mmd        # Sơ đồ tuần tự quy trình Check-out & thanh toán
-│       └── 📊 usecase_diagram.mmd          # Sơ đồ Use Case tổng quan
+├── 📁 data/                                      # 💾 Dữ liệu hệ thống
+│   ├── 🖼️ images/                                # Hình ảnh và tài nguyên
+│   ├── 📄 phieudatphong.txt                       # Dữ liệu phiếu đặt phòng
+│   └── 📄 phong.txt                              # Dữ liệu phòng khách sạn
 │
-├── 📁 src/ main/ java/ com/ hotel/
-│      ├── 🚀 Main.java                # Điểm khởi chạy ứng dụng (Entry Point)
-│      │
-│      ├── 📁 model/                   # Tầng đối tượng thực thể (OOP Entity)
-│      │   ├── 📋 IDiscountable.java       # Interface định nghĩa quy tắc giảm giá
-│      │   ├── 📋 IServiceChargable.java   # Interface định nghĩa quy tắc tính phí dịch vụ
-│      │   ├── 👤 KhachHang.java           # Lớp thực thể thông tin khách hàng
-│      │   ├── 🎫 PhieuDatPhong.java       # Lớp thực thể phiếu lưu trú & tính tiền
-│      │   ├── 🏛️ PhongKhachSan.java       # Lớp cơ sở trừu tượng đại diện phòng
-│      │   ├── 🏢 PhongPenthouse.java      # Lớp cụ thể dòng phòng Penthouse cao cấp
-│      │   ├── 🛏️ PhongStandard.java       # Lớp cụ thể dòng phòng tiêu chuẩn
-│      │   └── 👑 PhongVIP.java            # Lớp cụ thể dòng phòng VIP
-│      │
-│      ├── 📁 service/                 # Tầng nghiệp vụ & Quản lý File I/O
-│      │   └── ⚙️ QuanLyKhachSan.java      # Điều phối logic nghiệp vụ & đọc/ghi tệp phẳng
-│      │
-│      └── 📁 view/                    # Tầng giao diện (Console CLI & Java Swing GUI)
-│          ├── 📁 components/
-│          │   └── 📷 CameraPreviewDialog.java # Hộp thoại tích hợp Webcam chụp ảnh khuôn mặt
-│          ├── 📁 console/             # Tầng điều khiển giao diện dòng lệnh
-│          │   ├── 📥 CheckInConsoleHandler.java  # Xử lý logic nghiệp vụ Check-in qua dòng lệnh
-│          │   ├── 📤 CheckOutConsoleHandler.java # Xử lý logic nghiệp vụ Check-out & hóa đơn qua dòng lệnh
-│          │   └── 🧹 PhongConsoleHandler.java    # Xử lý hiển thị danh sách & xác nhận dọn phòng qua dòng lệnh
-│          ├── 📁 gui/                 # Tầng giao diện đồ họa Java Swing
-│          │   ├── 📝 CheckInPanel.java        # Giao diện màn hình Check-in & điều khiển Webcam
-│          │   └── 💳 CheckOutPanel.java       # Giao diện màn hình thanh toán & in hóa đơn
-│          ├── 💻 ConsoleView.java         # Điều hướng menu tương tác dòng lệnh chính
-│          ├── 🪟 MainFrame.java           # Khung cửa sổ chính quản lý Tab giao diện Swing
-│          └── 🔲 QuanLyPhongPanel.java    # Sơ đồ lưới ma trận 20 phòng trực quan thời gian thực
+├── 📁 docs/                                      # 📚 Tài liệu dự án
+│   └── 📁 diagrams/                              # 📊 Sơ đồ phân tích và thiết kế
+│       ├── 🔄 activity_checkin.mmd                # Sơ đồ hoạt động nhận phòng
+│       ├── 🏗️ architecture.mmd                   # Sơ đồ kiến trúc hệ thống
+│       ├── 🧩 class_diagram.mmd                  # Sơ đồ lớp (Class Diagram)
+│       ├── 🧱 component_diagram.mmd              # Sơ đồ thành phần (Component Diagram)
+│       ├── 🗃️ erd_data_model.mmd                 # Sơ đồ mô hình dữ liệu (ERD)
+│       ├── 📦 package_diagram.mmd                # Sơ đồ gói (Package Diagram)
+│       ├── 🚦 room_state.mmd                     # Sơ đồ trạng thái phòng
+│       ├── 🔀 sequence_checkin.mmd                # Sơ đồ tuần tự nhận phòng
+│       ├── 🔀 sequence_checkout.mmd               # Sơ đồ tuần tự trả phòng
+│       └── 👥 usecase_diagram.mmd                 # Sơ đồ ca sử dụng (Use Case)
 │
-├── ⚙️ pom.xml                              # Quản lý cấu hình Maven dependencies (Webcam Capture API, v.v.)
-└── 📖 README.md                            # Tài liệu hướng dẫn sử dụng và giới thiệu dự án chi tiết
+├── 📁 src/                                       # 💻 Mã nguồn chương trình
+│   └── 📁 main/ java/ com/
+│       └── 📁 hotel/                     # 🏨 Package chính
+│           │
+│           ├── 📁 model/                 # 🗂️ Mô hình dữ liệu và nghiệp vụ
+│           │   ├── 🔌 IDiscountable.java # Interface giảm giá
+│           │   ├── 🔌 IServiceChargeable.java # Interface tính phí dịch vụ
+│           │   ├── 👤 KhachHang.java      # Thông tin khách hàng
+│           │   ├── 🧾 PhieuDatPhong.java  # Phiếu đặt phòng
+│           │   ├── 🏠 PhongKhachSan.java  # Lớp cơ sở phòng khách sạn
+│           │   ├── 🏢 PhongPenthouse.java # Loại phòng Penthouse
+│           │   ├── 🛏️ PhongStandard.java  # Loại phòng Standard
+│           │   └── ⭐ PhongVIP.java       # Loại phòng VIP
+│           │
+│           ├── 📁 service/                # ⚙️ Xử lý nghiệp vụ
+│           │   └── 🏨 QuanLyKhachSan.java # Quản lý khách sạn
+│           │
+│           ├── 📁 view/                   # 🎨 Giao diện người dùng
+│           │   │
+│           │   ├── 📁 components/         # 🧩 Thành phần giao diện dùng chung
+│           │   │   └── 📷 CameraPreviewDialog.java   # Hộp thoại xem trước camera
+│           │   │
+│           │   ├── 📁 console/            # ⌨️ Giao diện dòng lệnh
+│           │   │   ├── 📥 CheckInConsoleHandler.java  # Xử lý nhận phòng
+│           │   │   ├── 📤 CheckOutConsoleHandler.java # Xử lý trả phòng
+│           │   │   └── 🏠 PhongConsoleHandler.java  # Xử lý quản lý phòng
+│           │   │
+│           │   ├── 📁 gui/                # 🖥️ Giao diện đồ họa Swing
+│           │   │   ├── 📈 BieuDoDoanhThuPanel.java  # Biểu đồ doanh thu
+│           │   │   ├── 📊 BieuDoDoanhThuTheoLoaiPanel.java   # Doanh thu theo loại phòng
+│           │   │   ├── 📥 CheckInPanel.java   # Giao diện nhận phòng
+│           │   │   ├── 📤 CheckOutPanel.java   # Giao diện trả phòng
+│           │   │   └── 📋 ThongKePanel.java   # Giao diện thống kê
+│           │   │
+│           │   ├── 🖥️ ConsoleView.java     # Giao diện console chính
+│           │   ├── 🪟 MainFrame.java       # Cửa sổ chính của ứng dụng
+│           │   └── 🏠 QuanLyPhongPanel.java   # Giao diện quản lý phòng
+│           │
+│           └── 🚀 Main.java                # Điểm khởi chạy chương trình
+│
+├── 📁 target/                                    # 🏗️ Kết quả biên dịch Maven
+│
+├── 📜 pom.xml                                    # ⚙️ Cấu hình Maven và thư viện
+│
+└── 📘 README.md                                  # 📖 Tài liệu giới thiệu dự án
 ```
+
+## 📝 Chú thích các thư mục chính
+
+| 📁 Thành phần | 🎯 Chức năng |
+|---|---|
+| `data/` | Lưu dữ liệu phòng, phiếu đặt phòng và hình ảnh. |
+| `docs/diagrams/` | Lưu sơ đồ UML, kiến trúc và mô hình dữ liệu bằng Mermaid. |
+| `model/` | Quản lý các lớp dữ liệu, loại phòng và interface nghiệp vụ. |
+| `service/` | Xử lý nghiệp vụ và điều phối hoạt động quản lý khách sạn. |
+| `view/console/` | Xử lý tương tác thông qua giao diện dòng lệnh. |
+| `view/gui/` | Chứa các màn hình giao diện đồ họa Swing. |
+| `view/components/` | Chứa những thành phần giao diện có thể tái sử dụng. |
+| `Main.java` | Khởi chạy chương trình. |
+| `pom.xml` | Quản lý cấu hình build và các thư viện phụ thuộc. |
+| `target/` | Chứa sản phẩm biên dịch do Maven tạo ra. |
+
+> 💡 **Lưu ý:** Emoji trong cây thư mục chỉ mang tính trang trí cho README, không phải tên thư mục hoặc tên file thực tế. Thư mục `target/` thường không cần đưa lên Git vì Maven có thể tự tạo lại khi build dự án.
+
 
 ---
 
