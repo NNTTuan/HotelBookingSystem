@@ -85,7 +85,7 @@ Doanh thu trong thống kê được cộng từ các phiếu có trạng thái 
 │       ├── 🏗️ architecture.mmd                   # Sơ đồ kiến trúc tổng thể
 │       ├── 🧩 class_diagram.mmd                  # Sơ đồ lớp, nhóm Model/Service/View
 │       ├── 🧱 component_diagram.mmd              # Sơ đồ thành phần
-│       ├── 🗂️ flatfile_data_model.mmd             # Mô hình dữ liệu Flat-File
+│       ├── 🗂️ flatfile_data_model.mmd            # Mô hình dữ liệu Flat-File
 │       ├── 📦 package_diagram.mmd                # Sơ đồ package Java
 │       ├── 🚦 room_state.mmd                     # Sơ đồ trạng thái phòng
 │       ├── 🔀 sequence_checkin.mmd               # Sơ đồ tuần tự check-in
