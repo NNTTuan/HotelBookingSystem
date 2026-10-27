@@ -12,6 +12,7 @@ public class MainFrame extends JFrame {
     private QuanLyPhongPanel phongPanel;
     private CheckInPanel checkInPanel;
     private CheckOutPanel checkOutPanel;
+    private ThongKePanel thongKePanel; // 1. Khai báo panel thống kê
 
     public MainFrame() {
         setTitle("Hệ Thống Quản Lý Khách Sạn");
@@ -36,19 +37,24 @@ public class MainFrame extends JFrame {
         tabbedPane.setFont(new Font("Segoe UI", Font.BOLD, 13));
 
         phongPanel = new QuanLyPhongPanel(quanLyKhachSan);
+        thongKePanel = new ThongKePanel(quanLyKhachSan); // 2. Khởi tạo đối tượng ThongKePanel
 
+        // 3. Mở rộng cơ chế đồng bộ dữ liệu (refresh) cho cả bảng thống kê
         Runnable refreshAll = () -> {
             phongPanel.capNhatSoDoPhong();
             checkInPanel.loadDanhSachPhongTrong();
             checkOutPanel.loadDanhSachPhongDangO();
+            thongKePanel.capNhatDuLieuThongKe();
         };
 
         checkInPanel = new CheckInPanel(quanLyKhachSan, refreshAll);
         checkOutPanel = new CheckOutPanel(quanLyKhachSan, refreshAll);
 
+        // 4. Thêm các tab vào giao diện chính
         tabbedPane.addTab("Sơ Đồ Phòng (20 Phòng)", phongPanel);
         tabbedPane.addTab("Nhận Phòng (Check-In)", checkInPanel);
         tabbedPane.addTab("Trả Phòng (Check-Out)", checkOutPanel);
+        tabbedPane.addTab("Báo Cáo Thống Kê", thongKePanel); // Tab mới bổ sung
 
         tabbedPane.addChangeListener(e -> refreshAll.run());
 

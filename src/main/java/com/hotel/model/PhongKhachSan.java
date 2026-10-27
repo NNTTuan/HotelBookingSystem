@@ -57,7 +57,5 @@ public abstract class PhongKhachSan {
         return tinhTienTruocThue(soNgay) * THUE_VAT;
     }
 
-    public double tinhTienThue(int soNgay) {
-        return tinhTienTruocThue(soNgay) * (1 + THUE_VAT);
-    }
+    public abstract double tinhTienThue(int soNgay);
 }
