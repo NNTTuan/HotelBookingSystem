@@ -3,6 +3,7 @@ package com.hotel.view.gui;
 import com.hotel.model.KhachHang;
 import com.hotel.model.PhongKhachSan;
 import com.hotel.service.QuanLyKhachSan;
+import com.hotel.service.KhachHangValidator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -32,8 +33,7 @@ public class CheckInPanel extends JPanel {
         cardPanel.setBackground(Color.WHITE);
         cardPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(220, 224, 230), 1),
-                new EmptyBorder(30, 40, 30, 40)
-        ));
+                new EmptyBorder(30, 40, 30, 40)));
 
         // Tiêu đề card
         JLabel lblTitle = new JLabel("THÔNG TIN CHECK-IN KHÁCH HÀNG");
@@ -51,53 +51,73 @@ public class CheckInPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // 1. Họ và tên
-        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.3;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.3;
         JLabel lbl1 = new JLabel("Họ và Tên khách:");
         lbl1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         formGrid.add(lbl1, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 0.7;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.7;
         txtHoTen = new JTextField(20);
         txtHoTen.setPreferredSize(new Dimension(250, 30));
         formGrid.add(txtHoTen, gbc);
 
         // 2. CCCD
-        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0.3;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3;
         JLabel lbl2 = new JLabel("Số CCCD / Hộ chiếu:");
         lbl2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         formGrid.add(lbl2, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 1; gbc.weightx = 0.7;
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 0.7;
         txtCCCD = new JTextField(20);
         formGrid.add(txtCCCD, gbc);
 
         // 3. Số điện thoại
-        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0.3;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0.3;
         JLabel lbl3 = new JLabel("Số điện thoại:");
         lbl3.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         formGrid.add(lbl3, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 2; gbc.weightx = 0.7;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 0.7;
         txtSDT = new JTextField(20);
         formGrid.add(txtSDT, gbc);
 
         // 4. Số ngày thuê
-        gbc.gridx = 0; gbc.gridy = 3; gbc.weightx = 0.3;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 0.3;
         JLabel lbl4 = new JLabel("Số ngày thuê:");
         lbl4.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         formGrid.add(lbl4, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 3; gbc.weightx = 0.7;
-        txtSoNgayThue = new JTextField("1", 20);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.weightx = 0.7;
+        txtSoNgayThue = new JTextField(20);
         formGrid.add(txtSoNgayThue, gbc);
 
         // 5. Chọn phòng
-        gbc.gridx = 0; gbc.gridy = 4; gbc.weightx = 0.3;
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.weightx = 0.3;
         JLabel lbl5 = new JLabel("Chọn phòng nhận:");
         lbl5.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         formGrid.add(lbl5, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 4; gbc.weightx = 0.7;
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.weightx = 0.7;
         cbPhongTrong = new JComboBox<>();
         cbPhongTrong.setPreferredSize(new Dimension(250, 30));
         formGrid.add(cbPhongTrong, gbc);
@@ -162,15 +182,30 @@ public class CheckInPanel extends JPanel {
 
         String cccd = txtCCCD.getText().trim();
         if (cccd.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD trước khi chụp ảnh!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD trước khi chụp ảnh!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
             txtCCCD.requestFocus();
+            return;
+        }
+
+        try {
+            KhachHangValidator.kiemTraCCCD(cccd);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage(),
+                    "CCCD không hợp lệ",
+                    JOptionPane.WARNING_MESSAGE);
+
+            txtCCCD.requestFocusInWindow();
             return;
         }
 
         String fileName = "data/images/khach_" + cccd + ".jpg";
 
         // Tạo cửa sổ Dialog chứa Webcam
-        JDialog camDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Chụp ảnh khuôn mặt khách hàng", true);
+        JDialog camDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Chụp ảnh khuôn mặt khách hàng",
+                true);
         camDialog.setSize(500, 500);
         camDialog.setLocationRelativeTo(this);
         camDialog.setLayout(new BorderLayout());
@@ -178,7 +213,8 @@ public class CheckInPanel extends JPanel {
         // Sử dụng thư viện Webcam Capture (com.github.sarxos.webcam)
         com.github.sarxos.webcam.Webcam webcam = com.github.sarxos.webcam.Webcam.getDefault();
         if (webcam == null) {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy Webcam nào trên thiết bị của bạn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Không tìm thấy Webcam nào trên thiết bị của bạn!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -210,7 +246,8 @@ public class CheckInPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Chụp ảnh khuôn mặt thành công!");
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(camDialog, "Lỗi khi lưu ảnh: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(camDialog, "Lỗi khi lưu ảnh: " + ex.getMessage(), "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -232,44 +269,138 @@ public class CheckInPanel extends JPanel {
     }
 
     private void thucHienCheckIn() {
-        if (cbPhongTrong.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(this, "Không có phòng trống nào khả dụng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+
+    // 1. Kiem tra da chon phong hay chua.
+    if (cbPhongTrong.getSelectedItem() == null) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Vui long chon phong nhan!",
+                "Thieu thong tin",
+                JOptionPane.WARNING_MESSAGE
+        );
+        cbPhongTrong.requestFocusInWindow();
+        return;
+    }
+
+    // 2. Lay thong tin tu form.
+    String hoTen = txtHoTen.getText().trim();
+    String cccd = txtCCCD.getText().trim();
+    String sdt = txtSDT.getText().trim();
+    String soNgayText = txtSoNgayThue.getText().trim();
+
+    try {
+        // 3. Kiem tra cac thong tin bat buoc.
+        KhachHangValidator.kiemTraHoTen(hoTen);
+        KhachHangValidator.kiemTraCCCD(cccd);
+        KhachHangValidator.kiemTraSoDienThoai(sdt);
+
+        // 4. So ngay thue khong duoc de trong.
+        if (soNgayText.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vui long nhap so ngay thue!",
+                    "Thieu thong tin",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            txtSoNgayThue.requestFocusInWindow();
             return;
         }
 
+        // 5. Chuyen so ngay thue thanh so nguyen.
+        int soNgay;
+
         try {
-            int soPhong = Integer.parseInt(cbPhongTrong.getSelectedItem().toString());
-            String hoTen = txtHoTen.getText().trim();
-            String cccd = txtCCCD.getText().trim();
-            String sdt = txtSDT.getText().trim();
-            int soNgay = Integer.parseInt(txtSoNgayThue.getText().trim());
-
-            if (hoTen.isEmpty() || cccd.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ họ tên và CCCD!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            KhachHang khach = new KhachHang(hoTen, cccd, sdt, currentAnhPath);
-            boolean success = quanLyKhachSan.checkIn(soPhong, khach, soNgay);
-
-            if (success) {
-                JOptionPane.showMessageDialog(this, "Check-in thành công phòng " + soPhong + " (" + soNgay + " ngày)!");
-                // Clear form
-                txtHoTen.setText("");
-                txtCCCD.setText("");
-                txtSDT.setText("");
-                txtSoNgayThue.setText("1");
-                currentAnhPath = "none";
-                lblTrangThaiAnh.setText("Chưa có ảnh chụp");
-
-                if (onCheckInSuccess != null) {
-                    onCheckInSuccess.run();
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Check-in thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
+            soNgay = Integer.parseInt(soNgayText);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Số ngày thuê phải là kiểu số nguyên hợp lệ!", "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "So ngay thue phai la so nguyen hop le!",
+                    "Loi dinh dang",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            txtSoNgayThue.requestFocusInWindow();
+            return;
         }
+
+        // 6. So ngay thue phai lon hon 0.
+        KhachHangValidator.kiemTraSoNgayThue(soNgay);
+
+        // 7. Tao doi tuong khach hang.
+        int soPhong = Integer.parseInt(
+                cbPhongTrong.getSelectedItem().toString()
+        );
+
+        KhachHang khach = new KhachHang(
+                hoTen,
+                cccd,
+                sdt,
+                currentAnhPath
+        );
+
+        // 8. Goi nghiep vu check-in.
+        boolean success = quanLyKhachSan.checkIn(
+                soPhong,
+                khach,
+                soNgay
+        );
+
+        if (success) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Check-in thanh cong phong "
+                            + soPhong + " (" + soNgay + " ngay)!"
+            );
+
+            // 9. Xoa form sau khi check-in thanh cong.
+            txtHoTen.setText("");
+            txtCCCD.setText("");
+            txtSDT.setText("");
+            txtSoNgayThue.setText("");
+
+            currentAnhPath = "none";
+
+            lblTrangThaiAnh.setText("Chua co anh chup");
+            lblTrangThaiAnh.setForeground(Color.GRAY);
+
+            // Cap nhat lai danh sach phong trong.
+            loadDanhSachPhongTrong();
+
+            // Thong bao cho giao dien cha cap nhat du lieu.
+            if (onCheckInSuccess != null) {
+                onCheckInSuccess.run();
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Check-in that bai! "
+                            + "Phong co the khong con trong.",
+                    "Loi",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+    } catch (IllegalArgumentException ex) {
+        // Bat loi validation tu KhachHangValidator
+        // hoac loi du lieu khong hop le tu lop nghiep vu.
+        JOptionPane.showMessageDialog(
+                this,
+                ex.getMessage(),
+                "Du lieu khong hop le",
+                JOptionPane.WARNING_MESSAGE
+        );
+
+    } catch (RuntimeException ex) {
+        // Bat loi he thong khong du kien.
+        JOptionPane.showMessageDialog(
+                this,
+                "Khong the thuc hien check-in: "
+                        + ex.getMessage(),
+                "Loi he thong",
+                JOptionPane.ERROR_MESSAGE
+        );
+
+        ex.printStackTrace();
     }
+}
 }
