@@ -1,20 +1,55 @@
 sequenceDiagram
     autonumber
-    actor User as Nhân viên lễ tân
-    participant UI as CheckOutPanel (GUI) / ConsoleView
-    participant QLKS as QuanLyKhachSan (Service)
-    participant PDP as PhieuDatPhong / Phong
-    participant File as File I/O
+    actor Staff as Nhân viên lễ tân
+    participant UI as CheckOutPanel or CheckOutConsoleHandler
+    participant QLKS as QuanLyKhachSan
+    participant Booking as PhieuDatPhong
+    participant Room as PhongKhachSan
+    participant RoomFile as data/phong.txt
+    participant BookingFile as data/phieudatphong.txt
 
-    User->>UI: Nhập số CCCD tra cứu khách đang ở
+    Staff->>UI: Nhập CCCD khách đang lưu trú
     UI->>QLKS: timPhieuDangHoatDongTheoCCCD(cccd)
-    QLKS-->>UI: Trả về PhieuDatPhong (bao gồm soNgayThue ban đầu)
-    UI->>UI: Hiển thị thông tin phòng, khách, ảnh và điền số ngày ở
-    User->>UI: Xác nhận hoặc điều chỉnh số ngày thực tế & Bấm Thanh Toán
-    UI->>PDP: tinhTienThue(soNgayThucTe)
-    PDP-->>UI: Trả về tổng tiền hóa đơn (gồm VAT)
-    UI->>QLKS: checkOut(soPhong, soNgayThucTe)
-    QLKS->>File: Cập nhật phòng thành DANG_DON
-    QLKS->>File: Cập nhật phiếu đặt phòng (DA_TRA)
-    QLKS-->>UI: Thanh toán thành công
-    UI-->>User: Hiển thị thông báo & In hóa đơn
+    QLKS->>QLKS: Tìm phiếu có trạng thái DANG_O / DANG_HOAT_DONG
+    alt Không tìm thấy phiếu đang hoạt động
+        QLKS-->>UI: null
+        UI-->>Staff: Thông báo không tìm thấy khách
+    else Tìm thấy phiếu
+        QLKS-->>UI: PhieuDatPhong
+        UI->>Booking: getPhong(), getKhachHang(), getSoNgayThue()
+        Booking-->>UI: Thông tin phòng, khách và số ngày dự kiến
+
+        alt Swing GUI
+            UI->>Room: tinhTienTruocThue(), tinhTienThueVAT(), tinhTienThue(soNgay)
+            Room-->>UI: Tiền trước thuế, VAT và tổng thanh toán
+            UI-->>Staff: Hiển thị tổng tiền và chi tiết hóa đơn
+        else Console CLI
+            UI->>Booking: setSoNgayThue(soNgayThucTe)
+            UI->>Booking: tinhTongTienPhieu()
+            Booking->>Room: tinhTienThue(soNgayThucTe)
+            Room-->>Booking: Tổng tiền gồm VAT
+            Booking-->>UI: Tổng tiền
+            UI-->>Staff: Hiển thị hóa đơn trong Console
+        end
+
+        Staff->>UI: Xác nhận thanh toán
+        alt Đồng ý thanh toán
+            UI->>QLKS: checkOut(soPhong, soNgayThucTe)
+            QLKS->>QLKS: timPhong(soPhong) và kiểm tra trạng thái DANG_O
+            alt Phòng không tồn tại hoặc không DANG_O
+                QLKS-->>UI: false
+                UI-->>Staff: Thông báo trả phòng thất bại
+            else Trả phòng hợp lệ
+                QLKS->>Room: setTrangThai("DANG_DON")
+                QLKS->>RoomFile: luuFilePhong(danhSachPhong)
+                QLKS->>QLKS: Tìm phiếu đang hoạt động theo số phòng
+                QLKS->>Booking: setSoNgayThue(soNgayThucTe)
+                QLKS->>Booking: setTrangThai("DA_TRA")
+                QLKS->>BookingFile: luuFilePhieu()
+                QLKS-->>UI: true
+                UI-->>Staff: Thông báo thành công / làm mới giao diện
+            end
+        else Hủy thanh toán
+            UI-->>Staff: Không gọi checkOut&#59; trạng thái phòng không đổi
+        end
+    end

@@ -1,25 +1,32 @@
 flowchart LR
-    subgraph Actor ["Tác nhân"]
-        User((Lễ tân))
+    Staff(("Nhân viên lễ tân"))
+
+    subgraph System["Hotel Booking System — Java Swing + Console"]
+        Mode["Chọn chế độ chạy<br/>Swing GUI / Console CLI"]
+        ViewRooms["Xem sơ đồ / danh sách 20 phòng"]
+        CheckIn["Check-in khách"]
+        Capture["Chụp và lưu ảnh khách<br/>(chỉ GUI, tùy chọn)"]
+        CheckOut["Check-out và tính tiền"]
+        Lookup["Tra cứu phiếu đang hoạt động<br/>theo CCCD"]
+        Calc["Tính tiền phòng, phí dịch vụ,<br/>giảm giá và VAT 10%"]
+        Invoice["Xem chi tiết hóa đơn<br/>(GUI dialog hoặc Console output)"]
+        Cleaning["Xác nhận dọn phòng"]
+        Stats["Xem thống kê / doanh thu<br/>(chỉ GUI)"]
+        Persistence["Tự động đọc/ghi file dữ liệu<br/>phong.txt và phieudatphong.txt"]
     end
 
-    subgraph System ["Hệ Thống Quản Lý Khách Sạn Java Swing"]
-        UC1["Xem sơ đồ ma trận 20 phòng Grid 5 x 4"]
-        UC2["Thực hiện Check-in nhận phòng"]
-        UC3["Chụp ảnh chân dung khách qua Webcam"]
-        UC4["Thực hiện Check-out & Tính tiền"]
-        UC5["Xem trước & In hóa đơn"]
-        UC6["Xác nhận dọn dẹp phòng"]
-        UC7["Đọc / Ghi dữ liệu tự động File Text (.txt)"]
-    end
+    Staff --> Mode
+    Staff --> ViewRooms
+    Staff --> CheckIn
+    Staff --> CheckOut
+    Staff --> Cleaning
+    Staff --> Stats
 
-    User --> UC1
-    User --> UC2
-    User --> UC4
-    User --> UC6
+    Capture -. "<<extend>>" .-> CheckIn
+    CheckOut -. "<<include>>" .-> Lookup
+    CheckOut -. "<<include>>" .-> Calc
+    Invoice -. "<<extend>>" .-> CheckOut
+    CheckIn -. "lưu dữ liệu" .-> Persistence
+    CheckOut -. "lưu dữ liệu" .-> Persistence
+    Cleaning -. "lưu dữ liệu" .-> Persistence
 
-    UC2 -. "<<include>>" .-> UC3
-    UC2 -. "<<include>>" .-> UC7
-    UC4 -. "<<extend>>" .-> UC5
-    UC4 -. "<<include>>" .-> UC7
-    UC6 -. "<<include>>" .-> UC7

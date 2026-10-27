@@ -1,37 +1,72 @@
-graph TD
-    subgraph com.hotel ["com.hotel (Root)"]
-        Main["Main.java"]
+flowchart TB
+    subgraph Root["com.hotel"]
+        Main["Main"]
     end
 
-    subgraph com.hotel.model ["com.hotel.model"]
-        Phong["PhongKhachSan (Abstract)<br/>PhongStandard, PhongVIP, PhongPenthouse"]
-        Khach["KhachHang"]
-        Phieu["PhieuDatPhong"]
+    subgraph Model["com.hotel.model"]
+        Room["PhongKhachSan (abstract)"]
+        Standard["PhongStandard"]
+        VIP["PhongVIP"]
+        Penthouse["PhongPenthouse"]
+        Guest["KhachHang"]
+        Booking["PhieuDatPhong"]
+        Discount["IDiscountable"]
+        ServiceCharge["IServiceChargable"]
     end
 
-    subgraph com.hotel.service ["com.hotel.service"]
-        Service["QuanLyKhachSan"]
+    subgraph Service["com.hotel.service"]
+        Manager["QuanLyKhachSan"]
     end
 
-    subgraph com.hotel.view ["com.hotel.view"]
-        Console["ConsoleView"]
-        MainFrm["MainFrame"]
-        PnlPhong["QuanLyPhongPanel"]
-        PnlCheckIn["CheckInPanel (Webcam & Số ngày)"]
-        PnlCheckOut["CheckOutPanel"]
+    subgraph View["com.hotel.view"]
+        ConsoleView["ConsoleView"]
+        MainFrame["MainFrame"]
+        RoomPanel["QuanLyPhongPanel"]
     end
 
-    Main --> Service
-    Main --> Console
-    Main --> MainFrm
-    MainFrm --> PnlPhong
-    MainFrm --> PnlCheckIn
-    MainFrm --> PnlCheckOut
+    subgraph Console["com.hotel.view.console"]
+        RoomHandler["PhongConsoleHandler"]
+        InHandler["CheckInConsoleHandler"]
+        OutHandler["CheckOutConsoleHandler"]
+    end
 
-    PnlCheckIn --> Service
-    PnlCheckOut --> Service
-    Console --> Service
+    subgraph GUI["com.hotel.view.gui"]
+        InPanel["CheckInPanel"]
+        OutPanel["CheckOutPanel"]
+        Stats["ThongKePanel"]
+        Chart1["BieuDoDoanhThuPanel"]
+        Chart2["BieuDoDoanhThuTheoLoaiPanel"]
+    end
 
-    Service --> Phong
-    Service --> Khach
-    Service --> Phieu
+    Main --> MainFrame
+    Main --> ConsoleView
+    MainFrame --> RoomPanel
+    MainFrame --> InPanel
+    MainFrame --> OutPanel
+    MainFrame --> Stats
+    Stats --> Chart1
+    Stats --> Chart2
+    ConsoleView --> RoomHandler
+    ConsoleView --> InHandler
+    ConsoleView --> OutHandler
+
+    RoomHandler --> Manager
+    InHandler --> Manager
+    OutHandler --> Manager
+    RoomPanel --> Manager
+    InPanel --> Manager
+    OutPanel --> Manager
+    Stats --> Manager
+    Manager --> Room
+    Manager --> Booking
+    Manager --> Guest
+    Standard -->|extends| Room
+    VIP -->|extends| Room
+    Penthouse -->|extends| Room
+    VIP -.->|implements| Discount
+    Penthouse -.->|implements| Discount
+    VIP -.->|implements| ServiceCharge
+    Penthouse -.->|implements| ServiceCharge
+    Booking --> Room
+    Booking --> Guest
+

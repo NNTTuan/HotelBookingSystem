@@ -1,23 +1,61 @@
-flowchart TD
-    subgraph Frontend ["Java Swing GUI Frontend"]
-        GUI["Main UI Framework (MainFrame)"]
-        Grid["Grid 5 x 4 Panel (QuanLyPhongPanel)"]
-        CamUI["Webcam Dialog (CameraPreviewDialog)"]
+flowchart TB
+    subgraph Entry["Điểm khởi chạy"]
+        Main["Main.java"]
     end
 
-    subgraph Core ["Business Engine (Core)"]
-        Controller["Hotel Manager Service (QuanLyKhachSan)"]
+    subgraph Swing["Thành phần giao diện Swing"]
+        MainFrame["MainFrame"]
+        RoomPanel["QuanLyPhongPanel"]
+        InPanel["CheckInPanel"]
+        OutPanel["CheckOutPanel"]
+        StatsPanel["ThongKePanel"]
+        Charts["BieuDoDoanhThuPanel<br/>BieuDoDoanhThuTheoLoaiPanel"]
     end
 
-    subgraph Storage ["Flat-File Storage"]
-        PhongFile[("data/phong.txt")]
-        PhieuFile[("data/phieudatphong.txt")]
-        ImageFiles[("data/images/*.jpg")]
+    subgraph CLI["Thành phần giao diện Console"]
+        Console["ConsoleView"]
+        RoomHandler["PhongConsoleHandler"]
+        InHandler["CheckInConsoleHandler"]
+        OutHandler["CheckOutConsoleHandler"]
     end
 
-    GUI --> Controller
-    Grid --> Controller
-    CamUI --> ImageFiles
+    subgraph Core["Lớp nghiệp vụ dùng chung theo từng phiên chạy"]
+        Service["QuanLyKhachSan"]
+        Model["PhongKhachSan + các lớp con<br/>KhachHang / PhieuDatPhong"]
+        Rules["IDiscountable<br/>IServiceChargable"]
+    end
 
-    Controller -->|Read / Write| PhongFile
-    Controller -->|Read / Write| PhieuFile
+    subgraph Files["Lưu trữ file"]
+        Rooms[("phong.txt<br/>CSV bằng dấu phẩy")]
+        Bookings[("phieudatphong.txt<br/>các trường ngăn bằng dấu ;")]
+        Images[("data/images/")]
+    end
+
+    Webcam["Sarxos Webcam Capture API"]
+
+    Main --> MainFrame
+    Main --> Console
+    MainFrame --> RoomPanel
+    MainFrame --> InPanel
+    MainFrame --> OutPanel
+    MainFrame --> StatsPanel
+    StatsPanel --> Charts
+    Console --> RoomHandler
+    Console --> InHandler
+    Console --> OutHandler
+
+    RoomPanel --> Service
+    InPanel --> Service
+    OutPanel --> Service
+    StatsPanel -->|Đọc dữ liệu từ danh sách trong service| Service
+    RoomHandler --> Service
+    InHandler --> Service
+    OutHandler --> Service
+
+    Service --> Model
+    Model --> Rules
+    Service <-->|Đọc / ghi| Rooms
+    Service <-->|Đọc / ghi| Bookings
+    InPanel --> Webcam
+    InPanel -->|Lưu ảnh JPEG| Images
+

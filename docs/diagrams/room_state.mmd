@@ -1,7 +1,17 @@
 stateDiagram-v2
-    [*] --> TRONG : Khởi tạo hệ thống / Dọn xong
-    TRONG --> DANG_O : Check-In (Nhập thông tin, số ngày thuê & ảnh)
-    DANG_O --> DANG_DON : Check-Out & Tính tiền hóa đơn
-    DANG_DON --> TRONG : Xác nhận hoàn tất dọn dẹp phòng
-    DANG_O --> [*]
-    DANG_DON --> [*]
+    direction TB
+
+    state "Đọc / khởi tạo dữ liệu phòng" as INIT
+    state "TRONG<br/>Phòng trống" as TRONG
+    state "DANG_O<br/>Đang có khách" as DANG_O
+    state "DANG_DON<br/>Chờ dọn dẹp" as DANG_DON
+
+    [*] --> INIT : QuanLyKhachSan() / docFilePhong()
+    INIT --> TRONG : File chưa có dữ liệu / khoiTao20Phong()
+    INIT --> TRONG : Đọc bản ghi có trạng thái TRONG
+    INIT --> DANG_O : Đọc bản ghi có trạng thái DANG_O
+    INIT --> DANG_DON : Đọc bản ghi có trạng thái DANG_DON
+
+    TRONG --> DANG_O : checkIn() thành công
+    DANG_O --> DANG_DON : checkOut() thành công
+    DANG_DON --> TRONG : Xác nhận dọn phòng

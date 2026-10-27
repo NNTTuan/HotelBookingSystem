@@ -1,0 +1,27 @@
+flowchart TB
+    subgraph Runtime["Đối tượng trong bộ nhớ Java"]
+        QLKS["QuanLyKhachSan"]
+        RoomList["List<PhongKhachSan>"]
+        BookingList["List<PhieuDatPhong>"]
+        Room["PhongKhachSan<br/>soPhong, tang, loaiPhong,<br/>trangThai, giaCoBan"]
+        Booking["PhieuDatPhong<br/>maPhieu, phong, khachHang,<br/>soNgayThue, trangThai"]
+        Guest["KhachHang<br/>hoTen, soCCCD, soDienThoai,<br/>anhKhuonMatPath"]
+    end
+
+    subgraph TextFiles["Dữ liệu thực sự được ghi xuống file"]
+        RoomFile["data/phong.txt<br/><b>Mỗi dòng gồm 4 trường, phân cách bằng dấu phẩy</b><br/>soPhong, tang, loaiPhong, trangThai"]
+        BookingFile["data/phieudatphong.txt<br/><b>Mỗi dòng gồm 8 trường, phân cách bằng dấu chấm phẩy</b><br/>maPhieu; soPhong; hoTen; soCCCD; soDienThoai;<br/>anhKhuonMatPath; soNgayThue; trangThai"]
+        ImageDir[("data/images/*.jpg<br/>Các file ảnh chân dung")]
+    end
+
+    QLKS --> RoomList
+    QLKS --> BookingList
+    RoomList --> Room
+    BookingList --> Booking
+    Booking -->|Tham chiếu đối tượng| Room
+    Booking -->|Chứa đối tượng| Guest
+
+    QLKS <-->|docFilePhong / luuFilePhong| RoomFile
+    QLKS <-->|docFilePhieu / luuFilePhieu| BookingFile
+    Guest -.->|Lưu đường dẫn ảnh, không lưu bytes ảnh trong file phiếu| ImageDir
+

@@ -1,0 +1,30 @@
+sequenceDiagram
+    actor Staff as Nhan vien le tan
+    participant UI as ThongKePanel
+    participant QLKS as QuanLyKhachSan
+    participant MonthChart as BieuDoDoanhThuPanel
+    participant TypeChart as BieuDoDoanhThuTheoLoaiPanel
+
+    Staff->>UI: Mo trang thong ke hoac nhan Lam moi
+    UI->>UI: capNhatDuLieuThongKe()
+    UI->>QLKS: getDanhSachPhong()
+    QLKS-->>UI: dsPhong
+    UI->>QLKS: getDanhSachPhieu()
+    QLKS-->>UI: dsPhieu
+    UI->>UI: Dem phong theo trang thai va khoi tao bo dem luot thue
+
+    loop Duyet tung phieu
+        UI->>UI: Bo qua neu khong co phong dem luot thue neu co phong
+        alt Phieu co phong va trang thai DA_TRA
+            UI->>UI: Tinh tong tien = truoc thue + VAT
+            UI->>UI: Xac dinh thang tu maPhieu (loi thi mac dinh 01/2026)
+            UI->>UI: Cong doanh thu tong theo phong thang va loai phong
+        else Phieu khong co phong hoac trang thai khac DA_TRA
+            UI->>UI: Khong cong doanh thu
+        end
+    end
+
+    UI->>UI: Cap nhat 5 the bang doanh thu Top 3 va Top 5
+    UI->>MonthChart: setData(mapDoanhThuThang) va repaint()
+    UI->>TypeChart: setData(mapDoanhThuThangVaLoai) va repaint()
+    UI-->>Staff: Hien thi thong ke da cap nhat

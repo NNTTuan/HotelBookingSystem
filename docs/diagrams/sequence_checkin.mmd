@@ -1,18 +1,40 @@
 sequenceDiagram
     autonumber
-    actor User as Nhân viên lễ tân
-    participant UI as CheckInPanel (GUI) / ConsoleView
-    participant QLKS as QuanLyKhachSan (Service)
-    participant Cam as Webcam / CameraService
-    participant File as File I/O (phong.txt / phieudatphong.txt)
+    actor Staff as Nhân viên lễ tân
+    participant UI as CheckInPanel (Swing GUI)
+    participant Webcam as Sarxos Webcam API
+    participant QLKS as QuanLyKhachSan
+    participant RoomFile as data/phong.txt
+    participant BookingFile as data/phieudatphong.txt
 
-    User->>UI: Nhập thông tin (CCCD, Họ tên, SĐT, Số ngày thuê)
-    User->>UI: Bấm "Mở Webcam & Chụp Mặt"
-    UI->>Cam: Kích hoạt Camera stream & chụp khung hình
-    Cam-->>UI: Trả về đường dẫn file ảnh (khach_<CCCD>.jpg)
-    User->>UI: Bấm "Xác Nhận Check-In"
-    UI->>QLKS: checkIn(soPhong, khachHang, soNgayThue)
-    QLKS->>File: Cập nhật trạng thái phòng thành DANG_O
-    QLKS->>File: Tạo và lưu PhieuDatPhong mới vào phieudatphong.txt
-    QLKS-->>UI: Trả về kết quả thành công
-    UI-->>User: Hiển thị thông báo Check-in thành công
+    Staff->>UI: Nhập thông tin khách, số ngày và chọn phòng
+    opt Chụp ảnh chân dung (không bắt buộc)
+        UI->>Webcam: Lấy webcam mặc định và mở preview
+        alt Webcam khả dụng và chụp được ảnh
+            Webcam-->>UI: Trả về frame ảnh
+            UI->>UI: Lưu data/images/khach_<CCCD>.jpg
+            UI->>UI: Gán currentAnhPath
+        else Không có webcam hoặc không chụp được
+            UI-->>Staff: Hiển thị cảnh báo&#59; cho phép tiếp tục check-in không có ảnh
+        end
+    end
+
+    Staff->>UI: Nhấn xác nhận check-in
+    UI->>UI: Kiểm tra phòng đã chọn, họ tên/CCCD and số ngày có thể parse thành số nguyên
+    UI->>UI: Tạo KhachHang(hoTen, cccd, sdt, currentAnhPath)
+    UI->>QLKS: checkIn(soPhong, khachHang, soNgay)
+    QLKS->>QLKS: timPhong(soPhong) và kiểm tra trạng thái TRONG
+
+    alt Không tìm thấy phòng hoặc phòng không TRONG
+        QLKS-->>UI: false
+        UI-->>Staff: Thông báo check-in thất bại
+    else Phòng hợp lệ và đang TRONG
+        QLKS->>QLKS: setTrangThai("DANG_O")
+        QLKS->>RoomFile: luuFilePhong(danhSachPhong)
+        QLKS->>QLKS: Tạo mã PDP + System.currentTimeMillis() and tạo PhieuDatPhong
+        QLKS->>QLKS: Thêm phiếu vào danhSachPhieu
+        QLKS->>BookingFile: luuFilePhieu()
+        QLKS-->>UI: true
+        UI->>UI: Xóa form và gọi callback refreshAll
+        UI-->>Staff: Thông báo check-in thành công
+    end

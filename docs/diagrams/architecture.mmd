@@ -1,30 +1,55 @@
-graph TD
-    subgraph Client ["Tầng Giao Diện (Presentation Layer)"]
-        CLI["💻 ConsoleView (CLI Mode)"]
-        GUI["🖥️ Java Swing GUI (MainFrame, CheckInPanel, CheckOutPanel)"]
+flowchart TB
+    Main["Main.main()<br/>Chọn chế độ chạy"]
+
+    subgraph Presentation["Tầng giao diện"]
+        Swing["Java Swing GUI<br/>MainFrame"]
+        RoomUI["QuanLyPhongPanel<br/>Sơ đồ 20 phòng"]
+        CheckInUI["CheckInPanel<br/>Nhận phòng"]
+        CheckOutUI["CheckOutPanel<br/>Trả phòng / hóa đơn"]
+        StatsUI["ThongKePanel<br/>Thống kê và biểu đồ"]
+        ConsoleUI["ConsoleView<br/>Menu dòng lệnh"]
+        ConsoleHandlers["PhongConsoleHandler<br/>CheckInConsoleHandler<br/>CheckOutConsoleHandler"]
     end
 
-    subgraph Service ["Tầng Nghiệp Vụ (Business Logic Layer)"]
-        QLKS["☕ QuanLyKhachSan.java<br/>(Quản lý danh sách phòng, phiếu, tính tiền)"]
+    subgraph Business["Nghiệp vụ và trạng thái trong bộ nhớ"]
+        QLKS["QuanLyKhachSan<br/>Khởi tạo danh sách, tìm phòng/phiếu,<br/>check-in, check-out, dọn phòng,<br/>đọc/ghi file"]
     end
 
-    subgraph Model ["Tầng Thực Thể (Data Model Layer)"]
-        PH["☕ PhongKhachSan (Abstract)<br/>- PhongStandard<br/>- PhongVIP<br/>- PhongPenthouse"]
-        KH["☕ KhachHang<br/>(Họ tên, CCCD, SĐT, Ảnh)"]
-        PDP["☕ PhieuDatPhong<br/>(Mã phiếu, Số ngày thuê, Trạng thái)"]
+    subgraph Domain["Mô hình đối tượng"]
+        Room["PhongKhachSan (abstract)<br/>PhongStandard / PhongVIP / PhongPenthouse"]
+        Guest["KhachHang"]
+        Booking["PhieuDatPhong"]
+        Pricing["IDiscountable<br/>IServiceChargable"]
     end
 
-subgraph Storage ["Tầng Lưu Trữ (Data Access / Flat-File)"]
-F1[(📄 phong.txt)]
-F2[(📄 phieudatphong.txt)]
-F3[(📷 data/images/)]
-end
+    subgraph Persistence["Lưu trữ cục bộ bằng tệp văn bản"]
+        RoomFile[("data/phong.txt")]
+        BookingFile[("data/phieudatphong.txt")]
+        ImageDir[("data/images/*.jpg")]
+    end
 
-CLI --> QLKS
-GUI --> QLKS
-QLKS --> PH
-QLKS --> KH
-QLKS --> PDP
-QLKS --> F1
-QLKS --> F2
-KH --> F3
+    Webcam["Thư viện Webcam Capture<br/>(Sarxos)"]
+
+    Main -->|Chọn 1| Swing
+    Main -->|Chọn 2| ConsoleUI
+    Swing --> RoomUI
+    Swing --> CheckInUI
+    Swing --> CheckOutUI
+    Swing --> StatsUI
+    RoomUI --> QLKS
+    CheckInUI --> QLKS
+    CheckOutUI --> QLKS
+    StatsUI -->|Đọc danh sách và tự tính thống kê| QLKS
+    ConsoleUI --> ConsoleHandlers
+    ConsoleHandlers --> QLKS
+
+    QLKS --> Room
+    QLKS --> Guest
+    QLKS --> Booking
+    Room --> Pricing
+    QLKS <-->|Đọc / ghi| RoomFile
+    QLKS <-->|Đọc / ghi| BookingFile
+    CheckInUI -->|Mở webcam, lưu ảnh và lấy đường dẫn| Webcam
+    CheckInUI -->|Lưu ảnh trực tiếp| ImageDir
+    Booking -->|Lưu đường dẫn ảnh của khách| ImageDir
+

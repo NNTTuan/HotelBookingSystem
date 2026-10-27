@@ -1,19 +1,27 @@
 flowchart TD
-    Start([Bắt đầu Check-in]) --> Step1[Nhân viên chọn phòng trống trên giao diện]
-    Step1 --> Step2[Nhập thông tin cá nhân: Họ tên, CCCD, SĐT]
-    Step2 --> Step3[Nhập số ngày thuê dự kiến]
-    Step3 --> Step4[Bấm nút Mở Webcam chụp ảnh chân dung]
+    Start([Bắt đầu Check-in]) --> Mode{Chế độ đang chạy?}
 
-    Step4 --> CheckCam{Chụp ảnh thành công?}
-    CheckCam -- Có --> Step5[Lưu đường dẫn ảnh vào đối tượng KhachHang]
-    CheckCam -- Không --> Step6[Dùng ảnh mặc định / Báo lỗi camera]
+    Mode -->|Swing GUI| GUIForm[Nhập họ tên, CCCD, SĐT,<br/>số ngày và chọn phòng trống]
+    Mode -->|Console CLI| CLIForm[Nhập số phòng, kiểm tra phòng,<br/>nhập thông tin khách và số ngày]
 
-    Step5 --> Step7[Bấm Xác Nhận Check-In]
-    Step6 --> Step7
+    GUIForm --> PhotoChoice{Có chụp ảnh không?}
+    PhotoChoice -->|Có| CameraCheck{Webcam khả dụng?}
+    PhotoChoice -->|Không| CreateGuest[Tiếp tục với đường dẫn ảnh mặc định: none]
+    CameraCheck -->|Có| Capture[Chụp ảnh và lưu vào data/images/]
+CameraCheck -->|Không| NoPhoto[Hiển thị lỗi webcam;<br/>check-in vẫn có thể tiếp tục không có ảnh]
+Capture --> CreateGuest
+NoPhoto --> CreateGuest
 
-    Step7 --> CheckValid{Phòng hợp lệ & đang TRONG?}
-    CheckValid -- Đúng --> Step8[Cập nhật trạng thái phòng thành DANG_O]
-    Step8 --> Step9[Tạo phiếu đặt phòng kèm số ngày thuê & lưu file]
-    Step9 --> Success([Check-in thành công])
+CreateGuest --> InputCheck[CheckInPanel tạo KhachHang<br/>và kiểm tra dữ liệu đầu vào cơ bản]
+CLIForm --> CLIGuest[CheckInConsoleHandler tạo KhachHang<br/>đường dẫn ảnh không được chụp qua webcam]
+CLIGuest --> CallService[" Gọi QuanLyKhachSan.checkIn(soPhong, khach, soNgay) "]
+InputCheck --> CallService
 
-    CheckValid -- Sai --> Error([Báo lỗi phòng không khả dụng])
+CallService --> RoomValid{Phòng tồn tại<br/>và đang TRONG?}
+RoomValid -->|Không| Failed([Trả về false / thông báo thất bại])
+RoomValid -->|Có| SetOccupied[Cập nhật trạng thái phòng thành DANG_O]
+SetOccupied --> SaveRoom[Ghi lại data/phong.txt]
+SaveRoom --> MakeBooking[Tạo mã PDP + thời điểm hiện tại<br/>và tạo PhieuDatPhong trạng thái DANG_O]
+MakeBooking --> AddBooking[Thêm phiếu vào danh sách trong bộ nhớ]
+AddBooking --> SaveBooking[Ghi data/phieudatphong.txt]
+SaveBooking --> Success([Trả về true / thông báo thành công])
