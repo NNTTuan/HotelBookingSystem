@@ -235,6 +235,6 @@ Các sơ đồ phản ánh luồng webcam được triển khai trực tiếp tr
 
 ## 👤 Tác giả và mục đích
 
-- **Tác giả:** NNTTuan
+- **Tác giả:** 
 - **Đơn vị:** Trường Đại học Kinh tế - Tài chính TP.HCM (UEF)
 - **Mục đích:** Đồ án môn học / dự án thực hành lập trình Java và lập trình hướng đối tượng.
