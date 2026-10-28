@@ -147,7 +147,7 @@ public class CheckOutPanel extends JPanel {
 
         String cccd = txtTimCCCD.getText().trim();
         if (cccd.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vول lòng nhập số CCCD cần tìm!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD cần tìm!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

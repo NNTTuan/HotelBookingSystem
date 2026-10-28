@@ -109,6 +109,7 @@ Doanh thu trong thống kê được cộng từ các phiếu có trạng thái 
 │                   │   └── PhongVIP.java          # Loại phòng VIP
 │                   │
 │                   ├── 📁 service/               # ⚙️ Nghiệp vụ quản lý khách sạn
+│                   │   ├──KhachHangValidator.java
 │                   │   └── QuanLyKhachSan.java    # Quản lý phòng, phiếu và lưu trữ
 │                   │
 │                   ├── 📁 view/                  # 🎨 Giao diện người dùng

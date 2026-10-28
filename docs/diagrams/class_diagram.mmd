@@ -1,225 +1,147 @@
 classDiagram
-    direction LR
-
+    direction TB
     class Main {
         +main(String[] args) void
     }
-
-    namespace Model {
-        class PhongKhachSan {
-            <<abstract>>
-            +double THUE_VAT
-            +int tongSoLuongPhong
-            #int soPhong
-            #int tang
-            #String loaiPhong
-            #String trangThai
-            #double giaCoBan
-            +getSoPhong() int
-            +getTang() int
-            +getLoaiPhong() String
-            +getTrangThai() String
-            +setTrangThai(String trangThai) void
-            +getGiaCoBan() double
-            +tinhTienGoc(int soNgay) double
-            +tinhPhiDichVu(int soNgay) double
-            +tinhTienGiamGia(int soNgay) double
-            +tinhTienTruocThue(int soNgay) double
-            +tinhTienThueVAT(int soNgay) double
-            +tinhTienThue(int soNgay) double
-        }
-
-        class PhongStandard {
-            +double GIA_MAC_DINH
-            +tinhTienThue(int soNgay) double
-        }
-
-        class PhongVIP {
-            +double GIA_MAC_DINH
-            +getPhiDichVu() double
-            +tinhPhiDichVu() double
-            +getTiLeGiamGia() double
-            +tinhTienGiamGia(double tongTienGoc) double
-            +tinhTienThue(int soNgay) double
-        }
-
-        class PhongPenthouse {
-            +double GIA_MAC_DINH
-            +getPhiDichVu() double
-            +tinhPhiDichVu() double
-            +getTiLeGiamGia() double
-            +tinhTienGiamGia(double tongTienGoc) double
-            +tinhTienThue(int soNgay) double
-        }
-
-        class IDiscountable {
-            <<interface>>
-            +getTiLeGiamGia() double
-            +tinhTienGiamGia(double tongTienGoc) double
-        }
-
-        class IServiceChargable {
-            <<interface>>
-            +getPhiDichVu() double
-            +tinhPhiDichVu() double
-        }
-
-        class KhachHang {
-            -String hoTen
-            -String soCCCD
-            -String soDienThoai
-            -String anhKhuonMatPath
-            +getHoTen() String
-            +getSoCCCD() String
-            +getSoDienThoai() String
-            +getAnhKhuonMatPath() String
-        }
-
-        class PhieuDatPhong {
-            -String maPhieu
-            -PhongKhachSan phong
-            -KhachHang khachHang
-            -int soNgayThue
-            -String trangThai
-            +tinhTongTienPhieu() double
-            +getPhong() PhongKhachSan
-            +getKhachHang() KhachHang
-            +getSoNgayThue() int
-            +setSoNgayThue(int soNgayThue) void
-            +getTrangThai() String
-            +setTrangThai(String trangThai) void
-        }
+    class QuanLyKhachSan {
+        -String DATA_DIR
+        -String FILE_PHONG
+        -String FILE_PHIEU
+        -List~PhongKhachSan~ danhSachPhong
+        -List~PhieuDatPhong~ danhSachPhieu
+        +getDanhSachPhong() List
+        +getDanhSachPhieu() List
+        -khoiTao20Phong() List
+        +docFilePhong() List
+        +luuFilePhong(List) void
+        +docFilePhieu() List
+        +luuFilePhieu() void
+        +timPhieuDangHoatDong(int) PhieuDatPhong
+        +timPhieuDangHoatDongTheoCCCD(String) PhieuDatPhong
+        +checkIn(int, KhachHang, int) boolean
+        +checkOut(int, int) boolean
+        +xacNhanDonXong(int) boolean
+        +timPhong(int) PhongKhachSan
     }
-
-    namespace Service {
-        class QuanLyKhachSan {
-            -List~PhongKhachSan~ danhSachPhong
-            -List~PhieuDatPhong~ danhSachPhieu
-            +getDanhSachPhong() List~PhongKhachSan~
-            +getDanhSachPhieu() List~PhieuDatPhong~
-            -khoiTao20Phong() List~PhongKhachSan~
-            +docFilePhong() List~PhongKhachSan~
-            +luuFilePhong(List~PhongKhachSan~ ds) void
-            +docFilePhieu() List~PhieuDatPhong~
-            +luuFilePhieu() void
-            +timPhong(int soPhong) PhongKhachSan
-            +timPhieuDangHoatDong(int soPhong) PhieuDatPhong
-            +timPhieuDangHoatDongTheoCCCD(String cccd) PhieuDatPhong
-            +checkIn(int soPhong, KhachHang khach, int soNgayThue) boolean
-            +checkOut(int soPhong, int soNgayThucTe) boolean
-            +xacNhanDonXong(int soPhong) boolean
-        }
+    class KhachHangValidator {
+        -KhachHangValidator()
+        +kiemTraHoTen(String) void
+        +kiemTraCCCD(String) void
+        +kiemTraSoDienThoai(String) void
+        +kiemTraSoNgayThue(int) void
+        +kiemTraThongTinCheckIn(KhachHang, int) void
     }
-
-    namespace View {
-        class MainFrame {
-            -QuanLyKhachSan quanLyKhachSan
-            -QuanLyPhongPanel phongPanel
-            -CheckInPanel checkInPanel
-            -CheckOutPanel checkOutPanel
-            -ThongKePanel thongKePanel
-        }
-
-        class QuanLyPhongPanel {
-            -QuanLyKhachSan quanLyKhachSan
-            +capNhatSoDoPhong() void
-        }
-
-        class CheckInPanel {
-            -QuanLyKhachSan quanLyKhachSan
-            -Runnable onCheckInSuccess
-            -String currentAnhPath
-            +loadDanhSachPhongTrong() void
-            -moGiaoDienChupAnh() void
-            -thucHienCheckIn() void
-        }
-
-        class CheckOutPanel {
-            -QuanLyKhachSan quanLyKhachSan
-            -PhieuDatPhong phieuHienTai
-            -xuLyTimKiem() void
-            -capNhatTongTien() void
-            -xuLyThanhToan() void
-            -xuLyInHoaDon() void
-        }
-
-        class ThongKePanel {
-            -QuanLyKhachSan quanLy
-            +capNhatDuLieuThongKe() void
-        }
-
-        class BieuDoDoanhThuPanel {
-            -Map~String, Double~ dataDoanhThuThang
-            +setData(Map data) void
-        }
-
-        class BieuDoDoanhThuTheoLoaiPanel {
-            -Map dataDoanhThuTheoLoai
-            +setData(Map data) void
-        }
-
-        class ConsoleView {
-            -QuanLyKhachSan qlks
-            -Scanner sc
-            +start() void
-        }
-
-        class PhongConsoleHandler {
-            -QuanLyKhachSan qlks
-            +hienThiDanhSachPhong() void
-            +xacNhanDonDep() void
-        }
-
-        class CheckInConsoleHandler {
-            -QuanLyKhachSan qlks
-            -Scanner sc
-            +thucHienCheckIn() void
-        }
-
-        class CheckOutConsoleHandler {
-            -QuanLyKhachSan qlks
-            -Scanner sc
-            +thucHienCheckOut() void
-        }
+    class PhongKhachSan {
+        <<abstract>>
+        +THUE_VAT double = 0.1
+        +tongSoLuongPhong int
+        #soPhong int
+        #tang int
+        #loaiPhong String
+        #trangThai String
+        #giaCoBan double
+        +getSoPhong() int
+        +getTang() int
+        +getLoaiPhong() String
+        +getTrangThai() String
+        +setTrangThai(String) void
+        +getGiaCoBan() double
+        +tinhTienGoc(int) double
+        +tinhPhiDichVu(int) double
+        +tinhTienGiamGia(int) double
+        +tinhTienTruocThue(int) double
+        +tinhTienThueVAT(int) double
+        +tinhTienThue(int) double
     }
-
-    class WebcamAPI {
-<<external library>>
-}
-
-PhongKhachSan <|-- PhongStandard
-PhongKhachSan <|-- PhongVIP
-PhongKhachSan <|-- PhongPenthouse
-IDiscountable <|.. PhongVIP
-IDiscountable <|.. PhongPenthouse
-IServiceChargable <|.. PhongVIP
-IServiceChargable <|.. PhongPenthouse
-
-PhieuDatPhong --> "1" PhongKhachSan : phong
-PhieuDatPhong --> "1" KhachHang : khachHang
-QuanLyKhachSan o-- "*" PhongKhachSan : danhSachPhong
-QuanLyKhachSan o-- "*" PhieuDatPhong : danhSachPhieu
-
-Main --> MainFrame : chọn GUI
-Main --> ConsoleView : chọn Console
-MainFrame --> QuanLyKhachSan
-MainFrame --> QuanLyPhongPanel
-MainFrame --> CheckInPanel
-MainFrame --> CheckOutPanel
-MainFrame --> ThongKePanel
-QuanLyPhongPanel --> QuanLyKhachSan
-CheckInPanel --> QuanLyKhachSan
-CheckOutPanel --> QuanLyKhachSan
-ThongKePanel --> QuanLyKhachSan
-ThongKePanel --> BieuDoDoanhThuPanel
-ThongKePanel --> BieuDoDoanhThuTheoLoaiPanel
-
-ConsoleView --> QuanLyKhachSan
+    class PhongStandard {
+        +GIA_MAC_DINH double = 500000
+        +tinhTienThue(int) double
+    }
+    class PhongVIP {
+        +GIA_MAC_DINH double = 1200000
+        +getPhiDichVu() double
+        +tinhPhiDichVu() double
+        +getTiLeGiamGia() double
+        +tinhTienGiamGia(double) double
+        +tinhTienThue(int) double
+    }
+    class PhongPenthouse {
+        +GIA_MAC_DINH double = 2500000
+        +getPhiDichVu() double
+        +tinhPhiDichVu() double
+        +getTiLeGiamGia() double
+        +tinhTienGiamGia(double) double
+        +tinhTienThue(int) double
+    }
+    class IDiscountable {
+        <<interface>>
+        +getTiLeGiamGia() double
+        +tinhTienGiamGia(double) double
+    }
+    class IServiceChargable {
+        <<interface>>
+        +getPhiDichVu() double
+        +tinhPhiDichVu() double
+    }
+    class KhachHang {
+        -hoTen String
+        -soCCCD String
+        -soDienThoai String
+        -anhKhuonMatPath String
+        +getHoTen() String
+        +getSoCCCD() String
+        +getSoDienThoai() String
+        +getAnhKhuonMatPath() String
+    }
+    class PhieuDatPhong {
+        -maPhieu String
+        -phong PhongKhachSan
+        -khachHang KhachHang
+        -soNgayThue int
+        -trangThai String
+        +tinhTongTienPhieu() double
+        +getMaPhieu() String
+        +getPhong() PhongKhachSan
+        +getKhachHang() KhachHang
+        +getSoNgayThue() int
+        +getTrangThai() String
+    }
+    class MainFrame
+    class ConsoleView
+    class QuanLyPhongPanel
+    class CheckInPanel
+    class CheckOutPanel
+    class ThongKePanel
+    class BieuDoDoanhThuPanel
+    class BieuDoDoanhThuTheoLoaiPanel
+    class PhongConsoleHandler
+    class CheckInConsoleHandler
+    class CheckOutConsoleHandler
+    PhongKhachSan <|-- PhongStandard
+    PhongKhachSan <|-- PhongVIP
+    PhongKhachSan <|-- PhongPenthouse
+    IDiscountable <|.. PhongVIP
+    IServiceChargable <|.. PhongVIP
+    IDiscountable <|.. PhongPenthouse
+    IServiceChargable <|.. PhongPenthouse
+QuanLyKhachSan "1" o-- "0..*" PhongKhachSan : quan ly
+QuanLyKhachSan "1" o-- "0..*" PhieuDatPhong : quan ly
+PhieuDatPhong "0..*" --> "1" PhongKhachSan : phong
+PhieuDatPhong "0..*" --> "1" KhachHang : khach hang
+CheckInPanel ..> KhachHangValidator : validate
+CheckInPanel ..> QuanLyKhachSan : checkIn
+CheckOutPanel ..> QuanLyKhachSan : tra cuu/checkOut
+ThongKePanel ..> QuanLyKhachSan : doc du lieu
+ConsoleView ..> QuanLyKhachSan : nghiep vu
+MainFrame *-- QuanLyPhongPanel
+MainFrame *-- CheckInPanel
+MainFrame *-- CheckOutPanel
+MainFrame *-- ThongKePanel
+MainFrame ..> QuanLyKhachSan : khoi tao/dung chung
 ConsoleView *-- PhongConsoleHandler
 ConsoleView *-- CheckInConsoleHandler
 ConsoleView *-- CheckOutConsoleHandler
-PhongConsoleHandler --> QuanLyKhachSan
-CheckInConsoleHandler --> QuanLyKhachSan
-CheckOutConsoleHandler --> QuanLyKhachSan
-
-CheckInPanel ..> WebcamAPI : dùng trực tiếp
+ThongKePanel *-- BieuDoDoanhThuPanel
+ThongKePanel *-- BieuDoDoanhThuTheoLoaiPanel
+Main ..> MainFrame
+Main ..> ConsoleView

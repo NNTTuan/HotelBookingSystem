@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HotelBookingSystem — Diagram Viewer</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #1b2430;
+            --muted: #5c6877;
+            --line: #dbe2ea;
+            --paper: #f4f7fb;
+            --card: #fff;
+            --accent: #2458a6
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            background: var(--paper);
+            color: var(--ink)
+        }
+
+        header {
+            padding: 28px clamp(16px, 4vw, 56px);
+            background: #122c4b;
+            color: #fff
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            font-size: clamp(24px, 3vw, 36px)
+        }
+
+        header p {
+            max-width: 900px;
+            line-height: 1.5;
+            margin: 0;
+            color: #dbeafe
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns:275px minmax(0, 1fr);
+            gap: 20px;
+            padding: 22px clamp(12px, 3vw, 38px)
+        }
+
+        nav {
+            position: sticky;
+            top: 12px;
+            height: calc(100vh - 24px);
+            overflow: auto;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px
+        }
+
+        nav input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            margin-bottom: 10px
+        }
+
+        nav a {
+            display: block;
+            padding: 8px 9px;
+            color: var(--ink);
+            text-decoration: none;
+            border-radius: 7px;
+            font-size: 13px;
+            line-height: 1.3
+        }
+
+        nav a:hover {
+            background: #eaf1fb;
+            color: var(--accent)
+        }
+
+        main {
+            min-width: 0
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            margin-bottom: 18px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px #122c4b0a
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin: 0 0 6px
+        }
+
+        .desc {
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.5
+        }
+
+        .head {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line)
+        }
+
+        .canvas {
+            padding: 20px;
+            overflow: auto;
+            min-height: 150px;
+            text-align: center
+        }
+
+        .canvas svg {
+            height: auto;
+            max-width: 100%;
+            min-width: 300px
+        }
+
+        .err {
+            color: #9f1239;
+            background: #fff1f2;
+            padding: 12px;
+            white-space: pre-wrap;
+            text-align: left
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px
+        }
+
+        .actions button {
+            background: #fff;
+            color: var(--accent);
+            border: 1px solid var(--line);
+            padding: 7px 10px;
+            border-radius: 7px;
+            cursor: pointer
+        }
+
+        .source {
+            display: none;
+            background: #0b1220;
+            color: #dbeafe;
+            padding: 16px;
+            margin: 0;
+            white-space: pre;
+            overflow: auto;
+            font: 12px/1.5 Consolas, monospace;
+            max-height: 420px
+        }
+
+        .note {
+            font-size: 13px;
+            color: var(--muted);
+            padding: 0 20px 18px
+        }
+
+        @media (max-width: 850px) {
+            .layout {
+                grid-template-columns:1fr
+            }
+
+            nav {
+                position: relative;
+                top: auto;
+                height: auto;
+                max-height: 280px
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<header><h1>HotelBookingSystem — Bộ sơ đồ chi tiết</h1>
+    <p>18 sơ đồ Mermaid bám theo cấu trúc source: kiến trúc, use case, class, package, component, dữ liệu flat-file,
+        check-in/check-out, trạng thái phòng, thống kê, tính tiền và triển khai.</p></header>
+<div class="layout">
+    <nav><input id="filter" placeholder="Lọc sơ đồ..." aria-label="Lọc sơ đồ">
+        <div id="links"></div>
+    </nav>
+    <main id="content"><p>Đang tải sơ đồ. Nếu Mermaid CDN không khả dụng, mở thư mục <code>diagrams/</code> và dùng các
+        file <code>.mmd</code>.</p></main>
+</div>
+<script>
+	const diagrams = [{
+		"file": "00_architecture.mmd",
+		"title": "Kiến trúc tổng thể",
+		"description": "Hai giao diện cùng gọi lớp nghiệp vụ QuanLyKhachSan; dữ liệu là các tệp trong data/.",
+		"source": "flowchart TB\n    Staff[\"Nhân viên vận hành\"]\n    Entry[\"Main.main()\\nChọn chế độ chạy\"]\n    subgraph Presentation[\"Tầng giao diện — package com.hotel.view\"]\n      Swing[\"Java Swing GUI\\nMainFrame\"]\n      Console[\"Console CLI\\nConsoleView\"]\n      subgraph GUIPanels[\"Các panel Swing\"]\n        Rooms[\"QuanLyPhongPanel\"]\n        CheckInUI[\"CheckInPanel\"]\n        CheckOutUI[\"CheckOutPanel\"]\n        StatsUI[\"ThongKePanel + biểu đồ\"]\n      end\n      subgraph CLIHandlers[\"Các handler Console\"]\n        RoomCLI[\"PhongConsoleHandler\"]\n        CheckInCLI[\"CheckInConsoleHandler\"]\n        CheckOutCLI[\"CheckOutConsoleHandler\"]\n      end\n    end\n    subgraph Business[\"Tầng nghiệp vụ — package com.hotel.service\"]\n      Service[\"QuanLyKhachSan\\nQuản lý phòng/phiếu và I/O\"]\n      Validator[\"KhachHangValidator\\nKiểm tra dữ liệu check-in\"]\n    end\n    subgraph Domain[\"Mô hình đối tượng — package com.hotel.model\"]\n      RoomModel[\"PhongKhachSan (abstract)\\nStandard / VIP / Penthouse\"]\n      GuestModel[\"KhachHang\"]\n      BookingModel[\"PhieuDatPhong\"]\n      Billing[\"Tính phí, giảm giá, VAT\\ntrong các lớp phòng\"]\n    end\n    subgraph Storage[\"Lưu trữ cục bộ — thư mục data/\"]\n      RoomFile[(\"phong.txt\\nphòng + trạng thái\")]\n      BookingFile[(\"phieudatphong.txt\\nphiếu + khách + số ngày + trạng thái\")]\n      ImageFiles[(\"images/*.jpg\\nảnh chân dung tùy chọn\")]\n    end\n    Camera[\"Webcam Capture API\\nchỉ sử dụng từ GUI\"]\n    Staff --> Entry\n    Entry -->|Chọn 1| Swing\n    Entry -->|Chọn 2| Console\n    Swing --> Rooms\n    Swing --> CheckInUI\n    Swing --> CheckOutUI\n    Swing --> StatsUI\n    Console --> RoomCLI\n    Console --> CheckInCLI\n    Console --> CheckOutCLI\n    Rooms --> Service\n    CheckInUI --> Validator\n    CheckInUI --> Service\n    CheckOutUI --> Service\n    StatsUI --> Service\n    RoomCLI --> Service\n    CheckInCLI --> Service\n    CheckOutCLI --> Service\n    Service --> RoomModel\n    Service --> GuestModel\n    Service --> BookingModel\n    BookingModel --> Billing\n    Service <--> RoomFile\n    Service <--> BookingFile\n    CheckInUI --> Camera\n    CheckInUI --> ImageFiles\n    GuestModel -. \"lưu đường dẫn ảnh\" .-> ImageFiles"
+	}, {
+		"file": "01_usecase_diagram.mmd",
+		"title": "Use case",
+		"description": "Các chức năng hiện có và actor nghiệp vụ. Mã nguồn chưa có đăng nhập/phân quyền người dùng.",
+		"source": "flowchart LR\n    Staff((\"Nhân viên vận hành\"))\n    Housekeeping((\"Nhân viên dọn phòng\\n(vai trò nghiệp vụ)\"))\n    subgraph SYS[\"Hotel Booking System — ứng dụng desktop\"]\n      UC1([Xem danh sách phòng])\n      UC2([Xem trạng thái phòng])\n      UC3([Check-in khách])\n      UC4([Nhập thông tin khách])\n      UC5([Kiểm tra dữ liệu khách])\n      UC6([Chụp ảnh chân dung qua webcam])\n      UC7([Chọn phòng trống và số ngày])\n      UC8([Lập phiếu lưu trú])\n      UC9([Tra cứu phiếu đang ở theo CCCD])\n      UC10([Xem trước hóa đơn])\n      UC11([Check-out và cập nhật số ngày thực tế])\n      UC12([Chuyển phòng sang trạng thái chờ dọn])\n      UC13([Xác nhận dọn phòng xong])\n      UC14([Xem thống kê và doanh thu])\n      UC15([Lưu/đọc dữ liệu tệp văn bản])\n    end\n    Staff --> UC1\n    Staff --> UC2\n    Staff --> UC3\n    Staff --> UC9\n    Staff --> UC10\n    Staff --> UC11\n    Staff --> UC14\n    Housekeeping --> UC13\n    UC3 -. \"bao gồm\" .-> UC4\n    UC3 -. \"bao gồm\" .-> UC5\n    UC3 -. \"bao gồm\" .-> UC7\n    UC3 -. \"thành công thì\" .-> UC8\n    UC6 -. \"tùy chọn trên GUI\" .-> UC3\n    UC8 --> UC15\n    UC11 --> UC12\n    UC12 --> UC15\n    UC13 --> UC15\n    UC14 --> UC15"
+	}, {
+		"file": "02_class_diagram.mmd",
+		"title": "Class diagram chi tiết",
+		"description": "Mô hình phòng, khách, phiếu lưu trú, interface phí/giảm giá, service và các view chính.",
+		"source": "classDiagram\n    direction TB\n    class Main {\n      +main(String[] args) void\n    }\n    class QuanLyKhachSan {\n      -String DATA_DIR\n      -String FILE_PHONG\n      -String FILE_PHIEU\n      -List~PhongKhachSan~ danhSachPhong\n      -List~PhieuDatPhong~ danhSachPhieu\n      +getDanhSachPhong() List\n      +getDanhSachPhieu() List\n      -khoiTao20Phong() List\n      +docFilePhong() List\n      +luuFilePhong(List) void\n      +docFilePhieu() List\n      +luuFilePhieu() void\n      +timPhieuDangHoatDong(int) PhieuDatPhong\n      +timPhieuDangHoatDongTheoCCCD(String) PhieuDatPhong\n      +checkIn(int, KhachHang, int) boolean\n      +checkOut(int, int) boolean\n      +xacNhanDonXong(int) boolean\n      +timPhong(int) PhongKhachSan\n    }\n    class KhachHangValidator {\n      -KhachHangValidator()\n      +kiemTraHoTen(String) void\n      +kiemTraCCCD(String) void\n      +kiemTraSoDienThoai(String) void\n      +kiemTraSoNgayThue(int) void\n      +kiemTraThongTinCheckIn(KhachHang, int) void\n    }\n    class PhongKhachSan {\n      <<abstract>>\n      +THUE_VAT double = 0.1\n      +tongSoLuongPhong int\n      #soPhong int\n      #tang int\n      #loaiPhong String\n      #trangThai String\n      #giaCoBan double\n      +getSoPhong() int\n      +getTang() int\n      +getLoaiPhong() String\n      +getTrangThai() String\n      +setTrangThai(String) void\n      +getGiaCoBan() double\n      +tinhTienGoc(int) double\n      +tinhPhiDichVu(int) double\n      +tinhTienGiamGia(int) double\n      +tinhTienTruocThue(int) double\n      +tinhTienThueVAT(int) double\n      +tinhTienThue(int) double\n    }\n    class PhongStandard {\n      +GIA_MAC_DINH double = 500000\n      +tinhTienThue(int) double\n    }\n    class PhongVIP {\n      +GIA_MAC_DINH double = 1200000\n      +getPhiDichVu() double\n      +tinhPhiDichVu() double\n      +getTiLeGiamGia() double\n      +tinhTienGiamGia(double) double\n      +tinhTienThue(int) double\n    }\n    class PhongPenthouse {\n      +GIA_MAC_DINH double = 2500000\n      +getPhiDichVu() double\n      +tinhPhiDichVu() double\n      +getTiLeGiamGia() double\n      +tinhTienGiamGia(double) double\n      +tinhTienThue(int) double\n    }\n    class IDiscountable {\n      <<interface>>\n      +getTiLeGiamGia() double\n      +tinhTienGiamGia(double) double\n    }\n    class IServiceChargable {\n      <<interface>>\n      +getPhiDichVu() double\n      +tinhPhiDichVu() double\n    }\n    class KhachHang {\n      -hoTen String\n      -soCCCD String\n      -soDienThoai String\n      -anhKhuonMatPath String\n      +getHoTen() String\n      +getSoCCCD() String\n      +getSoDienThoai() String\n      +getAnhKhuonMatPath() String\n    }\n    class PhieuDatPhong {\n      -maPhieu String\n      -phong PhongKhachSan\n      -khachHang KhachHang\n      -soNgayThue int\n      -trangThai String\n      +tinhTongTienPhieu() double\n      +getMaPhieu() String\n      +getPhong() PhongKhachSan\n      +getKhachHang() KhachHang\n      +getSoNgayThue() int\n      +getTrangThai() String\n    }\n    class MainFrame\n    class ConsoleView\n    class QuanLyPhongPanel\n    class CheckInPanel\n    class CheckOutPanel\n    class ThongKePanel\n    class BieuDoDoanhThuPanel\n    class BieuDoDoanhThuTheoLoaiPanel\n    class PhongConsoleHandler\n    class CheckInConsoleHandler\n    class CheckOutConsoleHandler\n    PhongKhachSan <|-- PhongStandard\n    PhongKhachSan <|-- PhongVIP\n    PhongKhachSan <|-- PhongPenthouse\n    IDiscountable <|.. PhongVIP\n    IServiceChargable <|.. PhongVIP\n    IDiscountable <|.. PhongPenthouse\n    IServiceChargable <|.. PhongPenthouse\n    QuanLyKhachSan \"1\" o-- \"0..*\" PhongKhachSan : quan ly\n    QuanLyKhachSan \"1\" o-- \"0..*\" PhieuDatPhong : quan ly\n    PhieuDatPhong \"0..*\" --> \"1\" PhongKhachSan : phong\n    PhieuDatPhong \"0..*\" --> \"1\" KhachHang : khach hang\n    CheckInPanel ..> KhachHangValidator : validate\n    CheckInPanel ..> QuanLyKhachSan : checkIn\n    CheckOutPanel ..> QuanLyKhachSan : tra cuu/checkOut\n    ThongKePanel ..> QuanLyKhachSan : doc du lieu\n    ConsoleView ..> QuanLyKhachSan : nghiep vu\n    MainFrame *-- QuanLyPhongPanel\n    MainFrame *-- CheckInPanel\n    MainFrame *-- CheckOutPanel\n    MainFrame *-- ThongKePanel\n    MainFrame ..> QuanLyKhachSan : khoi tao/dung chung\n    ConsoleView *-- PhongConsoleHandler\n    ConsoleView *-- CheckInConsoleHandler\n    ConsoleView *-- CheckOutConsoleHandler\n    ThongKePanel *-- BieuDoDoanhThuPanel\n    ThongKePanel *-- BieuDoDoanhThuTheoLoaiPanel\n    Main ..> MainFrame\n    Main ..> ConsoleView"
+	}, {
+		"file": "03_package_diagram.mmd",
+		"title": "Package diagram",
+		"description": "Cấu trúc package được phản ánh từ src/main/java/com/hotel.",
+		"source": "flowchart TB\n    Root[\"com.hotel\"]\n    Main[\"Main.java\"]\n    Root --> Main\n    Root --> Model[\"com.hotel.model\"]\n    Root --> Service[\"com.hotel.service\"]\n    Root --> View[\"com.hotel.view\"]\n    Model --> Room[\"PhongKhachSan (abstract)\"]\n    Model --> Standard[\"PhongStandard\"]\n    Model --> VIP[\"PhongVIP\"]\n    Model --> Penthouse[\"PhongPenthouse\"]\n    Model --> Guest[\"KhachHang\"]\n    Model --> Booking[\"PhieuDatPhong\"]\n    Model --> Discount[\"IDiscountable\"]\n    Model --> ServiceCharge[\"IServiceChargable\"]\n    Service --> Manager[\"QuanLyKhachSan\"]\n    Service --> Validator[\"KhachHangValidator\"]\n    View --> Swing[\"com.hotel.view.gui\"]\n    View --> CLI[\"com.hotel.view.console\"]\n    View --> ConsoleView[\"ConsoleView\"]\n    View --> MainFrame[\"MainFrame\"]\n    View --> RoomPanel[\"QuanLyPhongPanel\"]\n    Swing --> CheckIn[\"CheckInPanel\"]\n    Swing --> CheckOut[\"CheckOutPanel\"]\n    Swing --> Stats[\"ThongKePanel\"]\n    Swing --> Chart1[\"BieuDoDoanhThuPanel\"]\n    Swing --> Chart2[\"BieuDoDoanhThuTheoLoaiPanel\"]\n    CLI --> RoomHandler[\"PhongConsoleHandler\"]\n    CLI --> CheckInHandler[\"CheckInConsoleHandler\"]\n    CLI --> CheckOutHandler[\"CheckOutConsoleHandler\"]\n    Swing -. \"phụ thuộc\" .-> Service\n    CLI -. \"phụ thuộc\" .-> Service\n    Service -. \"xử lý\" .-> Model"
+	}, {
+		"file": "04_component_diagram.mmd",
+		"title": "Component diagram",
+		"description": "Các thành phần runtime, thư viện và kho lưu trữ cục bộ.",
+		"source": "flowchart LR\n    subgraph Runtime[\"Ứng dụng Java desktop — một tiến trình\"]\n      subgraph UI[\"Presentation\"]\n        Main[\"Main / chọn chế độ\"]\n        Swing[\"Swing UI\"]\n        CLI[\"Console UI\"]\n      end\n      subgraph Logic[\"Application logic\"]\n        QL[\"QuanLyKhachSan\"]\n        Val[\"KhachHangValidator\"]\n      end\n      subgraph Entities[\"Domain model\"]\n        Room[\"PhongKhachSan + 3 loại phòng\"]\n        Guest[\"KhachHang\"]\n        Ticket[\"PhieuDatPhong\"]\n      end\n      subgraph LocalIO[\"Persistence adapter (Java I/O) \"]\n        F1[\"phong.txt\"]\n        F2[\"phieudatphong.txt\"]\n        F3[\"images/*.jpg\"]\n      end\n      Webcam[\"Sarxos Webcam Capture\"]\n      FlatLaf[\"FlatLaf Look & Feel\"]\n      Log[\"SLF4J Simple\"]\n    end\n    Main --> Swing\n    Main --> CLI\n    Swing --> QL\n    CLI --> QL\n    Swing --> Val\n    QL --> Room\n    QL --> Guest\n    QL --> Ticket\n    QL <--> F1\n    QL <--> F2\n    Swing --> Webcam\n    Swing --> F3\n    Swing -. \"giao diện\" .-> FlatLaf\n    QL -. \"ghi log/thông báo lỗi\" .-> Log"
+	}, {
+		"file": "05_flatfile_data_model.mmd",
+		"title": "Mô hình dữ liệu Flat-File",
+		"description": "Đây là mô hình đối tượng–tệp văn bản, không phải ERD SQL.",
+		"source": "flowchart TB\n    subgraph Memory[\"Đối tượng trong bộ nhớ\"]\n      Manager[\"QuanLyKhachSan\"]\n      RoomList[\"List<PhongKhachSan>\"]\n      TicketList[\"List<PhieuDatPhong>\"]\n      Room[\"PhongKhachSan\\nsoPhong, tang, loaiPhong, trangThai, giaCoBan\"]\n      Ticket[\"PhieuDatPhong\\nmaPhieu, soNgayThue, trangThai\"]\n      Guest[\"KhachHang\\nhoTen, soCCCD, soDienThoai, anhKhuonMatPath\"]\n    end\n    Manager --> RoomList\n    Manager --> TicketList\n    RoomList --> Room\n    TicketList --> Ticket\n    Ticket --> Room\n    Ticket --> Guest\n    subgraph Disk[\"Các tệp cục bộ (không phải SQL/ERD quan hệ)\"]\n      PF[(\"data/phong.txt\\nCSV bằng dấu phẩy\\nsoPhong,tang,loaiPhong,trangThai\")]\n      BF[(\"data/phieudatphong.txt\\n8 trường phân tách bằng dấu ;\\nmaPhieu;soPhong;hoTen;soCCCD;sdt;anhPath;soNgay;trangThai\")]\n      Img[(\"data/images/\\nảnh JPEG tùy chọn\")]\n    end\n    RoomList <--> PF\n    TicketList <--> BF\n    Guest -. \"anhKhuonMatPath lưu đường dẫn\" .-> Img\n    BF -. \"chứa đường dẫn ảnh, không nhúng bytes ảnh\" .-> Img"
+	}, {
+		"file": "06_startup_modes.mmd",
+		"title": "Luồng khởi động",
+		"description": "Main.main cho phép khởi chạy Swing hoặc Console.",
+		"source": "flowchart TD\n    Start([Khởi chạy Main.main]) --> Menu[\"Hiển thị menu chọn ứng dụng\"]\n    Menu --> Choice{Lựa chọn?}\n    Choice -->|1| SetLAF[\"Cấu hình FlatLaf / Swing\"]\n    SetLAF --> SwingStart[\"SwingUtilities.invokeLater\"]\n    SwingStart --> Frame[\"new MainFrame()\"]\n    Frame --> GUI([Hiển thị giao diện desktop])\n    Choice -->|2| ConsoleStart[\"new ConsoleView()\"]\n    ConsoleStart --> ConsoleRun[\"ConsoleView.start()\"]\n    ConsoleRun --> CLI([Hiển thị menu Console])\n    Choice -->|khác / không hợp lệ| Error[\"Thông báo lựa chọn không hợp lệ\"]\n    Error --> Menu\n    GUI --> SameStore[\"Hai chế độ dùng chung QuanLyKhachSan và data/\"]\n    CLI --> SameStore"
+	}, {
+		"file": "07_activity_checkin.mmd",
+		"title": "Activity check-in",
+		"description": "Kiểm tra thông tin, chụp ảnh tùy chọn, kiểm tra trạng thái phòng và ghi tệp.",
+		"source": "flowchart TD\n    A([Bắt đầu check-in]) --> B[\"Chọn phòng và nhập họ tên, CCCD, SĐT, số ngày thuê\"]\n    B --> C[\"KhachHangValidator.kiemTraThongTinCheckIn()\"]\n    C --> D{Dữ liệu hợp lệ?}\n    D -->|Không| E[\"Hiển thị lỗi validation\"]\n    E --> B\n    D -->|Có| F{Có chụp ảnh?}\n    F -->|Có — GUI| G[\"Mở webcam Sarxos\"]\n    G --> H{Webcam khả dụng?}\n    H -->|Không| I[\"Thông báo không tìm thấy webcam\"]\n    I --> F\n    H -->|Có| J[\"Chụp ảnh JPEG vào data/images/; ghi đường dẫn\"]\n    F -->|Không / bỏ qua ảnh| K[\"Tạo đối tượng KhachHang\"]\n    J --> K\n    K --> L[\"QuanLyKhachSan.checkIn(soPhong, khach, soNgayThue)\"]\n    L --> M{Phòng tồn tại và trạng thái TRONG?}\n    M -->|Không| N[\"Trả false; báo check-in thất bại\"]\n    M -->|Có| O[\"Đặt trạng thái phòng = DANG_O\"]\n    O --> P[\"Lưu data/phong.txt\"]\n    P --> Q[\"Tạo mã PDP + timestamp; tạo PhieuDatPhong trạng thái DANG_O\"]\n    Q --> R[\"Thêm phiếu vào danh sách; lưu data/phieudatphong.txt\"]\n    R --> S([Check-in thành công])"
+	}, {
+		"file": "08_sequence_checkin.mmd",
+		"title": "Sequence check-in",
+		"description": "Chi tiết tương tác giữa UI, validator, service và file.",
+		"source": "sequenceDiagram\n    autonumber\n    actor NV as Nhân viên\n    participant UI as CheckInPanel (GUI)\n    participant V as KhachHangValidator\n    participant Cam as Webcam Capture (GUI, tùy chọn)\n    participant QL as QuanLyKhachSan\n    participant Room as PhongKhachSan\n    participant PF as data/phong.txt\n    participant BF as data/phieudatphong.txt\n    participant Img as data/images/*.jpg\n    NV->>UI: Nhập thông tin, chọn phòng, số ngày\n    UI->>V: kiemTraThongTinCheckIn(khach, soNgay)\n    V-->>UI: Hợp lệ hoặc IllegalArgumentException\n    opt Chụp ảnh bằng GUI\n      UI->>Cam: Lấy webcam mặc định / lấy ảnh hiện tại\n      Cam-->>UI: BufferedImage hoặc không có webcam\n      UI->>Img: Ghi JPEG\n      UI->>UI: Đặt anhKhuonMatPath\n    end\n    UI->>QL: checkIn(soPhong, khach, soNgayThue)\n    QL->>QL: timPhong(soPhong)\n    alt Phòng không tồn tại hoặc không ở trạng thái TRONG\n      QL-->>UI: false\n      UI-->>NV: Thông báo thất bại\n    else Phòng hợp lệ và đang TRONG\n      QL->>Room: setTrangThai(DANG_O)\n      QL->>PF: luuFilePhong(danhSachPhong)\n      QL->>QL: Tạo mã PDP + System.currentTimeMillis()\n      QL->>QL: Thêm PhieuDatPhong(..., DANG_O)\n      QL->>BF: luuFilePhieu()\n      QL-->>UI: true\n      UI-->>NV: Thông báo thành công / làm mới danh sách\n    end"
+	}, {
+		"file": "09_activity_checkout.mmd",
+		"title": "Activity check-out",
+		"description": "Tra cứu phiếu, xem hóa đơn, xác nhận và chuyển phòng sang chờ dọn.",
+		"source": "flowchart TD\n    A([Bắt đầu check-out]) --> B[\"Nhập CCCD hoặc chọn phòng / tra cứu phiếu đang ở\"]\n    B --> C{Có phiếu hoạt động?}\n    C -->|Không| D[\"Thông báo không tìm thấy lượt lưu trú\"]\n    D --> Z([Kết thúc])\n    C -->|Có| E[\"Hiển thị khách, phòng, số ngày và ảnh nếu có\"]\n    E --> F[\"Nhập/xác nhận số ngày lưu trú thực tế\"]\n    F --> G[\"Tính tiền phòng + phí dịch vụ - giảm giá + VAT\"]\n    G --> H[\"Hiển thị hóa đơn để nhân viên xem trước\"]\n    H --> I{Nhân viên xác nhận thanh toán?}\n    I -->|Không| J[\"Hủy thao tác; không cập nhật phiếu/phòng\"]\n    J --> Z\n    I -->|Có| K[\"QuanLyKhachSan.checkOut(soPhong, soNgayThucTe)\"]\n    K --> L{Phòng tồn tại và đang DANG_O?}\n    L -->|Không| M[\"Trả false / thông báo thất bại\"]\n    L -->|Có| N[\"Đặt phòng = DANG_DON; lưu phong.txt\"]\n    N --> O[\"Tìm phiếu hoạt động của phòng\"]\n    O --> P[\"Cập nhật số ngày thực tế; trạng thái phiếu = DA_TRA\"]\n    P --> Q[\"Lưu phieudatphong.txt\"]\n    Q --> R([Check-out hoàn tất; phòng chờ dọn])\n    M --> Z"
+	}, {
+		"file": "10_sequence_checkout.mmd",
+		"title": "Sequence check-out",
+		"description": "Tìm phiếu theo CCCD, tính tiền, cập nhật số ngày và trạng thái.",
+		"source": "sequenceDiagram\n    autonumber\n    actor NV as Nhân viên\n    participant UI as CheckOutPanel\n    participant QL as QuanLyKhachSan\n    participant Ticket as PhieuDatPhong\n    participant Room as PhongKhachSan\n    participant PF as data/phong.txt\n    participant BF as data/phieudatphong.txt\n    NV->>UI: Nhập CCCD để tìm phiếu đang hoạt động\n    UI->>QL: timPhieuDangHoatDongTheoCCCD(cccd)\n    QL-->>UI: PhieuDatPhong hoặc null\n    alt Không tìm thấy phiếu\n      UI-->>NV: Báo không có lượt lưu trú đang hoạt động\n    else Có phiếu\n      UI->>Ticket: tinhTongTienPhieu() / đọc thông tin phiếu\n      Ticket->>Room: tinhTienThue(soNgayThue)\n      Room-->>Ticket: Tổng tiền theo hạng phòng\n      Ticket-->>UI: Tổng tiền dự kiến\n      UI-->>NV: Hiển thị hóa đơn chi tiết\n      NV->>UI: Xác nhận và nhập số ngày thực tế\n      UI->>QL: checkOut(soPhong, soNgayThucTe)\n      QL->>QL: timPhong(soPhong)\n      alt Phòng không tồn tại hoặc không DANG_O\n        QL-->>UI: false\n        UI-->>NV: Thông báo thất bại\n      else Hợp lệ\n        QL->>Room: setTrangThai(DANG_DON)\n        QL->>PF: luuFilePhong(danhSachPhong)\n        QL->>QL: timPhieuDangHoatDong(soPhong)\n        QL->>Ticket: setSoNgayThue(soNgayThucTe)\n        QL->>Ticket: setTrangThai(DA_TRA)\n        QL->>BF: luuFilePhieu()\n        QL-->>UI: true\n        UI-->>NV: Báo thành công&#59; phòng chờ dọn\n      end\n    end"
+	}, {
+		"file": "11_room_state.mmd",
+		"title": "State machine phòng",
+		"description": "TRONG → DANG_O → DANG_DON → TRONG; có ghi chú giới hạn validation trong code.",
+		"source": "stateDiagram-v2\n    direction LR\n    [*] --> TRONG: Khởi tạo phòng mới\n    TRONG: TRONG — Phòng trống\n    DANG_O: DANG_O — Có khách lưu trú\n    DANG_DON: DANG_DON — Chờ vệ sinh\n    TRONG --> DANG_O: checkIn() thành công\n    DANG_O --> DANG_DON: checkOut() thành công\n    DANG_DON --> TRONG: xacNhanDonXong()\n    note right of DANG_DON\n      Luồng nghiệp vụ bình thường yêu cầu dọn phòng\n      rồi mới xác nhận phòng trống.\n      Lưu ý: code hiện tại xacNhanDonXong() chỉ kiểm tra\n      phòng tồn tại, chưa ràng buộc trạng thái đầu vào.\n    end note"
+	}, {
+		"file": "12_activity_room_cleanup.mmd",
+		"title": "Activity dọn phòng",
+		"description": "Xác nhận dọn xong và đưa phòng về TRONG.",
+		"source": "flowchart TD\n    A([Bắt đầu dọn phòng]) --> B[\"Nhân viên xem danh sách phòng\"]\n    B --> C[\"Chọn phòng có trạng thái DANG_DON\"]\n    C --> D[\"Thực hiện vệ sinh ngoài hệ thống\"]\n    D --> E[\"Gọi xacNhanDonXong(soPhong)\"]\n    E --> F{Phòng có tồn tại?}\n    F -->|Không| G[\"Trả false\"]\n    F -->|Có| H[\"Set trạng thái TRONG\"]\n    H --> I[\"Ghi lại data/phong.txt\"]\n    I --> J([Phòng có thể nhận khách])\n    G --> K([Kết thúc])"
+	}, {
+		"file": "13_sequence_statistics.mmd",
+		"title": "Sequence thống kê",
+		"description": "Đếm trạng thái phòng, lọc phiếu DA_TRA và tổng hợp doanh thu.",
+		"source": "sequenceDiagram\n    autonumber\n    actor NV as Nhân viên\n    participant UI as ThongKePanel\n    participant QL as QuanLyKhachSan\n    participant Rooms as List<PhongKhachSan>\n    participant Tickets as List<PhieuDatPhong>\n    participant Charts as Các panel biểu đồ\n    NV->>UI: Mở màn hình / nhấn Làm mới\n    UI->>QL: getDanhSachPhong()\n    QL-->>UI: danhSachPhong\n    UI->>QL: getDanhSachPhieu()\n    QL-->>UI: danhSachPhieu\n    UI->>Rooms: Duyệt trạng thái từng phòng\n    Rooms-->>UI: Tổng phòng / trống / đang ở / chờ dọn\n    UI->>Tickets: Lọc phiếu DA_TRA và phòng hợp lệ\n    loop Mỗi phiếu đã trả\n      UI->>Tickets: Đọc phòng, ngày thuê thực tế, loại phòng\n      UI->>UI: Cộng doanh thu và lượt thuê theo phòng/tháng/loại\n    end\n    UI->>UI: Sắp xếp Top 3 doanh thu&#59; Top 5 lượt thuê\n    UI->>Charts: Cập nhật chuỗi doanh thu theo tháng\n    UI->>Charts: Cập nhật doanh thu theo loại phòng\n    UI-->>NV: Hiển thị thẻ tổng quan, bảng, biểu đồ\n    Note over UI,Tickets: Thống kê tính từ dữ liệu hiện có trong bộ nhớ&#59; không truy vấn SQL."
+	}, {
+		"file": "14_pricing_flow.mmd",
+		"title": "Luồng tính tiền",
+		"description": "Giá cơ bản, phí dịch vụ, chiết khấu và VAT theo hạng phòng.",
+		"source": "flowchart TD\n    A[\"tinhTienThue(soNgay)\"] --> B[\"Tiền phòng gốc = giá cơ bản × số ngày\"]\n    B --> C{Loại phòng?}\n    C -->|Standard| D[\"Phí dịch vụ = 0; giảm giá = 0\"]\n    C -->|VIP| E[\"Phí dịch vụ = 200.000/lượt; giảm giá = 5% tiền gốc\"]\n    C -->|Penthouse| F[\"Phí dịch vụ = 500.000/lượt; giảm giá = 10% tiền gốc\"]\n    D --> G[\"Trước VAT = tiền gốc + phí dịch vụ − giảm giá\"]\n    E --> G\n    F --> G\n    G --> H[\"VAT = trước VAT × 10%\"]\n    H --> I[\"Tổng thanh toán = trước VAT × 1,10\"]\n    I --> J([Trả tổng tiền])\n    N[\"Ghi chú: phí dịch vụ là phí cố định/lượt lưu trú, không nhân số ngày\"] -.-> G"
+	}, {
+		"file": "15_storage_read_write.mmd",
+		"title": "Khởi tạo và đọc/ghi dữ liệu",
+		"description": "Nạp phòng/phiếu từ file; khởi tạo 20 phòng khi file phòng rỗng.",
+		"source": "sequenceDiagram\n    autonumber\n    participant App as MainFrame / ConsoleView\n    participant QL as QuanLyKhachSan\n    participant PF as data/phong.txt\n    participant BF as data/phieudatphong.txt\n    App->>QL: new QuanLyKhachSan()\n    QL->>QL: Tạo thư mục data nếu chưa có\n    QL->>PF: docFilePhong()\n    alt File phòng có dữ liệu\n      PF-->>QL: Các dòng CSV\n      QL->>QL: Parse trường&#59; khởi tạo Standard/VIP/Penthouse\n    else File phòng vắng hoặc danh sách rỗng\n      QL->>QL: khoiTao20Phong() — 5 tầng × 4 phòng\n      QL->>PF: luuFilePhong(ds)\n    end\n    QL->>BF: docFilePhieu()\n    alt File phiếu tồn tại\n      BF-->>QL: Các dòng phân cách bằng dấu chấm phẩy\n      QL->>QL: Tìm phòng theo số&#59; tái tạo KhachHang/PhieuDatPhong\n    else File phiếu chưa tồn tại\n      QL->>QL: Khởi tạo danh sách phiếu rỗng\n    end\n    QL-->>App: Service đã nạp danh sách trong bộ nhớ\n    Note over QL,BF: Các thao tác ghi dùng FileWriter/BufferedWriter&#59; không có giao dịch SQL."
+	}, {
+		"file": "16_deployment_diagram.mmd",
+		"title": "Deployment",
+		"description": "Ứng dụng chạy cục bộ với JDK và thư viện Maven, không có SQL Server.",
+		"source": "flowchart TB\n    subgraph Computer[\"Máy tính chạy ứng dụng\"]\n      JVM[\"Java Runtime / JDK\"]\n      App[\"HotelBookingSystem.jar / chạy Main\"]\n      UI[\"Swing GUI hoặc Console\"]\n      LocalData[\"Thư mục làm việc: data/\"]\n      PF[(\"phong.txt\")]\n      BF[(\"phieudatphong.txt\")]\n      Images[(\"images/*.jpg\")]\n      Webcam[\"Webcam vật lý (tùy chọn)\"]\n    end\n    Libs[\"Thư viện đi kèm qua Maven:\\nFlatLaf • Sarxos Webcam Capture • SLF4J Simple\"]\n    JVM --> App\n    App --> UI\n    App --> LocalData\n    App --> Libs\n    LocalData --> PF\n    LocalData --> BF\n    LocalData --> Images\n    UI -. \"GUI chụp ảnh\" .-> Webcam\n    Note[\"Không có máy chủ backend, REST API hoặc SQL DB trong kiến trúc hiện tại\"]\n    App --- Note"
+	}, {
+		"file": "17_checkin_validation.mmd",
+		"title": "Activity validation",
+		"description": "Các quy tắc kiểm tra dữ liệu đúng với KhachHangValidator.",
+		"source": "flowchart TD\n    A[\"kiemTraThongTinCheckIn(khach, soNgay)\"] --> B{KhachHang khác null?}\n    B -->|Không| E1[\"IllegalArgumentException: thiếu thông tin khách\"]\n    B -->|Có| C{Họ tên không rỗng?}\n    C -->|Không| E2[\"IllegalArgumentException: thiếu họ tên\"]\n    C -->|Có| D{CCCD gồm đúng 12 chữ số?}\n    D -->|Không| E3[\"IllegalArgumentException: CCCD không hợp lệ\"]\n    D -->|Có| F{SĐT đúng 10 chữ số, bắt đầu bằng 0?}\n    F -->|Không| E4[\"IllegalArgumentException: SĐT không hợp lệ\"]\n    F -->|Có| G{Số ngày thuê > 0?}\n    G -->|Không| E5[\"IllegalArgumentException: số ngày không hợp lệ\"]\n    G -->|Có| H([Validation thành công])"
+	}];
+	const links = document.getElementById('links'), content = document.getElementById('content');
+	for (let i = 0; i < diagrams.length; i++) {
+		const d = diagrams[i];
+		const a = document.createElement('a');
+		a.href = '#d' + i;
+		a.textContent = (i + 1) + '. ' + d.title;
+		a.dataset.search = (d.title + ' ' + d.file + ' ' + d.description).toLowerCase();
+		links.appendChild(a);
+		const card = document.createElement('section');
+		card.className = 'card';
+		card.id = 'd' + i;
+		card.innerHTML = '<div class="head"><h2></h2><p class="desc"></p><div class="actions"><button class="toggle">Hiện mã Mermaid</button><button class="download">Tải .mmd</button></div></div><div class="canvas"></div><pre class="source"></pre><p class="note"></p>';
+		card.querySelector('h2').textContent = d.title;
+		card.querySelector('.desc').textContent = d.description;
+		card.querySelector('.source').textContent = d.source;
+		card.querySelector('.note').textContent = d.file;
+		card.querySelector('.toggle').addEventListener('click', e => {
+			const p = card.querySelector('.source');
+			p.style.display = p.style.display === 'block' ? 'none' : 'block';
+			e.target.textContent = p.style.display === 'block' ? 'Ẩn mã Mermaid' : 'Hiện mã Mermaid'
+		});
+		card.querySelector('.download').addEventListener('click', () => {
+			const url = URL.createObjectURL(new Blob([d.source + '\n'], {type: 'text/plain;charset=utf-8'}));
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = d.file;
+			a.click();
+			URL.revokeObjectURL(url)
+		});
+		content.appendChild(card)
+	}
+	document.getElementById('filter').addEventListener('input', e => {
+		const q = e.target.value.toLowerCase();
+		for (const a of links.querySelectorAll('a')) a.style.display = a.dataset.search.includes(q) ? 'block' : 'none';
+		for (let i = 0; i < diagrams.length; i++) {
+			const d = diagrams[i];
+			document.getElementById('d' + i).style.display = (d.title + ' ' + d.file + ' ' + d.description).toLowerCase().includes(q) ? '' : 'none'
+		}
+	});
+	(async () => {
+		try {
+			if (!window.mermaid) throw new Error('Không tải được thư viện Mermaid từ CDN.');
+			mermaid.initialize({
+				startOnLoad: false,
+				securityLevel: 'strict',
+				theme: 'neutral',
+				flowchart: {curve: 'basis', htmlLabels: true},
+				sequence: {showSequenceNumbers: true}
+			});
+			for (let i = 0; i < diagrams.length; i++) {
+				const d = diagrams[i], el = document.querySelector('#d' + i + ' .canvas');
+				try {
+					const result = await mermaid.render('diagram-svg-' + i, d.source);
+					el.innerHTML = result.svg
+				} catch (e) {
+					el.innerHTML = '';
+					const p = document.createElement('pre');
+					p.className = 'err';
+					p.textContent = 'Không render được sơ đồ này. Có thể mở mã Mermaid bên dưới để chỉnh sửa.\n' + String(e);
+					el.appendChild(p)
+				}
+			}
+		} catch (e) {
+			document.querySelectorAll('.canvas').forEach(el => el.innerHTML = '<div class="err">Không tải được Mermaid CDN. Các file .mmd trong thư mục diagrams/ vẫn là mã nguồn đầy đủ để mở bằng VS Code Mermaid Preview hoặc Mermaid Live Editor.</div>')
+		}
+	})();
+</script>
+</body>
+</html>
