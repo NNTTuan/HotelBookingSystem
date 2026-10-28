@@ -1,0 +1,6 @@
+# Bỏ qua thư mục build của Maven
+target/
+
+# Bỏ qua cấu hình riêng của IntelliJ IDEA
+.idea/
+*.iml
