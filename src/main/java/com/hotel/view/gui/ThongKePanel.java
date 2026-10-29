@@ -24,7 +24,7 @@ public class ThongKePanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // --- 1. PHẦN TRÊN: THẺ TỔNG QUAN ---
+        // 1. Phan tren: cac the tong quan.
         JPanel panelCards = new JPanel(new GridLayout(1, 5, 10, 0));
 
         lblTongPhong = createCard("20", new Color(33, 150, 243));
@@ -38,42 +38,50 @@ public class ThongKePanel extends JPanel {
         panelCards.add(createCardWrapper("Đang Lưu Trú", lblPhongDangO));
         panelCards.add(createCardWrapper("Chờ Dọn", lblPhongDangDon));
         panelCards.add(createCardWrapper("Tổng Doanh Thu", lblDoanhThu));
-
         add(panelCards, BorderLayout.NORTH);
 
-        // --- 2. PHẦN GIỮA: CÁC TAB THỐNG KÊ CHI TIẾT ---
+        // 2. Phan giua: cac tab thong ke chi tiet.
         JTabbedPane tabThongKeChiTiet = new JTabbedPane();
         tabThongKeChiTiet.setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-        // Tab 1: Top 3 phòng doanh thu cao nhất
-        String[] colsTopDoanhThu = {"Số Phòng", "Tầng", "Loại Phòng", "Tổng Doanh Thu (VNĐ)"};
+        String[] colsTopDoanhThu = {
+                "Số Phòng", "Tầng", "Loại Phòng", "Tổng Doanh Thu (VNĐ)"
+        };
         modelTopDoanhThu = new DefaultTableModel(colsTopDoanhThu, 0);
         tblTopDoanhThu = new JTable(modelTopDoanhThu);
-        tabThongKeChiTiet.addTab("Top 3 Phòng Doanh Thu Cao Nhất", new JScrollPane(tblTopDoanhThu));
+        tabThongKeChiTiet.addTab(
+                "Top 3 Phòng Doanh Thu Cao Nhất",
+                new JScrollPane(tblTopDoanhThu)
+        );
 
-        // Tab 2: Tổng doanh thu hằng tháng (Bảng)
         String[] colsDoanhThuThang = {"Tháng/Năm", "Tổng Doanh Thu (VNĐ)"};
         modelDoanhThuThang = new DefaultTableModel(colsDoanhThuThang, 0);
         tblDoanhThuThang = new JTable(modelDoanhThuThang);
-        tabThongKeChiTiet.addTab("Doanh Thu Hằng Tháng (Bảng)", new JScrollPane(tblDoanhThuThang));
+        tabThongKeChiTiet.addTab(
+                "Doanh Thu Hằng Tháng (Bảng)",
+                new JScrollPane(tblDoanhThuThang)
+        );
 
-        // Tab 3: Biểu đồ tổng doanh thu hằng tháng
         panelBieuDoTong = new BieuDoDoanhThuPanel();
         tabThongKeChiTiet.addTab("Biểu Đồ Tổng Doanh Thu", panelBieuDoTong);
 
-        // Tab 4: Biểu đồ doanh thu theo từng loại phòng
         panelBieuDoTheoLoai = new BieuDoDoanhThuTheoLoaiPanel();
-        tabThongKeChiTiet.addTab("Biểu Đồ Doanh Thu Theo Loại Phòng", panelBieuDoTheoLoai);
+        tabThongKeChiTiet.addTab(
+                "Biểu Đồ Doanh Thu Theo Loại Phòng",
+                panelBieuDoTheoLoai
+        );
 
-        // Tab 5: Top 5 phòng được thuê nhiều nhất
         String[] colsTopThue = {"Số Phòng", "Tầng", "Loại Phòng", "Số Lượt Thuê"};
         modelTopThueNhieu = new DefaultTableModel(colsTopThue, 0);
         tblTopThueNhieu = new JTable(modelTopThueNhieu);
-        tabThongKeChiTiet.addTab("Top 5 Phòng Thuê Nhiều Nhất", new JScrollPane(tblTopThueNhieu));
+        tabThongKeChiTiet.addTab(
+                "Top 5 Phòng Thuê Nhiều Nhất",
+                new JScrollPane(tblTopThueNhieu)
+        );
 
         add(tabThongKeChiTiet, BorderLayout.CENTER);
 
-        // --- 3. PHẦN DƯỚI: NÚT LÀM MỚI ---
+        // 3. Phan duoi: nut lam moi.
         JButton btnRefresh = new JButton("Làm mới thống kê");
         btnRefresh.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnRefresh.addActionListener(e -> capNhatDuLieuThongKe());
@@ -107,17 +115,56 @@ public class ThongKePanel extends JPanel {
     }
 
     public void capNhatDuLieuThongKe() {
+        if (quanLy == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Dữ liệu quản lý khách sạn chưa được khởi tạo.",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        // Doc lai file phieu truoc khi thong ke de lay du lieu moi nhat.
+        // Neu khong doc duoc file, giu nguyen thong ke hien tai.
+        if (!quanLy.taiLaiDanhSachPhieuTuFile()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Không thể đọc lại dữ liệu từ data/phieudatphong.txt. Thống kê chưa được cập nhật.",
+                    "Lỗi đọc dữ liệu",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
         List<PhongKhachSan> dsPhong = quanLy.getDanhSachPhong();
         List<PhieuDatPhong> dsPhieu = quanLy.getDanhSachPhieu();
 
+        if (dsPhong == null) {
+            dsPhong = Collections.emptyList();
+        }
+        if (dsPhieu == null) {
+            dsPhieu = Collections.emptyList();
+        }
+
         int tong = dsPhong.size();
-        int trong = 0, dangO = 0, dangDon = 0;
+        int trong = 0;
+        int dangO = 0;
+        int dangDon = 0;
 
         for (PhongKhachSan p : dsPhong) {
-            String tt = p.getTrangThai().trim().toUpperCase();
-            if (tt.contains("TRONG")) trong++;
-            else if (tt.contains("DANG_O")) dangO++;
-            else if (tt.contains("DANG_DON")) dangDon++;
+            if (p == null || p.getTrangThai() == null) {
+                continue;
+            }
+
+            String tt = p.getTrangThai().trim().toUpperCase(Locale.ROOT);
+            if (tt.contains("TRONG")) {
+                trong++;
+            } else if (tt.contains("DANG_O")) {
+                dangO++;
+            } else if (tt.contains("DANG_DON")) {
+                dangDon++;
+            }
         }
 
         double tongDoanhThuTatCa = 0;
@@ -127,43 +174,59 @@ public class ThongKePanel extends JPanel {
         Map<Integer, Integer> mapLuotThuePhong = new HashMap<>();
 
         for (PhongKhachSan p : dsPhong) {
-            mapLuotThuePhong.put(p.getSoPhong(), 0);
+            if (p != null) {
+                mapLuotThuePhong.put(p.getSoPhong(), 0);
+            }
         }
 
-        if (dsPhieu != null) {
-            for (PhieuDatPhong phieu : dsPhieu) {
-                if (phieu.getPhong() != null) {
-                    int soPhong = phieu.getPhong().getSoPhong();
-                    mapLuotThuePhong.put(soPhong, mapLuotThuePhong.getOrDefault(soPhong, 0) + 1);
-
-                    if ("DA_TRA".equalsIgnoreCase(phieu.getTrangThai())) {
-                        int soNgay = phieu.getSoNgayThue();
-                        double tienTruocThue = phieu.getPhong().tinhTienTruocThue(soNgay);
-                        double vat = phieu.getPhong().tinhTienThueVAT(soNgay);
-                        double tongTienPhieu = tienTruocThue + vat;
-
-                        tongDoanhThuTatCa += tongTienPhieu;
-                        mapDoanhThuPhong.put(soPhong, mapDoanhThuPhong.getOrDefault(soPhong, 0.0) + tongTienPhieu);
-
-                        String thangNam = "01/2026";
-                        try {
-                            String tsStr = phieu.getMaPhieu().replace("PDP", "");
-                            long timestamp = Long.parseLong(tsStr);
-                            SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
-                            thangNam = sdf.format(new Date(timestamp));
-                        } catch (Exception ignored) {}
-
-                        // 1. Tổng doanh thu hằng tháng
-                        mapDoanhThuThang.put(thangNam, mapDoanhThuThang.getOrDefault(thangNam, 0.0) + tongTienPhieu);
-
-                        // 2. Doanh thu hằng tháng theo từng loại phòng
-                        String loaiPhong = phieu.getPhong().getLoaiPhong();
-                        mapDoanhThuThangVaLoai.putIfAbsent(thangNam, new HashMap<>());
-                        Map<String, Double> loaiMap = mapDoanhThuThangVaLoai.get(thangNam);
-                        loaiMap.put(loaiPhong, loaiMap.getOrDefault(loaiPhong, 0.0) + tongTienPhieu);
-                    }
-                }
+        for (PhieuDatPhong phieu : dsPhieu) {
+            if (phieu == null || phieu.getPhong() == null) {
+                continue;
             }
+
+            int soPhong = phieu.getPhong().getSoPhong();
+            mapLuotThuePhong.put(
+                    soPhong,
+                    mapLuotThuePhong.getOrDefault(soPhong, 0) + 1
+            );
+
+            if (!"DA_TRA".equalsIgnoreCase(phieu.getTrangThai())) {
+                continue;
+            }
+
+            int soNgay = phieu.getSoNgayThue();
+            double tienTruocThue = phieu.getPhong().tinhTienTruocThue(soNgay);
+            double vat = phieu.getPhong().tinhTienThueVAT(soNgay);
+            double tongTienPhieu = tienTruocThue + vat;
+
+            tongDoanhThuTatCa += tongTienPhieu;
+            mapDoanhThuPhong.put(
+                    soPhong,
+                    mapDoanhThuPhong.getOrDefault(soPhong, 0.0) + tongTienPhieu
+            );
+
+            String thangNam = "01/2026";
+            try {
+                String tsStr = phieu.getMaPhieu().replace("PDP", "");
+                long timestamp = Long.parseLong(tsStr);
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+                thangNam = sdf.format(new Date(timestamp));
+            } catch (Exception ignored) {
+                // Giu thang mac dinh neu ma phieu khong chua timestamp hop le.
+            }
+
+            mapDoanhThuThang.put(
+                    thangNam,
+                    mapDoanhThuThang.getOrDefault(thangNam, 0.0) + tongTienPhieu
+            );
+
+            String loaiPhong = phieu.getPhong().getLoaiPhong();
+            mapDoanhThuThangVaLoai.putIfAbsent(thangNam, new HashMap<>());
+            Map<String, Double> loaiMap = mapDoanhThuThangVaLoai.get(thangNam);
+            loaiMap.put(
+                    loaiPhong,
+                    loaiMap.getOrDefault(loaiPhong, 0.0) + tongTienPhieu
+            );
         }
 
         lblTongPhong.setText(String.valueOf(tong));
@@ -172,7 +235,7 @@ public class ThongKePanel extends JPanel {
         lblPhongDangDon.setText(String.valueOf(dangDon));
         lblDoanhThu.setText(String.format("%,.0f VNĐ", tongDoanhThuTatCa));
 
-        // Nạp Top 3 phòng doanh thu cao nhất
+        // Nap Top 3 phong co doanh thu cao nhat.
         modelTopDoanhThu.setRowCount(0);
         mapDoanhThuPhong.entrySet().stream()
                 .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
@@ -189,24 +252,26 @@ public class ThongKePanel extends JPanel {
                     }
                 });
 
-        // Nạp bảng doanh thu hằng tháng
+        // Nap bang doanh thu hang thang.
         modelDoanhThuThang.setRowCount(0);
-        mapDoanhThuThang.forEach((thang, doanhThu) -> {
-            modelDoanhThuThang.addRow(new Object[]{
-                    thang,
-                    String.format("%,.0f", doanhThu)
-            });
-        });
+        mapDoanhThuThang.forEach((thang, doanhThu) ->
+                modelDoanhThuThang.addRow(new Object[]{
+                        thang,
+                        String.format("%,.0f", doanhThu)
+                })
+        );
 
-        // Nạp dữ liệu vào cả 2 biểu đồ
+        // Cap nhat ca hai bieu do.
         if (panelBieuDoTong != null) {
             panelBieuDoTong.setData(mapDoanhThuThang);
+            panelBieuDoTong.repaint();
         }
         if (panelBieuDoTheoLoai != null) {
             panelBieuDoTheoLoai.setData(mapDoanhThuThangVaLoai);
+            panelBieuDoTheoLoai.repaint();
         }
 
-        // Nạp Top 5 phòng thuê nhiều nhất
+        // Nap Top 5 phong co so luot thue nhieu nhat.
         modelTopThueNhieu.setRowCount(0);
         mapLuotThuePhong.entrySet().stream()
                 .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
