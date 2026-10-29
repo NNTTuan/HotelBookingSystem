@@ -227,4 +227,16 @@ public class QuanLyKhachSan {
         }
         return null;
     }
+
+    public List<PhieuDatPhong> timLichSuDatPhongTheoSoPhong(int soPhong) {
+        List<PhieuDatPhong> dsLichSu = new ArrayList<>();
+        if (danhSachPhieu != null) {
+            for (PhieuDatPhong p : danhSachPhieu) {
+                if (p.getPhong() != null && p.getPhong().getSoPhong() == soPhong) {
+                    dsLichSu.add(p);
+                }
+            }
+        }
+        return dsLichSu;
+    }
 }

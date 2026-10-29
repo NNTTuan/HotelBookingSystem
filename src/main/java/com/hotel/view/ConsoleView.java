@@ -48,6 +48,10 @@ public class ConsoleView {
                     phongHandler.xacNhanDonDep();
                     break;
                 }
+                case 5: {
+                    phongHandler.xemLichSuPhong();
+                    break;
+                }
                 case 0: {
                     System.out.println("\nCảm ơn bạn đã sử dụng phần mềm Quản lý Khách sạn!");
                     break;
@@ -67,8 +71,9 @@ public class ConsoleView {
         System.out.println("2. Thực hiện Check-in nhận phòng");
         System.out.println("3. Thực hiện Check-out & Tính tiền hóa đơn");
         System.out.println("4. Xác nhận dọn dẹp phòng (DANG_DON -> TRONG)");
+        System.out.println("5. Tra cứu lịch sử khách thuê theo phòng");
         System.out.println("0. Thoát chương trình");
         System.out.println("==================================================");
-        System.out.print("Nhập lựa chọn của bạn (0-4): ");
+        System.out.print("Nhập lựa chọn của bạn (0-5): ");
     }
 }

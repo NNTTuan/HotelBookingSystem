@@ -1,10 +1,13 @@
 package com.hotel.view;
 
+import com.hotel.model.KhachHang;
+import com.hotel.model.PhieuDatPhong;
 import com.hotel.model.PhongKhachSan;
 import com.hotel.service.QuanLyKhachSan;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
@@ -24,7 +27,7 @@ public class QuanLyPhongPanel extends JPanel {
         legendPanel.add(taoItemChuThich("Chờ Dọn Dẹp", new Color(255, 243, 205), new Color(230, 81, 0)));
         add(legendPanel, BorderLayout.NORTH);
 
-        // Khung lưới 10x10 hiển thị 100 phòng
+        // Khung lưới hiển thị danh sách phòng
         gridPanel = new JPanel(new GridLayout(5, 4, 6, 6));
         add(gridPanel, BorderLayout.CENTER);
 
@@ -87,19 +90,73 @@ public class QuanLyPhongPanel extends JPanel {
                     break;
             }
 
+            // Bắt sự kiện khi bấm vào từng phòng -> Hiển thị Dialog chi tiết & Lịch sử
             btn.addActionListener(e -> {
-                if ("DANG_DON".equals(p.getTrangThai())) {
-                    int confirm = JOptionPane.showConfirmDialog(
-                            this,
-                            "Xác nhận phòng " + p.getSoPhong() + " đã dọn dẹp xong?",
-                            "Xác nhận dọn phòng",
-                            JOptionPane.YES_NO_OPTION
-                    );
-                    if (confirm == JOptionPane.YES_OPTION) {
+                JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Chi Tiết & Lịch Sử Thuê - Phòng " + p.getSoPhong(), true);
+                dialog.setSize(650, 420);
+                dialog.setLocationRelativeTo(this);
+                dialog.setLayout(new BorderLayout(10, 10));
+
+                // 1. Khung thông tin tổng quan phòng
+                JPanel topInfo = new JPanel(new GridLayout(2, 2, 8, 8));
+                topInfo.setBorder(BorderFactory.createTitledBorder("Thông tin phòng"));
+                topInfo.add(new JLabel("Loại phòng: " + p.getLoaiPhong()));
+                topInfo.add(new JLabel("Tầng: " + p.getTang()));
+                topInfo.add(new JLabel("Giá cơ bản: " + String.format("%,.0f VNĐ/ngày", p.getGiaCoBan())));
+                topInfo.add(new JLabel("Trạng thái hiện tại: " + p.getTrangThai()));
+                dialog.add(topInfo, BorderLayout.NORTH);
+
+                // 2. Bảng lịch sử khách hàng đã từng ở phòng này
+                String[] cols = {"Mã Phiếu", "Họ Tên Khách", "CCCD/Passport", "Số Ngày", "Trạng Thái"};
+                DefaultTableModel historyModel = new DefaultTableModel(cols, 0) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false; // Không cho phép chỉnh sửa bảng lịch sử trực tiếp
+                    }
+                };
+
+                List<PhieuDatPhong> dsLichSu = quanLyKhachSan.timLichSuDatPhongTheoSoPhong(p.getSoPhong());
+                for (PhieuDatPhong phieu : dsLichSu) {
+                    KhachHang kh = phieu.getKhachHang();
+                    historyModel.addRow(new Object[]{
+                            phieu.getMaPhieu(),
+                            kh != null ? kh.getHoTen() : "N/A",
+                            kh != null ? kh.getSoCCCD() : "N/A",
+                            phieu.getSoNgayThue(),
+                            phieu.getTrangThai()
+                    });
+                }
+
+                JTable tableHistory = new JTable(historyModel);
+                tableHistory.setRowHeight(22);
+                JScrollPane scrollPane = new JScrollPane(tableHistory);
+                scrollPane.setBorder(BorderFactory.createTitledBorder("Lịch sử lưu trú của phòng"));
+                dialog.add(scrollPane, BorderLayout.CENTER);
+
+                // 3. Khung nút chức năng ở góc dưới
+                JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+
+                // Nếu phòng đang ở trạng thái DANG_DON -> Thêm nút xác nhận dọn phòng trực tiếp
+                if ("DANG_DON".equalsIgnoreCase(p.getTrangThai())) {
+                    JButton btnDonXong = new JButton("Xác nhận đã dọn xong");
+                    btnDonXong.setBackground(new Color(40, 140, 60));
+                    btnDonXong.setForeground(Color.WHITE);
+                    btnDonXong.setFocusPainted(false);
+                    btnDonXong.addActionListener(ex -> {
                         quanLyKhachSan.xacNhanDonXong(p.getSoPhong());
                         capNhatSoDoPhong();
-                    }
+                        dialog.dispose();
+                        JOptionPane.showMessageDialog(this, "Đã chuyển phòng " + p.getSoPhong() + " về trạng thái TRONG!");
+                    });
+                    bottomPanel.add(btnDonXong);
                 }
+
+                JButton btnClose = new JButton("Đóng");
+                btnClose.addActionListener(ex -> dialog.dispose());
+                bottomPanel.add(btnClose);
+
+                dialog.add(bottomPanel, BorderLayout.SOUTH);
+                dialog.setVisible(true);
             });
 
             gridPanel.add(btn);
